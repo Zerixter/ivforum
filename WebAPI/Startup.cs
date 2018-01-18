@@ -43,7 +43,7 @@ namespace WebAPI
                     };
                 });
 
-            services.AddDbContext<Context>(opt => opt.UseInMemoryDatabase("IVFORUM"));
+            services.AddDbContext<Context>();
             services.AddMvc();
         }
 

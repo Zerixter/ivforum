@@ -21,15 +21,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet, Authorize]
-        public string Get()
+        public IEnumerable<Proyecto> Get()
         {
-            var pipo = new
-            {
-                hamza = "hola",
-                lolo = "asda"
-            };
             var currentUser = HttpContext.User;
-            return pipo.ToString();
+            return _context.Proyectos.ToList();
         }
     } 
 }

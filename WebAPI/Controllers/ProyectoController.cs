@@ -9,7 +9,7 @@ using WebAPI.Models;
 namespace WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/proyectos")]
     public class ProyectoController : Controller
     {
         private readonly Context _context;
@@ -17,18 +17,6 @@ namespace WebAPI.Controllers
         public ProyectoController(Context context)
         {
             _context = context;
-
-            Proyecto proyecto = new Proyecto
-            {
-                Name = "Johnyy",
-                Email = "johnyy@gmail.com"
-            };
-
-            if (_context.Proyectos.Count() == 0)
-            {
-                _context.Proyectos.Add(proyecto);
-                _context.SaveChanges();
-            }
         }
 
         [HttpGet]
