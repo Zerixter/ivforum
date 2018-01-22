@@ -22,18 +22,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IEnumerable<Proyecto> GetAll()
         {
-            return _context.Proyectos.ToList();
-        }
-
-        [HttpGet("{id}", Name = "GetProyecto")]
-        public IActionResult GetById(int id)
-        {
-            var item = _context.Proyectos.FirstOrDefault(t => t.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return new ObjectResult(item);
+            return _context.Proyectos.ToArray();
         }
     }
 }

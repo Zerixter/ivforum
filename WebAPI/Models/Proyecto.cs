@@ -8,9 +8,10 @@ namespace WebAPI.Models
 {
     public class Proyecto
     {
-        [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
+
+        public virtual UserModel Owner { get; set; }
+        public virtual List<UserModel> Users { get; set; } = new List<UserModel>();
     }
 }

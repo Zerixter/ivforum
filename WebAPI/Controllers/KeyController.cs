@@ -23,7 +23,6 @@ namespace WebAPI.Controllers
         [HttpGet, Authorize]
         public IEnumerable<Proyecto> Get()
         {
-            var currentUser = HttpContext.User;
             return _context.Proyectos.ToList();
         }
     } 

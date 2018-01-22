@@ -17,9 +17,11 @@ namespace WebAPI.Controllers
     public class TokenController : Controller
     {
         private IConfiguration _config;
+        private Context _context;
 
-        public TokenController(IConfiguration config)
+        public TokenController(IConfiguration config, Context context)
         {
+            _context = context;
             _config = config;
         }
 
@@ -31,15 +33,15 @@ namespace WebAPI.Controllers
             var user = Authenticate(login);
 
             if (user != null)
-            {
-                var tokenString = BuildToken(user);
+             {
+                var tokenString = BuildToken();
                 response = Ok(new { token = tokenString });
-            }
+             }
 
             return response;
         }
 
-        private string BuildToken(UserModel user)
+        private string BuildToken()
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -53,15 +55,9 @@ namespace WebAPI.Controllers
         }
 
         private UserModel Authenticate(LoginModel login)
-        {   
-            UserModel user = null;
-
-            if (login.Username == "mario" && login.Password == "secret")
-            {
-                user = new UserModel { Name = "Mario Rossi", Email = "mario.rossi@domain.com" };
-            }
-
-            return user;
+        {
+            UserModel User = _context.Users.FirstOrDefault(x => x.Name == login.Username && x.Password == login.Password);
+            return User;
         }
     }
 }

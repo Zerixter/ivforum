@@ -61,7 +61,7 @@ namespace WebAPI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server=(localdb)\\mssqllocaldb;Database=WebAPI;MultipleActiveResultSets=True;Trusted_Connection=True;.
+        ///   Looks up a localized string similar to Server=(localdb)\mssqllocaldb;Database=WebAPI;MultipleActiveResultSets=True;Trusted_Connection=True;.
         /// </summary>
         internal static string connectionString {
             get {

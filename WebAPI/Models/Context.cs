@@ -21,18 +21,20 @@ namespace WebAPI.Models
             base.OnConfiguring(optionsBuilder);
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder mb)
         {
-        }
-
-        private void addProjectsToDatabase()
-        {
-            if (!Proyectos.Any())
-            {
-
-            }
+            mb.Entity<UserModel>()
+                .HasMany(m => m.Proyectos)
+                .WithOne(m => m.Owner)
+                .OnDelete(DeleteBehavior.Cascade);
+            mb.Entity<Proyecto>()
+                .HasOne(o => o.Owner)
+                .WithMany(m => m.Proyectos);
+            mb.Entity<Proyecto>()
+                .HasMany(m => m.Users);
         }
 
         public DbSet<Proyecto> Proyectos { get; set; }
+        public DbSet<UserModel> Users { get; set; }
     }
 }
