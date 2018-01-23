@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateToken([FromBody]LoginModel login)
+        public IActionResult CreateToken([FromBody]Login login)
         {
             IActionResult response = Unauthorized();
 
@@ -54,9 +54,9 @@ namespace WebAPI.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private UserModel Authenticate(LoginModel login)
+        private User Authenticate(Login login)
         {
-            UserModel User = _context.Users.FirstOrDefault(x => x.Name == login.Username && x.Password == login.Password);
+            User User = _context.Users.FirstOrDefault(x => x.Name == login.Username && x.Password == login.Password);
             return User;
         }
     }

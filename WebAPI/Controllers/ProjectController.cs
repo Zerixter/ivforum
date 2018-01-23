@@ -11,19 +11,19 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/key")]
-    public class KeyController : Controller
+    public class ProjectController : Controller
     {
         private Context _context;
 
-        public KeyController(Context context)
+        public ProjectController(Context context)
         {
             _context = context;
         }
 
         [HttpGet, Authorize]
-        public IEnumerable<Proyecto> Get()
+        public IEnumerable<Project> Get()
         {
-            return _context.Proyectos.ToList();
+            return _context.Projects.ToList();
         }
     } 
 }

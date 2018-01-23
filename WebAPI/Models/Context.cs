@@ -9,11 +9,8 @@ namespace WebAPI.Models
 {
     public class Context: DbContext
     {
-        public Context(DbContextOptions<Context> options)
-            : base(options)
-        {
-            Database.Migrate();
-        }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,18 +20,15 @@ namespace WebAPI.Models
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
-            mb.Entity<UserModel>()
-                .HasMany(m => m.Proyectos)
+            mb.Entity<User>()
+                .HasMany(m => m.Projects)
                 .WithOne(m => m.Owner)
                 .OnDelete(DeleteBehavior.Cascade);
-            mb.Entity<Proyecto>()
+            mb.Entity<Project>()
                 .HasOne(o => o.Owner)
-                .WithMany(m => m.Proyectos);
-            mb.Entity<Proyecto>()
+                .WithMany(m => m.Projects);
+            mb.Entity<Project>()
                 .HasMany(m => m.Users);
         }
-
-        public DbSet<Proyecto> Proyectos { get; set; }
-        public DbSet<UserModel> Users { get; set; }
     }
 }
