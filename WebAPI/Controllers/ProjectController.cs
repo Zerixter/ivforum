@@ -1,29 +1,28 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
-    [Produces("application/json")]
+	[Produces("application/json")]
     [Route("api/key")]
     public class ProjectController : Controller
     {
-        private Context _context;
+        private ApplicationDbContext ctx;
 
-        public ProjectController(Context context)
+        public ProjectController(ApplicationDbContext context)
         {
-            _context = context;
+            ctx = context;
         }
 
         [HttpGet, Authorize]
         public IEnumerable<Project> Get()
         {
-            return _context.Projects.ToList();
+			return null;
         }
     } 
 }

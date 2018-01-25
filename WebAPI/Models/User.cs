@@ -1,17 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
+using WebAPI.Models.Interfaces;
 
 namespace WebAPI.Models
 {
-    public class User
-    {
+	public class User : IUser, ISocial
+	{
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
 
-        public virtual List<Project> Projects { get; set; } = new List<Project>();
-    }
+		// IUser Interface
+		[Required]
+		public string Name { get; set; }
+		[Required]
+		public string Surname { get; set; }
+		[Required]
+		public string Email { get; set; }
+		[Required]
+		public string Password { get; set; }
+
+		// ISocial Interface
+		public string WebsiteUrl { get; set; }
+		public string FacebookUrl { get; set; }
+		public string TwitterUrl { get; set; }
+		public string RepositoryUrl { get; set; }
+
+		public virtual List<Forum> Forums { get; set; } = new List<Forum>();
+		public virtual List<Project> Projects { get; set; } = new List<Project>();
+	}
 }
