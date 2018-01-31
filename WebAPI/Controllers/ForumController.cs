@@ -11,6 +11,9 @@ namespace WebAPI.Controllers
 	[Produces("application/json")]
 	public class ForumController : Controller
     {
+		private ApplicationDbContext db;
+		public ForumController(ApplicationDbContext dbContext) => db = dbContext;
+
 		[HttpPost]
 		public void AddForum(AddForumViewModel forum)
 		{

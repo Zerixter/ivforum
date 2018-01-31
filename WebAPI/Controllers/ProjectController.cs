@@ -11,8 +11,8 @@ namespace WebAPI.Controllers
 	[Produces("application/json")]
     public class ProjectController : Controller
     {
-        private ApplicationDbContext ctx;
-		public ProjectController(ApplicationDbContext context) => ctx = context;
+        private ApplicationDbContext db;
+		public ProjectController(ApplicationDbContext context) => db = context;
 
 		[HttpPost]
 		public void AddProject(AddProjectViewModel project)

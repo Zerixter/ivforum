@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
 		public UserController(ApplicationDbContext applicationDbContext) => db = applicationDbContext;
 
         [HttpPost]
-		public void RegisterUser(AddUserViewModel user)
+		public void RegisterUser(UserRegisterViewModel user)
 		{
 			//...
 		}
@@ -34,12 +34,6 @@ namespace WebAPI.Controllers
 
 		[HttpGet]
 		public void ShowUserInfo(User user)
-		{
-			//...
-		}
-
-		[HttpPut]
-		public void UpdateSocialInfo(SocialViewModel social)
 		{
 			//...
 		}
