@@ -1,28 +1,41 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Collections.Generic;
-using System.Linq;
-
 using WebAPI.Models;
+using WebAPI.Models.ViewModels;
 
 namespace WebAPI.Controllers
 {
+	[Authorize]
+	[Route("api/projects")]
 	[Produces("application/json")]
-    [Route("api/key")]
     public class ProjectController : Controller
     {
         private ApplicationDbContext ctx;
+		public ProjectController(ApplicationDbContext context) => ctx = context;
 
-        public ProjectController(ApplicationDbContext context)
-        {
-            ctx = context;
-        }
+		[HttpPost]
+		public void AddProject(AddProjectViewModel project)
+		{
+			//...
+		}
 
-        [HttpGet, Authorize]
-        public IEnumerable<Project> Get()
-        {
-			return null;
-        }
+		[HttpPost]
+		public void RemoveProject(Project project)
+		{
+			//..
+		}
+
+		[HttpPut]
+		public void UpdateProject(Project project)
+		{
+			//...
+		}
+
+		[HttpGet]
+		public void ShowProjectDetails(Project project)
+		{
+			//...
+		}
     } 
 }

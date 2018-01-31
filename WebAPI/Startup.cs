@@ -51,7 +51,6 @@ namespace WebAPI
             }
 
             app.UseAuthentication();
-
             app.UseMvc();
         }
     }

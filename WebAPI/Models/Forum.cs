@@ -13,7 +13,9 @@ namespace WebAPI.Models
 
 		// IDescription Interface
 		[Required]
+		[MaxLength(100)]
 		public string Name { get; set; }
+		[MaxLength(100)]
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public string Icon { get; set; }
