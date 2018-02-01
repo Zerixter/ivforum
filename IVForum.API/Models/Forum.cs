@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using WebAPI.Models.Interfaces;
-
-namespace WebAPI.Models
+namespace IVForum.API.Models
 {
-	public class Forum : IDescription
+	public class Forum
     {
 		[Key]
 		public Guid Id { get; set; }
@@ -24,6 +22,5 @@ namespace WebAPI.Models
 		[Required]
 		public virtual User Owner { get; set; }
 		public virtual List<Project> Projects { get; set; } = new List<Project>();
-
 	}
 }

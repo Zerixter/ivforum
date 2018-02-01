@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using WebAPI.Models.Interfaces;
-
-namespace WebAPI.Models
+namespace IVForum.API.Models
 {
-	public class User : IUser, ISocial
-	{
-        public Guid Id { get; set; }
+	public class User
+    {
+		public Guid Id { get; set; }
 
 		// IUser Interface
 		[Required]
