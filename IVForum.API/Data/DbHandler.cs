@@ -13,8 +13,7 @@ namespace IVForum.API.Data
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebAPI;MultipleActiveResultSets=True;Trusted_Connection=True;");
-            optionsBuilder.UseMySQL(DbInfo.ConnectionString);
+            optionsBuilder.UseSqlServer(DbInfo.ConnectionString);
         }
 
 		protected override void OnModelCreating(ModelBuilder builder)
