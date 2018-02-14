@@ -14,14 +14,14 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: false),
                     FacebookUrl = table.Column<string>(nullable: true),
                     ForumId = table.Column<Guid>(nullable: true),
                     Icon = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    OwnerId = table.Column<Guid>(nullable: false),
                     RepositoryUrl = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 100, nullable: true),
                     TwitterUrl = table.Column<string>(nullable: true),
                     WebsiteUrl = table.Column<string>(nullable: true)
                 },
@@ -62,7 +62,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),

@@ -27,7 +27,9 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("Icon");
 
@@ -54,7 +56,9 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("FacebookUrl");
 
@@ -63,13 +67,15 @@ namespace IVForum.API.Migrations
                     b.Property<string>("Icon");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                    b.Property<Guid?>("OwnerId");
+                    b.Property<Guid>("OwnerId");
 
                     b.Property<string>("RepositoryUrl");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasMaxLength(100);
 
                     b.Property<string>("TwitterUrl");
 
