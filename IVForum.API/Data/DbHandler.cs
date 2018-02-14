@@ -9,6 +9,7 @@ namespace IVForum.API.Data
 		public DbSet<User> Users { get; set; }
 		public DbSet<Forum> Forums { get; set; }
 		public DbSet<Project> Projects { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -26,15 +27,24 @@ namespace IVForum.API.Data
 				.HasMany(x => x.Projects)
 				.WithOne(x => x.Owner);
 
+            builder.Entity<User>()
+                .HasOne(x => x.Token)
+                .WithOne(x => x.User);
+
+            builder.Entity<Token>()
+                .HasOne(x => x.User)
+                .WithOne(x => x.Token)
+                .OnDelete(DeleteBehavior.Cascade);
+
 			builder.Entity<Forum>()
 				.HasOne(x => x.Owner)
 				.WithMany(x => x.Forums)
 				.OnDelete(DeleteBehavior.Cascade);
 
-			builder.Entity<Project>()
-				.HasOne(x => x.Owner)
-				.WithMany(x => x.Projects)
-				.OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Project>()
+                .HasOne(x => x.Owner)
+                .WithMany(x => x.Projects)
+                .OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

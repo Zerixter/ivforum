@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,12 +29,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DbInfo.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\SecretKey.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SecretKey.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\DbInfo.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DbInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\SecretKey.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SecretKey.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -11,7 +11,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180201161459_Initial")]
+    [Migration("20180214181216_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,9 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("Icon");
 
@@ -55,7 +57,9 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("FacebookUrl");
 
@@ -64,13 +68,15 @@ namespace IVForum.API.Migrations
                     b.Property<string>("Icon");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                    b.Property<Guid?>("OwnerId");
+                    b.Property<Guid>("OwnerId");
 
                     b.Property<string>("RepositoryUrl");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasMaxLength(100);
 
                     b.Property<string>("TwitterUrl");
 
@@ -83,6 +89,22 @@ namespace IVForum.API.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Token", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(250);
+
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Token");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.User", b =>
@@ -136,6 +158,14 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")
                         .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Token", b =>
+                {
+                    b.HasOne("IVForum.API.Models.User", "User")
+                        .WithOne("Token")
+                        .HasForeignKey("IVForum.API.Models.Token", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore;
+﻿using IVForum.API.Data;
+using IVForum.API.Models;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace IVForum.API

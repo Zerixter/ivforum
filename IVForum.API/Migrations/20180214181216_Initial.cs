@@ -14,14 +14,14 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: false),
                     FacebookUrl = table.Column<string>(nullable: true),
                     ForumId = table.Column<Guid>(nullable: true),
                     Icon = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    OwnerId = table.Column<Guid>(nullable: false),
                     RepositoryUrl = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 100, nullable: true),
                     TwitterUrl = table.Column<string>(nullable: true),
                     WebsiteUrl = table.Column<string>(nullable: true)
                 },
@@ -62,7 +62,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
@@ -74,6 +74,24 @@ namespace IVForum.API.Migrations
                     table.ForeignKey(
                         name: "FK_Forums_Users_OwnerId",
                         column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Token",
+                columns: table => new
+                {
+                    Id = table.Column<string>(maxLength: 250, nullable: false),
+                    UserId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Token", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Token_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -93,6 +111,12 @@ namespace IVForum.API.Migrations
                 name: "IX_Projects_OwnerId",
                 table: "Projects",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Token_UserId",
+                table: "Token",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ProjectId",
@@ -125,6 +149,9 @@ namespace IVForum.API.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Projects_Users_OwnerId",
                 table: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Token");
 
             migrationBuilder.DropTable(
                 name: "Users");

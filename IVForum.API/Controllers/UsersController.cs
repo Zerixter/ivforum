@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
-	[Authorize]
     [Route("api/Users")]
     [Produces("application/json")]
     public class UsersController : Controller
@@ -93,6 +92,14 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            Token token = new Token
+            {
+                Id = TokenHandler.GetNewToken(user),
+                User = user
+            };
+
+            user.Token = token;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

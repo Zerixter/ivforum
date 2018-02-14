@@ -23,7 +23,8 @@ namespace IVForum.API.Models
 		public string TwitterUrl { get; set; }
 		public string RepositoryUrl { get; set; }
 
-		public virtual List<Forum> Forums { get; set; } = new List<Forum>();
+        public virtual Token Token { get; set; } = null;
+        public virtual List<Forum> Forums { get; set; } = new List<Forum>();
 		public virtual List<Project> Projects { get; set; } = new List<Project>();
 	}
 }
