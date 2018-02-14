@@ -11,7 +11,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180214145621_Initial")]
+    [Migration("20180201161459_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,9 +28,7 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500);
+                    b.Property<string>("Description");
 
                     b.Property<string>("Icon");
 
@@ -57,9 +55,7 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500);
+                    b.Property<string>("Description");
 
                     b.Property<string>("FacebookUrl");
 
@@ -68,15 +64,13 @@ namespace IVForum.API.Migrations
                     b.Property<string>("Icon");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                        .IsRequired();
 
-                    b.Property<Guid>("OwnerId");
+                    b.Property<Guid?>("OwnerId");
 
                     b.Property<string>("RepositoryUrl");
 
-                    b.Property<string>("Title")
-                        .HasMaxLength(100);
+                    b.Property<string>("Title");
 
                     b.Property<string>("TwitterUrl");
 
