@@ -6,9 +6,9 @@ namespace IVForum.API.Models
 {
 	public class User
     {
+		[Key]
 		public Guid Id { get; set; }
-
-		// IUser Interface
+		
 		[Required]
 		public string Name { get; set; }
 		[Required]
@@ -17,8 +17,7 @@ namespace IVForum.API.Models
 		public string Email { get; set; }
 		[Required]
 		public string Password { get; set; }
-
-		// ISocial Interface
+		
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }
 		public string TwitterUrl { get; set; }

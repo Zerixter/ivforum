@@ -14,7 +14,7 @@ namespace IVForum.API.Controllers
 {
 	[Authorize]
     [Route("api/Forums")]
-	[Produces("application/json")]
+    [Produces("application/json")]
     public class ForumsController : Controller
     {
         private readonly DbHandler _context;

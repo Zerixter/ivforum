@@ -1,5 +1,6 @@
 ﻿using IVForum.API.Data;
 using IVForum.API.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace IVForum.API.Controllers
 {
 	[Authorize]
     [Route("api/Projects")]
-	[Produces("application/json")]
+    [Produces("application/json")]
     public class ProjectsController : Controller
     {
         private readonly DbHandler _context;
