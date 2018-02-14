@@ -1,5 +1,5 @@
 ﻿using IVForum.API.Models;
-
+using IVForum.API.Properties;
 using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Data
@@ -13,8 +13,9 @@ namespace IVForum.API.Data
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			base.OnConfiguring(optionsBuilder);
-			optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebAPI;MultipleActiveResultSets=True;Trusted_Connection=True;");
-		}
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebAPI;MultipleActiveResultSets=True;Trusted_Connection=True;");
+            optionsBuilder.UseMySQL(DbInfo.ConnectionString);
+        }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
