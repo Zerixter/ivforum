@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +52,13 @@ namespace IVForum.API.Controllers
             await db.DbUsers.AddAsync(user);
             await db.SaveChangesAsync();
 
-            return new OkObjectResult("200 OK: Account created");
+            var jsonResult = new 
+            {
+                Code = 200,
+                Status = "correct"
+            };
+
+            return new JsonResult(jsonResult);
         }
     }
 }
