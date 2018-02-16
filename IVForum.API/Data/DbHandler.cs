@@ -1,12 +1,13 @@
 ﻿using IVForum.API.Models;
 using IVForum.API.Properties;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Data
 {
-	public class DbHandler : DbContext
+	public class DbHandler : IdentityDbContext
     {
-		public DbSet<User> Users { get; set; }
+		public DbSet<User> DbUsers { get; set; }
 		public DbSet<Forum> Forums { get; set; }
 		public DbSet<Project> Projects { get; set; }
         public DbSet<Token> Tokens { get; set; }
@@ -19,6 +20,8 @@ namespace IVForum.API.Data
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
+            base.OnModelCreating(builder);
+
 			builder.Entity<User>()
 				.HasMany(x => x.Forums)
 				.WithOne(x => x.Owner);

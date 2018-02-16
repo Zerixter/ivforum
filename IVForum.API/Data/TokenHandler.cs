@@ -14,7 +14,7 @@ namespace IVForum.API.Data
 {
     public class TokenHandler
     {
-        private static IConfiguration Config;
+        /*private static IConfiguration Config;
         public TokenHandler(IConfiguration config)
         {
             Config = config;
@@ -44,6 +44,6 @@ namespace IVForum.API.Data
             var signedAndEncodedToken = tokenHandler.WriteToken(plainToken);
 
             return signedAndEncodedToken;
-        }
+        }*/
     }
 }
