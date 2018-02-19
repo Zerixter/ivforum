@@ -31,6 +31,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DbInfo.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\JwtInfo.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JwtInfo.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\SecretKey.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -42,6 +47,10 @@
     <EmbeddedResource Update="Properties\DbInfo.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DbInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\JwtInfo.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>JwtInfo.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\SecretKey.resx">
       <Generator>ResXFileCodeGenerator</Generator>

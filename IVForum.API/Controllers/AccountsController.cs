@@ -47,12 +47,18 @@ namespace IVForum.API.Controllers
 
             var result = await userManager.CreateAsync(userModel, model.Password);
 
-            if (!result.Succeeded) return new BadRequestObjectResult("NOPE");
+            var jsonResult = new
+            {
+                Code = 400,
+                Status = "error"
+            };
+
+            if (!result.Succeeded) return new JsonResult(jsonResult);
 
             await db.DbUsers.AddAsync(user);
             await db.SaveChangesAsync();
 
-            var jsonResult = new 
+            jsonResult = new 
             {
                 Code = 200,
                 Status = "correct"

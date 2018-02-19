@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
-	[Authorize]
     [Route("api/Forums")]
     [Produces("application/json")]
     public class ForumsController : Controller
