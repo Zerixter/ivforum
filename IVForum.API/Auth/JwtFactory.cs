@@ -1,12 +1,10 @@
-﻿using IVForum.API.Models;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using IVForum.API.Models;
+using Microsoft.Extensions.Options;
 
 namespace IVForum.API.Auth
 {

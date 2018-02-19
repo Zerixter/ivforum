@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Data
 {
-	public class DbHandler : IdentityDbContext
+	public class DbHandler : IdentityDbContext<UserModel>
     {
 		public DbSet<User> DbUsers { get; set; }
 		public DbSet<Forum> Forums { get; set; }

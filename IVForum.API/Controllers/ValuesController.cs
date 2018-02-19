@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IVForum.API.Controllers
 {
-    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/values")]
     [Produces("application/json")]
