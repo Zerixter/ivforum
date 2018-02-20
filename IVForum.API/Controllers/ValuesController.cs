@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using IVForum.API.Data;
+using IVForum.API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
@@ -12,10 +18,30 @@ namespace IVForum.API.Controllers
     [Produces("application/json")]
     public class ValuesController : Controller
     {
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ClaimsPrincipal _caller;
+        private readonly DbHandler db;
+
+        public ValuesController(UserManager<UserModel> userManager, DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
-            return new string[] { "value1", "value2" };
+            _caller = httpContextAccessor.HttpContext.User;
+            db = _db;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var customer = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
+
+            var json_obj = new
+            {
+                Message = "Logeado",
+                customer.Identity.Name,
+                customer.Identity.Surname,
+                customer.Identity.Id
+            };
+
+            return new OkObjectResult(json_obj);
         }
 
         // GET api/values/5
