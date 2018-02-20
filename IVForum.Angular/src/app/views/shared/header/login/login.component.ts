@@ -23,12 +23,16 @@ export class LoginModal implements OnInit {
     
     ngOnInit() {
         this.loginForm = new FormGroup({
-            'email': new FormControl(null, [Validators.required,Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]),
-            'password': new FormControl(null,[Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$'),Validators.minLength(8)])
+            'email': new FormControl(null, [Validators.required,Validators.minLength(2)]),
+            'password': new FormControl(null,[Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/),Validators.minLength(8)])
         });
      }
 
     onSubmit(){
-        //this._userService.
+
+        if (this._userService.login(this.email,this.password)){
+            console.log("patata");
+            this.router.navigateByUrl('/');
+        }
     }
 }

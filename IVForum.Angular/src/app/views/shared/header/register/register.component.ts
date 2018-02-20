@@ -35,7 +35,8 @@ export class RegisterModal implements OnInit {
     }
 
     onSubmit(){
-
-        this._userService.register(this.email,this.password,this.name,this.surname);
+        if(this._userService.register(this.email,this.password,this.name,this.surname)){
+            this.router.navigateByUrl('/login');
+        }
     }
 }

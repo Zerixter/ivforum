@@ -12,26 +12,21 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import { UserRegistration } from '../interfaces/user-register.interface';
 import { ConfigService } from './config.service';
 
+
 @Injectable()
 
 export class UserService extends BaseService {
 
     baseUrl: string = '';
+    
+    public token: string;
 
     // Observable navItem source
-    private _authNavStatusSource = new BehaviorSubject<boolean>(false);
-    // Observable navItem stream
-    authNavStatus$ = this._authNavStatusSource.asObservable();
-
-    private loggedIn = false;
 
     constructor(private http: HttpClient, private configService: ConfigService) {
         super();
-        this.loggedIn = !!localStorage.getItem('auth_token');
-        // ?? not sure if this the best way to broadcast the status but seems to resolve issue on page refresh where auth status is lost in
-        // header component resulting in authed user nav links disappearing despite the fact user is still logged in
-        this._authNavStatusSource.next(this.loggedIn);
-        this.baseUrl = this.baseUrl = configService.getApiURI();
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.token = currentUser && currentUser.token;
     }
 
     register(mail: string, contraseña: string, nom: string, cognom: string) {
@@ -48,6 +43,7 @@ export class UserService extends BaseService {
             .subscribe(
                 res => {
                     console.log(res);
+                    return true;
                 },
                 err => {
                     console.log(err);
@@ -55,35 +51,27 @@ export class UserService extends BaseService {
             );
     }
 
-    login(userName, password) {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        return this.http.post("http://localhost:57570/api/auth", {
-            email: userName,
-            password: password
-        })
-            .subscribe(
-                res => {
-                    console.log(res);
-                    /*localStorage.setItem('auth_token', res.);
-                    this.loggedIn = true;
-                    this._authNavStatusSource.next(true);*/
-                    return true;
-                },
-                err => {
-                    console.log(err);
-                }
-            )
+    login(userName: string, password: string) {
+        return this.http.post('/api/auth', { userName, password })
+            .do(res => this.setSession)
+            .shareReplay();
     }
 
-    logout() {
-        localStorage.removeItem('auth_token');
-        this.loggedIn = false;
-        this._authNavStatusSource.next(false);
+    private setSession(authResult) {
+        localStorage.setItem('currentUser', authResult.idToken);
     }
 
-    isLoggedIn() {
-        return this.loggedIn;
+    islogged(){
+        if (localStorage.getItem("currentUser")){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    logout(): void {
+        localStorage.removeItem('currentUser');
+        this.http.get(URL + 'logout');
     }
 }

@@ -1,3 +1,4 @@
+import { FooterComponent } from './views/shared/footer/footer.component';
 import { appRouting } from './app-navigation.module';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -12,7 +13,8 @@ import { LoginModal } from './views/shared/header/login/login.component';
 import { NavComponent } from './views/shared/header/nav.component';
 import { RegisterModal } from './views/shared/header/register/register.component';
 import { HomeComponent } from './views/home/home-body.component';
-import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpHandler, HttpClientModule, HTTP_INTERCEPTORS  } from '@angular/common/http';
+import { AuthInterceptor } from './services/http-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http'
     RegisterModal,
     LoginModal,
     HomeComponent,
+    FooterComponent
     
   ],
   imports: [
@@ -35,6 +38,11 @@ import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http'
     UserService,
     ConfigService,
     HttpClient,
+    {
+    provide: HTTP_INTERCEPTORS, 
+    useClass: AuthInterceptor, 
+    multi: true 
+    }
   ],
   bootstrap: [AppComponent]
 })
