@@ -14,6 +14,7 @@ using System.Text;
 using IVForum.API.Auth;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace IVForum.API
 {
@@ -35,7 +36,9 @@ namespace IVForum.API
             {
                 patata.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
+
             services.AddDbContext<DbHandler>();
+
             var builder = services.AddIdentityCore<UserModel>(o =>
             {
                 o.Password.RequireDigit = false;
@@ -44,8 +47,6 @@ namespace IVForum.API
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 6;
             });
-
-            services.AddDbContext<DbHandler>();
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
 
@@ -91,15 +92,6 @@ namespace IVForum.API
                 options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
 
-            builder = services.AddIdentityCore<UserModel>(o =>
-            {
-                // configure identity options
-                o.Password.RequireDigit = false;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 6;
-            });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder.AddEntityFrameworkStores<DbHandler>().AddDefaultTokenProviders();
 
@@ -126,8 +118,6 @@ namespace IVForum.API
                                 var error = context.Features.Get<IExceptionHandlerFeature>();
                             });
                 });
-
-            app.UseCors("all");
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
