@@ -39,41 +39,44 @@ export class UserService extends BaseService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         console.log("patata");
-        return this.http.post("http://localhost:60758/api/accounts", {
+        return this.http.post("http://localhost:57570/api/accounts", {
             name: nom,
             surname: cognom,
             email: mail,
             password: contraseña
         })
-        .subscribe(
-            res => {
-              console.log(res);
-            },
-            err => {
-              console.log(err);
-            }
-          );
+            .subscribe(
+                res => {
+                    console.log(res);
+                },
+                err => {
+                    console.log(err);
+                }
+            );
     }
 
-    /*login(userName, password) {
+    login(userName, password) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http
-            .post(
-            this.baseUrl + '/auth/login',
-            JSON.stringify({ userName, password }), { headers }
+        return this.http.post("http://localhost:57570/api/auth", {
+            email: userName,
+            password: password
+        })
+            .subscribe(
+                res => {
+                    console.log(res);
+                    /*localStorage.setItem('auth_token', res.);
+                    this.loggedIn = true;
+                    this._authNavStatusSource.next(true);*/
+                    return true;
+                },
+                err => {
+                    console.log(err);
+                }
             )
-            .map(res => res.json())
-            .map(res => {
-                localStorage.setItem('auth_token', res.auth_token);
-                this.loggedIn = true;
-                this._authNavStatusSource.next(true);
-                return true;
-            })
-            .catch(this.handleError);
     }
-    */
+
     logout() {
         localStorage.removeItem('auth_token');
         this.loggedIn = false;

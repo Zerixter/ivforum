@@ -1,6 +1,6 @@
 ﻿using IVForum.API.Data;
 using IVForum.API.Models;
-using IVForum.API.Properties;
+using IVForum.API.Properties;     
 using IVForum.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
