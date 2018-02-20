@@ -34,6 +34,10 @@ namespace IVForum.API.Data
                 .HasOne(x => x.Token)
                 .WithOne(x => x.User);
 
+            builder.Entity<User>()
+                .HasMany(x => x.Wallets)
+                .WithOne(x => x.Owner);
+
             builder.Entity<Token>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.Token)
@@ -47,6 +51,27 @@ namespace IVForum.API.Data
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
                 .WithMany(x => x.Projects)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Forum>()
+                .HasMany(x => x.Wallets)
+                .WithOne(x => x.Forum);
+
+            builder.Entity<Wallet>()
+                .HasOne(x => x.Forum)
+                .WithMany(x => x.Wallets);
+
+            builder.Entity<Wallet>()
+                .HasOne(x => x.Owner)
+                .WithMany(x => x.Wallets);
+
+            builder.Entity<Wallet>()
+                .HasMany(x => x.Bills)
+                .WithOne(x => x.Wallet);
+
+            builder.Entity<Bill>()
+                .HasOne(x => x.Wallet)
+                .WithMany(x => x.Bills)
                 .OnDelete(DeleteBehavior.Cascade);
 		}
 	}
