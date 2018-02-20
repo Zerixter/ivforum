@@ -28,6 +28,6 @@ namespace IVForum.API.Models
 		public virtual Forum Forum { get; set; } = null;
 		[Required]
 		public virtual User Owner { get; set; }
-		public virtual List<User> Users { get; set; } = new List<User>();
+        public virtual List<Bill> Bills { get; set; } = new List<Bill>();
 	}
 }
