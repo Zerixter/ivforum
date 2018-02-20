@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-sm-4 offset-sm-2">
+        <br>
+        <h1>
+            <strong>Uneix-te al IVForum</strong>
+        </h1>
+        <br>
+        <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+            <div class="form-group">
+                <label for="email">Direcció email:</label>
+                <input type="email" formControlName="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" [(ngModel)]="email"
+                    placeholder="elteu@mail.com" required>
+                <div style="color:red;" *ngIf="registerForm.controls.email.invalid && registerForm.controls.email.touched">
+                    La direcció d'e-mail introduïda no es valida!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name">Nom:</label>
+                <input type="text" formControlName="name" class="form-control" id="name" name="name" aria-describedby="emailHelp" [(ngModel)]="name"
+                    planeholder="Manel" required>
+                <div style="color:red;" *ngIf="registerForm.controls.name.invalid && registerForm.controls.name.touched">
+                    El nom introduït no es valid!
+                </div>  
+            </div>
+            <div class="form-group">
+                <label for="surname">Cognom:</label>
+                <input type="text" formControlName="surname" class="form-control" id="surname" name="surname" aria-describedby="emailHelp"
+                    [(ngModel)]="surname" planeholder="Martin" required>
+                <div style="color:red;" *ngIf="registerForm.controls.surname.invalid && registerForm.controls.surname.touched">
+                    El congnom introduït no es valid!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Contrasenya:</label>
+                <input type="password" formControlName="password" class="form-control" name="password" id="password" aria-describedby="emailHelp"
+                    [(ngModel)]="password" planeholder="*********" required>
+                <div style="color:red;" *ngIf="registerForm.controls.surname.invalid && registerForm.controls.surname.touched">
+                    La contrasenya introduïda no es valida!
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">Registrar</button>
+        </form>
+    </div>
+
+</div>
