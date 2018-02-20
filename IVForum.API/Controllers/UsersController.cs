@@ -16,7 +16,7 @@ namespace IVForum.API.Controllers
     [Produces("application/json")]
     public class UsersController : Controller
     {
-        private readonly DbHandler _context;
+        /*private readonly DbHandler _context;
 
         public UsersController(DbHandler context)
         {
@@ -131,6 +131,6 @@ namespace IVForum.API.Controllers
         private bool UserExists(Guid id)
         {
             return _context.Users.Any(e => e.Id == id);
-        }
+        }*/
     }
 }

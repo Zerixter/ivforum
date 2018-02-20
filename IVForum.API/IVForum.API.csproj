@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Token\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
@@ -29,6 +31,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DbInfo.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\JwtInfo.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JwtInfo.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\SecretKey.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -40,6 +47,10 @@
     <EmbeddedResource Update="Properties\DbInfo.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DbInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\JwtInfo.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>JwtInfo.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\SecretKey.resx">
       <Generator>ResXFileCodeGenerator</Generator>
