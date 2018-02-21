@@ -1,6 +1,6 @@
 ﻿using IVForum.API.Data;
 using IVForum.API.Models;
-using IVForum.API.Properties;
+using IVForum.API.Properties;     
 using IVForum.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -118,6 +118,9 @@ namespace IVForum.API
                                 var error = context.Features.Get<IExceptionHandlerFeature>();
                             });
                 });
+            app.UseCors(
+                "all"
+                );
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

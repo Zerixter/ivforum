@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { BaseService } from "./base.service";
 
@@ -12,64 +12,77 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import { UserRegistration } from '../interfaces/user-register.interface';
 import { ConfigService } from './config.service';
 
+
 @Injectable()
 
 export class UserService extends BaseService {
 
     baseUrl: string = '';
+    
+    public token: string = null;
 
     // Observable navItem source
-    private _authNavStatusSource = new BehaviorSubject<boolean>(false);
-    // Observable navItem stream
-    authNavStatus$ = this._authNavStatusSource.asObservable();
 
-    private loggedIn = false;
-
-    constructor(private http: Http, private configService: ConfigService) {
+    constructor(private http: HttpClient, private configService: ConfigService) {
         super();
-        this.loggedIn = !!localStorage.getItem('auth_token');
-        // ?? not sure if this the best way to broadcast the status but seems to resolve issue on page refresh where auth status is lost in
-        // header component resulting in authed user nav links disappearing despite the fact user is still logged in
-        this._authNavStatusSource.next(this.loggedIn);
-        this.baseUrl = configService.getApiURI();
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.token = currentUser && currentUser.token;
     }
 
-    register(email: string, password: string, firstName: string, lastName: string): Observable<UserRegistration> {
-        let body = JSON.stringify({ email, password, firstName, lastName });
+    register(mail: string, contraseña: string, nom: string, cognom: string) {
+        let body = JSON.stringify({ nom, cognom, mail, contraseña });
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-
-        return this.http.post(this.baseUrl + "/api/account", body, options)
-            .map(res => true)
-            .catch(this.handleError);
+        console.log("patata");
+        return this.http.post("http://localhost:57570/api/accounts", {
+            name: nom,
+            surname: cognom,
+            email: mail,
+            password: contraseña
+        })
+            .subscribe(
+                res => {
+                    console.log(res);
+                    return true;
+                },
+                err => {
+                    console.log(err);
+                }
+            );
     }
 
-    login(userName, password) {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        return this.http
-            .post(
-            this.baseUrl + '/auth/login',
-            JSON.stringify({ userName, password }), { headers }
+    login(userName: string, password: string) {
+        console.log("intenta");
+        this.http.post('http://localhost:57570/api/auth', { userName, password })
+            .subscribe(
+                res => {
+                    console.log(res);
+                    this.setSession(res);
+                    return true;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                }
             )
-            .map(res => res.json())
-            .map(res => {
-                localStorage.setItem('auth_token', res.auth_token);
-                this.loggedIn = true;
-                this._authNavStatusSource.next(true);
-                return true;
-            })
-            .catch(this.handleError);
     }
 
-    logout() {
-        localStorage.removeItem('auth_token');
-        this.loggedIn = false;
-        this._authNavStatusSource.next(false);
+    private setSession(authResult) {
+        this.token = authResult.auth_token;
+        localStorage.setItem('currentUser', authResult.auth_token);
     }
 
-    isLoggedIn() {
-        return this.loggedIn;
+    islogged(){
+        if (this.token != null){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    logout(): void {
+        localStorage.removeItem('currentUser');
+        this.http.get(URL + 'logout');
     }
 }
