@@ -118,6 +118,9 @@ namespace IVForum.API
                                 var error = context.Features.Get<IExceptionHandlerFeature>();
                             });
                 });
+            app.UseCors(
+                "all"
+                );
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

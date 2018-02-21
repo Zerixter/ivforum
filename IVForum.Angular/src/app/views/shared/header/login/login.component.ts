@@ -34,5 +34,6 @@ export class LoginModal implements OnInit {
             console.log("patata");
             this.router.navigateByUrl('/');
         }
+        console.log(this._userService.islogged());
     }
 }

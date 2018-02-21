@@ -52,13 +52,20 @@ export class UserService extends BaseService {
     }
 
     login(userName: string, password: string) {
-        return this.http.post('/api/auth', { userName, password })
-            .do(res => this.setSession)
-            .shareReplay();
+        console.log("intenta");
+        return this.http.post('http://localhost:57570/api/auth', { userName, password })
+            .subscribe(
+                res => {
+                    console.log(res);
+                    this.setSession(res);
+                }
+            )
+            
     }
 
     private setSession(authResult) {
-        localStorage.setItem('currentUser', authResult.idToken);
+        localStorage.setItem('currentUser', authResult.auth_token);
+        console.log(localStorage.getItem('currentUser'));
     }
 
     islogged(){
