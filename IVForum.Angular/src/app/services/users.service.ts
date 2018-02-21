@@ -19,7 +19,7 @@ export class UserService extends BaseService {
 
     baseUrl: string = '';
     
-    public token: string;
+    public token: string = null;
 
     // Observable navItem source
 
@@ -53,23 +53,27 @@ export class UserService extends BaseService {
 
     login(userName: string, password: string) {
         console.log("intenta");
-        return this.http.post('http://localhost:57570/api/auth', { userName, password })
+        this.http.post('http://localhost:57570/api/auth', { userName, password })
             .subscribe(
                 res => {
                     console.log(res);
                     this.setSession(res);
+                    return true;
+                },
+                err => {
+                    console.log(err)
+                    return false;
                 }
             )
-            
     }
 
     private setSession(authResult) {
+        this.token = authResult.auth_token;
         localStorage.setItem('currentUser', authResult.auth_token);
-        console.log(localStorage.getItem('currentUser'));
     }
 
     islogged(){
-        if (localStorage.getItem("currentUser")){
+        if (this.token != null){
             return true;
         }
         else {

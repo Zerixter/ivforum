@@ -29,9 +29,8 @@ export class LoginModal implements OnInit {
      }
 
     onSubmit(){
-
-        if (this._userService.login(this.email,this.password)){
-            console.log("patata");
+        this._userService.login(this.email,this.password);
+        if (this._userService.islogged()){
             this.router.navigateByUrl('/');
         }
         console.log(this._userService.islogged());

@@ -30,8 +30,6 @@ export class RegisterModal implements OnInit {
             'surname': new FormControl(null, [Validators.required,Validators.minLength(2),Validators.maxLength(12)]),
             'password': new FormControl(null,[Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/),Validators.minLength(8)])
         });
-
-
     }
 
     onSubmit(){
