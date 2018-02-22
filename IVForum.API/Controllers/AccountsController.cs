@@ -33,8 +33,8 @@ namespace IVForum.API.Controllers
             {
                 Name = model.Name,
                 Surname = model.Surname,
-                Email = model.Email,
-                UserName = model.Email
+                Email = model.Password,
+                UserName = model.Password
             };
 
             User user = new User
