@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
-    [Produces("application/json")]
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -24,6 +23,7 @@ namespace IVForum.API.Controllers
         private readonly IJwtFactory jwtFactory;
         private readonly JwtIssuerOptions jwtOptions;
         private readonly DbHandler db;
+        private readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
 
         public AccountController(UserManager<UserModel> _userManager, IJwtFactory _jwtFactory, IOptions<JwtIssuerOptions> _jwtOptions, DbHandler _db)
         {
@@ -38,26 +38,32 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
 
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                string regexPassword = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}";
+                Regex regex = new Regex(regexPassword);
+                if (!regex.IsMatch(model.Password))
+                {
+                    Errors.Add(new { Message = "La contrasenya introduida no és correcte: El format ha de ser el següent, ha de tenir mínim un numero, una lletra minúscula i una majuscula i ha de tenir una longitura de mínim 8 carácters" });
+                }
+            } catch (Exception e)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap contrasenya." });
             }
 
-            string regexMail = @"^[a-z0-9._%+-]+@[a-z0-9.-]+[^\.]\.[a-z]{2,3}$";
-            Regex regex = new Regex(regexMail);
-
-            if (!regex.Match(model.Email).Success)
+            if (model.Name is null)
             {
-                Errors.Add(new { Message = "Mail incorrecto" });
+                Errors.Add(new { Message = "El camp del nom s'ha deixat buit, s'ha de posar un nom." });
+            }
+
+            if (model.Surname is null)
+            {
+                Errors.Add(new { Message = "El camp del cognom s'ha deixat buit, s'ha de posar un cognom." });
+            }
+
+            if (Errors.Count >= 1)
+            {
                 return BadRequest(Errors);
-            }
-
-            string regexPassword = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}";
-            regex = new Regex(regexPassword);
-            if (!regex.Match(model.Password).Success)
-            {
-                Errors.Add(new { Message = "La contrasenya debe ser mejor..." });
-                return BadREquest(Errors);
             }
 
             UserModel userModel = new UserModel
@@ -76,16 +82,13 @@ namespace IVForum.API.Controllers
 
             var result = await userManager.CreateAsync(userModel, model.Password);
 
-            await db.DbUsers.AddAsync(user);
-            await db.SaveChangesAsync();
+            db.DbUsers.Add(user);
+            db.SaveChanges();
 
-            var jsonResult = new
-            {
-                Code = result.Succeeded,
-                Status = "aaa"
-            };
+            var identity = await GetClaimsIdentity(model.Email, model.Password);
 
-            return new JsonResult(jsonResult);
+            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
+            return new JsonResult(jwt);
         }
 
         [HttpPost("login")]
@@ -102,7 +105,7 @@ namespace IVForum.API.Controllers
                 {
                     Errors.Add(new { Missatge = "No s'ha introduit cap contrasenya." });
                 }
-                return BadRequest(Errors.ToArray());
+                return BadRequest(Errors);
             }
 
             var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
