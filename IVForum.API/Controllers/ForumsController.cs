@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -12,8 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Forums")]
+    [Route("api/forum")]
     public class ForumsController : Controller
     {
         private readonly DbHandler db;
@@ -28,29 +28,38 @@ namespace IVForum.API.Controllers
         [HttpGet]
         public IEnumerable<Forum> Get()
         {
-            return db.Forums.ToArray();
+            try
+            {
+                return db.Forums.ToArray();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return null;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Post([FromBody]ForumViewModel model)
+        public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
+            List<object> Errors = new List<object>();
+            ValidationModel validationModel = new ValidationModel();
+            Errors = validationModel.GetErrorsNullType(new string[] { model.Name, model.Title, model.Description });
             if (model.Name is null || model.Title is null || model.Description is null)
             {
-                List<string> error_message = new List<string>();
-                var message = "";
                 if (model.Title is null)
                 {
-                    error_message.Add("No s'ha introduit cap títol al forum, Introdueix un títol.");
+                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
                 }
                 if (model.Name is null)
                 {
-                    error_message.Add("No s'ha introduit cap nom al forum, Introdueix un nom.");
+                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
                 }
                 if (model.Description is null)
                 {
-                    error_message.Add("\nNo s'ha introduit cap descripció, introdueix una breu descripció sobre el forum.");
+                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
                 }
-                return BadRequest(error_message.ToArray());
+                return BadRequest(Errors);
             }
 
             var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
@@ -68,12 +77,86 @@ namespace IVForum.API.Controllers
             db.Forums.Add(forum);
             db.SaveChanges();
 
-            var json_object = new
+            var Missatge = new
             {
                 Message = "El Forum s'ha afegit Correctament"
             };
+            return new OkObjectResult(Missatge);
+        }
 
-            return new OkObjectResult(json_object);
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromBody]Forum forum)
+        {
+            List<object> Errors = new List<object>();
+            if (forum.Name is null || forum.Title is null || forum.Description is null)
+            {
+                if (forum.Title is null)
+                {
+                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
+                }
+                if (forum.Name is null)
+                {
+                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
+                }
+                if (forum.Description is null)
+                {
+                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
+                }
+                return BadRequest(Errors);
+            }
+
+            Forum ForumToEdit = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            if (ForumToEdit is null)
+            {
+                Errors.Add(new { Message = "El forum que s'intenta editar és incorrecte." });
+                return BadRequest(Errors);
+            }
+
+            ForumToEdit.Name = forum.Name;
+            ForumToEdit.Title = forum.Title;
+            ForumToEdit.Description = forum.Description;
+            ForumToEdit.Icon = forum.Icon;
+            ForumToEdit.Background = forum.Background;
+
+            var Missatge = new { Missatge = "El forum s'ha editat correctament." };
+            return new JsonResult(Missatge);
+        }
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete([FromBody]Forum forum)
+        {
+            List<object> Errors = new List<object>();
+
+            var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            if (ForumToDelete is null)
+            {
+                Errors.Add(new { Message = "El forum que s'intenta eliminar no existeix." });
+                return BadRequest(Errors);
+            }
+
+            db.Forums.Remove(ForumToDelete);
+            db.SaveChanges();
+
+            var Message = new
+            {
+                Message = "S'ha eliminat el forum correctament."
+            };
+
+            return new JsonResult(Message);
+        }
+
+        [HttpPost("select")]
+        public async Task<IActionResult> Select([FromBody]Forum forum)
+        {
+            List<object> Errors = new List<object>();
+
+            var ForumToSelect = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            if (ForumToSelect is null)
+            {
+                Errors.Add(new { Message = "El forum que s'intenta seleccionar no existeix." });
+            }
+
+            return new JsonResult(ForumToSelect);
         }
     }
 }

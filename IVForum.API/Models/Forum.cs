@@ -20,8 +20,10 @@ namespace IVForum.API.Models
 		public string Icon { get; set; }
 		public string Background { get; set; }
 
-		[Required]
-		public virtual User Owner { get; set; }
+		
+        public Guid OwnerId { get; set; }
+        [Required]
+        public virtual User Owner { get; set; }
 		public virtual List<Project> Projects { get; set; } = new List<Project>();
         public virtual List<Wallet> Wallets { get; set; } = new List<Wallet>();
 	}

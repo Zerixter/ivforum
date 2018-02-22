@@ -43,9 +43,10 @@ namespace IVForum.API.Data
                 .WithOne(x => x.Token)
                 .OnDelete(DeleteBehavior.Cascade);
 
-			builder.Entity<Forum>()
-				.HasOne(x => x.Owner)
-				.WithMany(x => x.Forums)
+            builder.Entity<Forum>()
+                .HasOne(x => x.Owner)
+                .WithMany(x => x.Forums)
+                .HasForeignKey(x => x.OwnerId)
 				.OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Project>()
