@@ -6,6 +6,7 @@ import { BaseService } from "./base.service";
 
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
 
 // Add the RxJS Observable operators we need in this app.
 
@@ -40,23 +41,24 @@ export class UserService extends BaseService {
             email: mail,
             password: contraseña
         })
-            .subscribe(
+            .map(
                 res => {
-                    console.log(res);
+                    console.log("registro corecto");
                     return true;
                 },
                 err => {
                     console.log(err);
+                    return false;
                 }
             );
     }
 
     login(userName: string, password: string) {
         console.log("intenta");
-        this.http.post('http://localhost:57570/api/auth', { userName, password })
-            .subscribe(
+        return this.http.post('http://localhost:57570/api/auth', { userName, password })
+        .map(
                 res => {
-                    console.log(res);
+                    console.log("login correcto!");
                     this.setSession(res);
                     return true;
                 },
@@ -68,7 +70,9 @@ export class UserService extends BaseService {
     }
 
     private setSession(authResult) {
+        console.log("setSession");
         this.token = authResult.auth_token;
+        console.log(this.token);
         localStorage.setItem('currentUser', authResult.auth_token);
     }
 
@@ -83,6 +87,6 @@ export class UserService extends BaseService {
 
     logout(): void {
         localStorage.removeItem('currentUser');
-        this.http.get(URL + 'logout');
+        
     }
 }

@@ -2,3 +2,11 @@
 .container-fluid {
     padding: 0 0 !important;
 }
+.navbar-default {
+    background-color: transparent;
+}
+
+.home-head-box {
+    background-color: #444b4b;
+    height: 400px;
+}

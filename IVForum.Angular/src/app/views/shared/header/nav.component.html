@@ -11,8 +11,12 @@
                 <a class="nav-link" href="#">Link</a>
             </li>
         </ul>
-        <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
-        <button class="btn btn-link" routerLink="/login">Login</button>
-
+        <div *ngIf="logged == false">
+            <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
+            <button class="btn btn-link" routerLink="/login">Login</button>
+        </div>
+        <div *ngIf="logged">
+            <button class="btn btn-outline-danger my-2" (click)="logOut()">Sortir</button>
+        </div>
     </div>
 </nav>

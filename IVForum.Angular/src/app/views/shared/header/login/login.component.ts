@@ -29,10 +29,14 @@ export class LoginModal implements OnInit {
      }
 
     onSubmit(){
-        this._userService.login(this.email,this.password);
-        if (this._userService.islogged()){
-            this.router.navigateByUrl('/');
+        this._userService.login(this.email,this.password)
+        .subscribe(data =>{
+            if (this._userService.islogged()){
+                console.log(this._userService.islogged()+" en login");
+                this.router.navigateByUrl('/');
+            }
         }
+        );
         console.log(this._userService.islogged());
     }
 }
