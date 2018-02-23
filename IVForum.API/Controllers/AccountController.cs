@@ -101,7 +101,7 @@ namespace IVForum.API.Controllers
             var identity = await GetClaimsIdentity(model.Email, model.Password);
 
             var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
-            return new JsonResult(jwt);
+            return new OkObjectResult(jwt);
         }
 
         [HttpPost("login")]
@@ -136,7 +136,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors.ToArray());
             }
 
-            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.UserName, jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.UserName, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 

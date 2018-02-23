@@ -25,7 +25,7 @@ namespace IVForum.API.Controllers
             claimsPrincipal = httpContextAccessor.HttpContext.User;
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public IEnumerable<Forum> Get()
         {
             try
@@ -43,25 +43,14 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
-            if (model.Name is null || model.Title is null || model.Description is null)
+            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+            var user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+
+            if (user is null)
             {
-                if (model.Title is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
-                }
-                if (model.Name is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
-                }
-                if (model.Description is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
-                }
+                Errors.Add(new { Message = "El usuari que intenta crear el forum és incorrecte." });
                 return BadRequest(Errors);
             }
-
-            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
 
             Forum forum = new Forum
             {
@@ -71,6 +60,12 @@ namespace IVForum.API.Controllers
                 Description = model.Description,
                 Owner = user
             };
+
+            Errors = ValidateForum(forum);
+            if (Errors.Count >= 1)
+            {
+                BadRequest(Errors);
+            }
 
             db.Forums.Add(forum);
             db.SaveChanges();
@@ -86,20 +81,18 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Update([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
-            if (forum.Name is null || forum.Title is null || forum.Description is null)
+
+            Forum ForumToTest = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+
+            if (!ValidateUser(ForumToTest))
             {
-                if (forum.Title is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
-                }
-                if (forum.Name is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
-                }
-                if (forum.Description is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
-                }
+                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
+                return BadRequest(Errors);
+            }
+
+            Errors = ValidateForum(forum);
+            if (Errors.Count >= 1)
+            {
                 return BadRequest(Errors);
             }
 
@@ -116,6 +109,10 @@ namespace IVForum.API.Controllers
             ForumToEdit.Icon = forum.Icon;
             ForumToEdit.Background = forum.Background;
 
+            db.Forums.Update(ForumToEdit);
+            db.SaveChanges();
+
+
             var Missatge = new { Missatge = "El forum s'ha editat correctament." };
             return new JsonResult(Missatge);
         }
@@ -124,6 +121,12 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Delete([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
+
+            if (!ValidateUser(forum))
+            {
+                Errors.Add(new { Message = "El usuari que intenta esborrar aquest forum és incorrecte" });
+                return BadRequest(Errors);
+            }
 
             var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
             if (ForumToDelete is null)
@@ -143,7 +146,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message);
         }
 
-        /*[HttpPost("select")]
+        [HttpPost("select")]
         public async Task<IActionResult> Select([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
@@ -155,6 +158,43 @@ namespace IVForum.API.Controllers
             }
 
             return new JsonResult(ForumToSelect);
-        }*/
+        }
+
+        public List<object> ValidateForum(Forum forum)
+        {
+            List<object> Errors = new List<object>();
+            if (forum.Title is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
+            }
+            if (forum.Name is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
+            }
+            if (forum.Description is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
+            }
+            return Errors;
+        }
+
+        public bool ValidateUser(Forum forum)
+        {
+            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+            var user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
+
+            if (user is null)
+            {
+                return false;
+            }
+            try
+            {
+                return (forum.Owner.Id == user.Id) ? true : false;
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return false;
+        }
     }
 }

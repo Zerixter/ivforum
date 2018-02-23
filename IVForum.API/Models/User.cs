@@ -9,12 +9,13 @@ namespace IVForum.API.Models
 		[Key]
         public Guid Id { get; set; }
 		
+        public string Avatar { get; set; }
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }
 		public string TwitterUrl { get; set; }
 		public string RepositoryUrl { get; set; }
 
-        public int IdentityId { get; set; }
+        public string IdentityId { get; set; }
         public virtual UserModel Identity { get; set; }
         public virtual List<Forum> Forums { get; set; } = new List<Forum>();
 		public virtual List<Project> Projects { get; set; } = new List<Project>();

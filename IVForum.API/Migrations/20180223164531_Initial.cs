@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace IVForum.API.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -162,9 +162,9 @@ namespace IVForum.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Avatar = table.Column<string>(nullable: true),
                     FacebookUrl = table.Column<string>(nullable: true),
-                    IdentityId = table.Column<int>(nullable: false),
-                    IdentityId1 = table.Column<string>(nullable: true),
+                    IdentityId = table.Column<string>(nullable: true),
                     RepositoryUrl = table.Column<string>(nullable: true),
                     TwitterUrl = table.Column<string>(nullable: true),
                     WebsiteUrl = table.Column<string>(nullable: true)
@@ -173,8 +173,8 @@ namespace IVForum.API.Migrations
                 {
                     table.PrimaryKey("PK_DbUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DbUsers_AspNetUsers_IdentityId1",
-                        column: x => x.IdentityId1,
+                        name: "FK_DbUsers_AspNetUsers_IdentityId",
+                        column: x => x.IdentityId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -186,6 +186,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
@@ -209,6 +210,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: false),
                     FacebookUrl = table.Column<string>(nullable: true),
                     ForumId = table.Column<Guid>(nullable: true),
@@ -340,9 +342,9 @@ namespace IVForum.API.Migrations
                 column: "WalletId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DbUsers_IdentityId1",
+                name: "IX_DbUsers_IdentityId",
                 table: "DbUsers",
-                column: "IdentityId1");
+                column: "IdentityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Forums_OwnerId",
