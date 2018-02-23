@@ -43,8 +43,6 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
-            ValidationModel validationModel = new ValidationModel();
-            Errors = validationModel.GetErrorsNullType(new string[] { model.Name, model.Title, model.Description });
             if (model.Name is null || model.Title is null || model.Description is null)
             {
                 if (model.Title is null)
@@ -145,7 +143,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message);
         }
 
-        [HttpPost("select")]
+        /*[HttpPost("select")]
         public async Task<IActionResult> Select([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
@@ -157,6 +155,6 @@ namespace IVForum.API.Controllers
             }
 
             return new JsonResult(ForumToSelect);
-        }
+        }*/
     }
 }

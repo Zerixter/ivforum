@@ -31,17 +31,8 @@ namespace IVForum.API.Data
 				.WithOne(x => x.Owner);
 
             builder.Entity<User>()
-                .HasOne(x => x.Token)
-                .WithOne(x => x.User);
-
-            builder.Entity<User>()
                 .HasMany(x => x.Wallets)
                 .WithOne(x => x.Owner);
-
-            builder.Entity<Token>()
-                .HasOne(x => x.User)
-                .WithOne(x => x.Token)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Forum>()
                 .HasOne(x => x.Owner)
