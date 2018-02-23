@@ -16,6 +16,8 @@ import { HomeComponent } from './views/home/home-body.component';
 import { HttpClient, HttpHandler, HttpClientModule, HTTP_INTERCEPTORS  } from '@angular/common/http';
 import { AuthInterceptor } from './services/http-interceptor.service';
 import { AuthGuard } from './services/auth.guard';
+import { GlobalEventsManager } from './services/globalEvents.service';
+import { MainComponent } from './views/main/main.component';
 
 @NgModule({
   declarations: [
@@ -24,8 +26,8 @@ import { AuthGuard } from './services/auth.guard';
     RegisterModal,
     LoginModal,
     HomeComponent,
-    FooterComponent
-    
+    FooterComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -39,12 +41,13 @@ import { AuthGuard } from './services/auth.guard';
     UserService,
     ConfigService,
     HttpClient,
-    AuthGuard,
     {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
-    }
+    },
+    AuthGuard,
+    GlobalEventsManager,
   ],
   bootstrap: [AppComponent]
 })

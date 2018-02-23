@@ -1,6 +1,7 @@
 import { UserService } from './../../../services/users.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { GlobalEventsManager } from '../../../services/globalEvents.service';
 
 @Component({
     selector: 'navComponent',
@@ -10,17 +11,15 @@ import { Router } from '@angular/router';
 export class NavComponent implements OnInit {
     constructor(
         private _userService: UserService,
+        private globalEventsManager: GlobalEventsManager,
         private router: Router
     ) { }
 
-    private logged:boolean = false;
+    private logged:boolean;
     ngOnInit() { 
-        console.log("nav");
-        if (this._userService.islogged()){
-            this.logged = true;
-        }else {
-            this.logged = false;
-        }
+        this.globalEventsManager.showNavBarEmitter.subscribe((mode)=>{
+            this.logged = mode;
+        });
     }
     logOut(){
         this._userService.logout();

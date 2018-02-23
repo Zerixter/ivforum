@@ -10,3 +10,22 @@
     background-color: #444b4b;
     height: 400px;
 }
+
+.home-circle {
+    height: 200px;
+    width: 200px;
+}
+
+.home-body{
+    padding-top: 20px;
+}
+.home-box{
+    margin-top: 20px;
+}
+.relleno-sm{
+    height: 150px;
+    
+}
+.footer{
+    margin-top: 20px;
+}

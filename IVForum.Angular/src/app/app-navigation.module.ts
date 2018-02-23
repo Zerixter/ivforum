@@ -1,3 +1,4 @@
+import { MainComponent } from './views/main/main.component';
 import { LoginModal } from './views/shared/header/login/login.component';
 import { RegisterModal } from './views/shared/header/register/register.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -13,6 +14,7 @@ const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'register', component: RegisterModal,},
     { path: 'login', component: LoginModal},
+    { path: 'main', component: MainComponent, canActivate: [AuthGuard]},
     { path: '**', component: HomeComponent },
     //{ path: 'path/:routeParam', component: MyComponent },
     //{ path: 'staticPath', component: ... },
