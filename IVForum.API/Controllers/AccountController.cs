@@ -51,6 +51,19 @@ namespace IVForum.API.Controllers
                 Errors.Add(new { Message = "No s'ha introduit cap contrasenya." });
             }
 
+            try
+            {
+                string regexMail = @"^[a-z0-9._%+-]+@[a-z0-9.-]+[^\.]\.[a-z]{2,3}$";
+                Regex regex = new Regex(regexMail);
+                if (!regex.IsMatch(model.Email))
+                {
+                    Errors.Add(new { Messatge = "El correu electrònic introduit no és correcte." });
+                }
+            } catch (Exception e)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap correu electrònic." });
+            }
+
             if (model.Name is null)
             {
                 Errors.Add(new { Message = "El camp del nom s'ha deixat buit, s'ha de posar un nom." });
