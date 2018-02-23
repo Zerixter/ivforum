@@ -19,6 +19,7 @@ namespace IVForum.API.Models
 		public string Description { get; set; }
 		public string Icon { get; set; }
 		public string Background { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 		
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }

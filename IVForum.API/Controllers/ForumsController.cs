@@ -25,7 +25,7 @@ namespace IVForum.API.Controllers
             claimsPrincipal = httpContextAccessor.HttpContext.User;
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public IEnumerable<Forum> Get()
         {
             try
@@ -43,25 +43,14 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
-            if (model.Name is null || model.Title is null || model.Description is null)
-            {
-                if (model.Title is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
-                }
-                if (model.Name is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
-                }
-                if (model.Description is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
-                }
-                return BadRequest(Errors);
-            }
-
             var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
             var user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
+
+            if (user is null)
+            {
+                Errors.Add(new { Message = "El usuari que intenta crear el forum és incorrecte." });
+                return BadRequest(Errors);
+            }
 
             Forum forum = new Forum
             {
@@ -71,6 +60,12 @@ namespace IVForum.API.Controllers
                 Description = model.Description,
                 Owner = user
             };
+
+            Errors = ValidateForum(forum);
+            if (Errors.Count >= 1)
+            {
+                BadRequest(Errors);
+            }
 
             db.Forums.Add(forum);
             db.SaveChanges();
@@ -85,21 +80,10 @@ namespace IVForum.API.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody]Forum forum)
         {
-            List<object> Errors = new List<object>();
-            if (forum.Name is null || forum.Title is null || forum.Description is null)
+            List<object> Errors = ValidateForum(forum);
+
+            if (Errors.Count >= 1)
             {
-                if (forum.Title is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
-                }
-                if (forum.Name is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
-                }
-                if (forum.Description is null)
-                {
-                    Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
-                }
                 return BadRequest(Errors);
             }
 
@@ -143,7 +127,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message);
         }
 
-        /*[HttpPost("select")]
+        [HttpPost("select")]
         public async Task<IActionResult> Select([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
@@ -155,6 +139,24 @@ namespace IVForum.API.Controllers
             }
 
             return new JsonResult(ForumToSelect);
-        }*/
+        }
+
+        public List<object> ValidateForum(Forum forum)
+        {
+            List<object> Errors = new List<object>();
+            if (forum.Title is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
+            }
+            if (forum.Name is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
+            }
+            if (forum.Description is null)
+            {
+                Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
+            }
+            return Errors;
+        }
     }
 }

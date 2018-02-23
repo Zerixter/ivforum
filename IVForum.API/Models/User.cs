@@ -9,6 +9,7 @@ namespace IVForum.API.Models
 		[Key]
         public Guid Id { get; set; }
 		
+        public string Avatar { get; set; }
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }
 		public string TwitterUrl { get; set; }
