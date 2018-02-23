@@ -10,7 +10,6 @@ namespace IVForum.API.Data
 		public DbSet<User> DbUsers { get; set; }
 		public DbSet<Forum> Forums { get; set; }
 		public DbSet<Project> Projects { get; set; }
-        public DbSet<Token> Tokens { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -55,7 +54,8 @@ namespace IVForum.API.Data
 
             builder.Entity<Wallet>()
                 .HasOne(x => x.Owner)
-                .WithMany(x => x.Wallets);
+                .WithMany(x => x.Wallets)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Wallet>()
                 .HasMany(x => x.Bills)

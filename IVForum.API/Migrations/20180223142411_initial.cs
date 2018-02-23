@@ -204,24 +204,6 @@ namespace IVForum.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tokens",
-                columns: table => new
-                {
-                    Id = table.Column<string>(maxLength: 250, nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tokens_DbUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "DbUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
@@ -270,13 +252,14 @@ namespace IVForum.API.Migrations
                         name: "FK_Wallet_Forums_ForumId",
                         column: x => x.ForumId,
                         principalTable: "Forums",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Wallet_DbUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "DbUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -377,12 +360,6 @@ namespace IVForum.API.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tokens_UserId",
-                table: "Tokens",
-                column: "UserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Wallet_ForumId",
                 table: "Wallet",
                 column: "ForumId");
@@ -412,9 +389,6 @@ namespace IVForum.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bill");
-
-            migrationBuilder.DropTable(
-                name: "Tokens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

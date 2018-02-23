@@ -115,22 +115,6 @@ namespace IVForum.API.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("IVForum.API.Models.Token", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(250);
-
-                    b.Property<Guid>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Tokens");
-                });
-
             modelBuilder.Entity("IVForum.API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -367,14 +351,6 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("IVForum.API.Models.Token", b =>
-                {
-                    b.HasOne("IVForum.API.Models.User", "User")
-                        .WithOne("Token")
-                        .HasForeignKey("IVForum.API.Models.Token", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
