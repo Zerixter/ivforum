@@ -80,8 +80,15 @@ namespace IVForum.API.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody]Project project)
         {
-            List<object> Errors = ValidateProject(project);
+            List<object> Errors = new List<object>();
 
+            if (!ValidateUser(project))
+            {
+                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
+                return BadRequest(Errors);
+            }
+
+            Errors = ValidateProject(project);
             if (Errors.Count >= 1)
             {
                 return BadRequest(Errors);
@@ -105,9 +112,15 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody]Forum project)
+        public async Task<IActionResult> Delete([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
+
+            if (!ValidateUser(project))
+            {
+                Errors.Add(new { Message = "El usuari que intenta esborrar aquest projecte és incorrecte" });
+                return BadRequest(Errors);
+            }
 
             Project ProjectToDelete = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
             if (ProjectToDelete is null)
@@ -159,5 +172,17 @@ namespace IVForum.API.Controllers
             return Errors;
         }
 
+        private bool ValidateUser(Project project)
+        {
+            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+            var user = db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value).GetAwaiter().GetResult();
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            return (project.Owner == user) ? true : false;
+        }
     }
 }

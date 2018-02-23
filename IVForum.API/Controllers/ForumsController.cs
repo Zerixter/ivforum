@@ -44,7 +44,7 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
             var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
+            var user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
 
             if (user is null)
             {
@@ -80,8 +80,17 @@ namespace IVForum.API.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody]Forum forum)
         {
-            List<object> Errors = ValidateForum(forum);
+            List<object> Errors = new List<object>();
 
+            Forum ForumToTest = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+
+            if (!ValidateUser(ForumToTest))
+            {
+                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
+                return BadRequest(Errors);
+            }
+
+            Errors = ValidateForum(forum);
             if (Errors.Count >= 1)
             {
                 return BadRequest(Errors);
@@ -100,6 +109,10 @@ namespace IVForum.API.Controllers
             ForumToEdit.Icon = forum.Icon;
             ForumToEdit.Background = forum.Background;
 
+            db.Forums.Update(ForumToEdit);
+            db.SaveChanges();
+
+
             var Missatge = new { Missatge = "El forum s'ha editat correctament." };
             return new JsonResult(Missatge);
         }
@@ -108,6 +121,12 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Delete([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
+
+            if (!ValidateUser(forum))
+            {
+                Errors.Add(new { Message = "El usuari que intenta esborrar aquest forum és incorrecte" });
+                return BadRequest(Errors);
+            }
 
             var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
             if (ForumToDelete is null)
@@ -157,6 +176,25 @@ namespace IVForum.API.Controllers
                 Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
             }
             return Errors;
+        }
+
+        public bool ValidateUser(Forum forum)
+        {
+            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+            var user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
+
+            if (user is null)
+            {
+                return false;
+            }
+            try
+            {
+                return (forum.Owner.Id == user.Id) ? true : false;
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            return false;
         }
     }
 }

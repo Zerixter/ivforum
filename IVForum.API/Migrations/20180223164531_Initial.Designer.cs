@@ -11,8 +11,8 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180223142411_initial")]
-    partial class initial
+    [Migration("20180223164531_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,8 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Background");
 
+                    b.Property<DateTime>("CreationDate");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500);
@@ -81,6 +83,8 @@ namespace IVForum.API.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Background");
+
+                    b.Property<DateTime>("CreationDate");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -121,11 +125,11 @@ namespace IVForum.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Avatar");
+
                     b.Property<string>("FacebookUrl");
 
-                    b.Property<int>("IdentityId");
-
-                    b.Property<string>("IdentityId1");
+                    b.Property<string>("IdentityId");
 
                     b.Property<string>("RepositoryUrl");
 
@@ -135,7 +139,7 @@ namespace IVForum.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityId1");
+                    b.HasIndex("IdentityId");
 
                     b.ToTable("DbUsers");
                 });
@@ -359,7 +363,7 @@ namespace IVForum.API.Migrations
                 {
                     b.HasOne("IVForum.API.Models.UserModel", "Identity")
                         .WithMany()
-                        .HasForeignKey("IdentityId1");
+                        .HasForeignKey("IdentityId");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Wallet", b =>

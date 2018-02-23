@@ -15,7 +15,7 @@ namespace IVForum.API.Models
 		public string TwitterUrl { get; set; }
 		public string RepositoryUrl { get; set; }
 
-        public int IdentityId { get; set; }
+        public string IdentityId { get; set; }
         public virtual UserModel Identity { get; set; }
         public virtual List<Forum> Forums { get; set; } = new List<Forum>();
 		public virtual List<Project> Projects { get; set; } = new List<Project>();
