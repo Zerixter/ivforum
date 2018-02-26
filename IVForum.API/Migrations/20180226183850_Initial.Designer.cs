@@ -11,7 +11,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180223164531_Initial")]
+    [Migration("20180226183850_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace IVForum.API.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Bill");
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Forum", b =>
@@ -216,7 +216,7 @@ namespace IVForum.API.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Wallet");
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -351,7 +351,8 @@ namespace IVForum.API.Migrations
                 {
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Projects")
-                        .HasForeignKey("ForumId");
+                        .HasForeignKey("ForumId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")

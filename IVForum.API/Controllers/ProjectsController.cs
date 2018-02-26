@@ -30,12 +30,18 @@ namespace IVForum.API.Controllers
         {
             try {
                 return db.Projects.ToArray();
-            }
-            catch (Exception e)
+            } catch (Exception)
             {
-                Debug.WriteLine(e);
+
+                return null;
             }
-            return null;
+        }
+
+        [HttpGet("get/{userid}")]
+        public IEnumerable<Project> GetFromUser(string userid)
+        {
+            var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).ToList();
+            return Projects;
         }
 
         [HttpPost("create")]
@@ -43,10 +49,12 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
 
-            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
-
-            if (user is null)
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
+            } catch (Exception)
             {
                 Errors.Add(new { Message = "El usuari que intenta crear el projecte és incorrecte." });
                 return BadRequest(Errors);
@@ -78,11 +86,13 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> Update([FromBody]Project project)
+        public IActionResult Update([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 
-            if (!ValidateUser(project))
+            Project ProjectToTest = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
+
+            if (!ValidateUser(ProjectToTest))
             {
                 Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
                 return BadRequest(Errors);
@@ -112,7 +122,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody]Project project)
+        public IActionResult Delete([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 
@@ -136,12 +146,11 @@ namespace IVForum.API.Controllers
             {
                 Message = "S'ha eliminat el projecte correctament."
             };
-
             return new JsonResult(Message);
         }
 
         [HttpPost("select")]
-        public async Task<IActionResult> Select([FromBody]Project project)
+        public JsonResult Select([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 
@@ -174,15 +183,16 @@ namespace IVForum.API.Controllers
 
         private bool ValidateUser(Project project)
         {
-            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value).GetAwaiter().GetResult();
-
-            if (user is null)
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value).GetAwaiter().GetResult();
+                return (project.OwnerId == user.Id) ? true : false;
+            } catch (Exception)
             {
                 return false;
             }
-
-            return (project.Owner == user) ? true : false;
         }
     }
 }

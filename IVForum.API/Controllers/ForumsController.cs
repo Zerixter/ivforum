@@ -31,22 +31,30 @@ namespace IVForum.API.Controllers
             try
             {
                 return db.Forums.ToArray();
-            }
-            catch (Exception e)
+            } catch (Exception)
             {
-                Debug.WriteLine(e);
+                return null;
             }
-            return null;
+        }
+
+        [HttpGet("get/{userid}")]
+        public IEnumerable<Forum> GetFromUser(string userid)
+        {
+            var Forums = db.Forums.Where(x => x.Owner.IdentityId == userid).ToList();
+            return Forums;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
-            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
 
-            if (user is null)
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+            } catch (Exception)
             {
                 Errors.Add(new { Message = "El usuari que intenta crear el forum és incorrecte." });
                 return BadRequest(Errors);
@@ -78,7 +86,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> Update([FromBody]Forum forum)
+        public IActionResult Update([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
 
@@ -86,7 +94,7 @@ namespace IVForum.API.Controllers
 
             if (!ValidateUser(ForumToTest))
             {
-                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
+                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte o el forum que s'intenta editar no existeix." });
                 return BadRequest(Errors);
             }
 
@@ -118,7 +126,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody]Forum forum)
+        public IActionResult Delete([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
 
@@ -147,7 +155,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("select")]
-        public async Task<IActionResult> Select([FromBody]Forum forum)
+        public IActionResult Select([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
 
@@ -180,21 +188,16 @@ namespace IVForum.API.Controllers
 
         public bool ValidateUser(Forum forum)
         {
-            var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-            var user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
-
-            if (user is null)
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
+                return (forum.OwnerId == user.Id) ? true : false;
+            } catch (Exception)
             {
                 return false;
             }
-            try
-            {
-                return (forum.Owner.Id == user.Id) ? true : false;
-            } catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-            return false;
         }
     }
 }

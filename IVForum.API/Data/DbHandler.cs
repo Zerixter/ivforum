@@ -10,6 +10,8 @@ namespace IVForum.API.Data
 		public DbSet<User> DbUsers { get; set; }
 		public DbSet<Forum> Forums { get; set; }
 		public DbSet<Project> Projects { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Bill> Bills { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -42,10 +44,19 @@ namespace IVForum.API.Data
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
                 .WithMany(x => x.Projects)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => x.OwnerId);
+
+            builder.Entity<Project>()
+                .HasOne(x => x.Forum)
+                .WithMany(x => x.Projects)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Forum>()
                 .HasMany(x => x.Wallets)
+                .WithOne(x => x.Forum);
+
+            builder.Entity<Forum>()
+                .HasMany(x => x.Projects)
                 .WithOne(x => x.Forum);
 
             builder.Entity<Wallet>()
@@ -54,8 +65,7 @@ namespace IVForum.API.Data
 
             builder.Entity<Wallet>()
                 .HasOne(x => x.Owner)
-                .WithMany(x => x.Wallets)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(x => x.Wallets);
 
             builder.Entity<Wallet>()
                 .HasMany(x => x.Bills)
