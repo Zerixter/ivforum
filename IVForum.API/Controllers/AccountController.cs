@@ -154,9 +154,9 @@ namespace IVForum.API.Controllers
         public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
             List<object> Errors = new List<object>();
-            if (credentials.UserName is null || credentials.Password is null)
+            if (credentials.Email is null || credentials.Password is null)
             {
-                if (credentials.UserName is null)
+                if (credentials.Email is null)
                 {
                     Errors.Add(new { Missatge = "No s'ha introduit cap compte d'usuari." });
                 }
@@ -167,10 +167,10 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
-            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
+            var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
             if (identity is null)
             {
-                var userName = db.Users.Where(x => x.UserName == credentials.UserName).FirstOrDefault();
+                var userName = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
                 if (userName is null)
                 {
                     Errors.Add(new { Missatge = "El compte d'usuari introduit és incorrecte" });
@@ -181,7 +181,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors.ToArray());
             }
 
-            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.UserName, jwtOptions, jsonSerializerSettings);
+            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 
