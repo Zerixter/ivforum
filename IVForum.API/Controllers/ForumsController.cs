@@ -39,6 +39,13 @@ namespace IVForum.API.Controllers
             return null;
         }
 
+        [HttpGet("get/{userid}")]
+        public IEnumerable<Forum> GetFromUser(string userid)
+        {
+            var Forums = db.Forums.Where(x => x.Owner.IdentityId == userid).ToList();
+            return Forums;
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
