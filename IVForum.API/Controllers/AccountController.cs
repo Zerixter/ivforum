@@ -174,8 +174,7 @@ namespace IVForum.API.Controllers
                 if (userName is null)
                 {
                     Errors.Add(new { Missatge = "El compte d'usuari introduit és incorrecte" });
-                }
-                else
+                } else
                 {
                     Errors.Add(new { Missatge = "La contrasenya introduida no és correcte" });
                 }
