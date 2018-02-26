@@ -42,7 +42,7 @@ namespace IVForum.API.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Bill");
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Forum", b =>
@@ -215,7 +215,7 @@ namespace IVForum.API.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Wallet");
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
