@@ -3,8 +3,10 @@ using IVForum.API.Data;
 using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -24,13 +26,57 @@ namespace IVForum.API.Controllers
         private readonly JwtIssuerOptions jwtOptions;
         private readonly DbHandler db;
         private readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
+        private readonly ClaimsPrincipal claimsPrincipal;
 
-        public AccountController(UserManager<UserModel> _userManager, IJwtFactory _jwtFactory, IOptions<JwtIssuerOptions> _jwtOptions, DbHandler _db)
+        public AccountController(UserManager<UserModel> _userManager, IJwtFactory _jwtFactory, IOptions<JwtIssuerOptions> _jwtOptions, DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
             userManager = _userManager;
             jwtFactory = _jwtFactory;
             jwtOptions = _jwtOptions.Value;
             db = _db;
+            claimsPrincipal = httpContextAccessor.HttpContext.User;
+        }
+
+        [HttpGet("get")]
+        public IActionResult Get()
+        {
+            User user = null;
+
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
+            } catch (Exception)
+            {
+                var Message = new
+                {
+                    Message = "S'ha de loguejar por poder visualitzar les dades d'usuari."
+                };
+                return BadRequest(Message);
+            }
+
+            return new JsonResult(user);
+        }
+
+        [HttpGet("get/{userid}")]
+        public IActionResult Get(string userid)
+        {
+            User user = null;
+
+            try
+            {
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == userid).GetAwaiter().GetResult();
+            }
+            catch (Exception)
+            {
+                var Message = new
+                {
+                    Message = "S'ha de loguejar por poder visualitzar les dades d'usuari."
+                };
+                return BadRequest(Message);
+            }
+
+            return new JsonResult(user);
         }
 
         [HttpPost("register")]
@@ -46,7 +92,7 @@ namespace IVForum.API.Controllers
                 {
                     Errors.Add(new { Message = "La contrasenya introduida no és correcte: El format ha de ser el següent, ha de tenir mínim un numero, una lletra minúscula i una majuscula i ha de tenir una longitura de mínim 8 carácters" });
                 }
-            } catch (Exception e)
+            } catch (Exception)
             {
                 Errors.Add(new { Message = "No s'ha introduit cap contrasenya." });
             }
@@ -59,7 +105,7 @@ namespace IVForum.API.Controllers
                 {
                     Errors.Add(new { Messatge = "El correu electrònic introduit no és correcte." });
                 }
-            } catch (Exception e)
+            } catch (Exception)
             {
                 Errors.Add(new { Message = "No s'ha introduit cap correu electrònic." });
             }

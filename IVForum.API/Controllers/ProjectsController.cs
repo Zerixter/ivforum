@@ -85,7 +85,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> Update([FromBody]Project project)
+        public IActionResult Update([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 
@@ -121,7 +121,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody]Project project)
+        public IActionResult Delete([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 
@@ -150,7 +150,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("select")]
-        public async Task<IActionResult> Select([FromBody]Project project)
+        public JsonResult Select([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
 

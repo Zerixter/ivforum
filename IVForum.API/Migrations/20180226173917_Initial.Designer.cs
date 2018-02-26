@@ -11,7 +11,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180226160425_Initial")]
+    [Migration("20180226173917_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
