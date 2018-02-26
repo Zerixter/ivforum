@@ -11,7 +11,6 @@ import { GlobalEventsManager } from '../../../../services/globalEvents.service';
 
 export class LoginModal implements OnInit {
     loginForm: FormGroup;
-
     email: string;
     password: string;
 

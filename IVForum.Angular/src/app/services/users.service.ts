@@ -35,7 +35,7 @@ export class UserService extends BaseService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         console.log("patata");
-        return this.http.post("http://localhost:57570/api/accounts", {
+        return this.http.post("http://localhost:57570/api/account/register", {
             name: nom,
             surname: cognom,
             email: mail,
@@ -54,8 +54,7 @@ export class UserService extends BaseService {
     }
 
     login(userName: string, password: string) {
-        console.log("intenta");
-        return this.http.post('http://localhost:57570/api/auth', { userName, password })
+        return this.http.post('http://localhost:57570/api/account/login', { userName, password })
         .map(
                 res => {
                     console.log("login correcto!");
@@ -72,8 +71,7 @@ export class UserService extends BaseService {
 
 
     islogged(){
-        console.log("check token!");
-        if (this.token != null){
+        if (localStorage.getItem('currentUser') != null){
             return true;
         }
         else {
@@ -82,7 +80,6 @@ export class UserService extends BaseService {
     }
 
     logout(): void {
-        localStorage.removeItem('currentUser');
-        
+        localStorage.removeItem('currentUser');    
     }
 }

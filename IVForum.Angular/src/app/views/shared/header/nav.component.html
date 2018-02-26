@@ -2,21 +2,25 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Principal</a>
+                <a class="nav-link" routerLink="">Principal</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Explorar</a>
+                <a class="nav-link" routerLink="/explorer">Explorar</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">NiIdea</a>
+                <a class="nav-link" routerLink="/register">NiIdea</a>
             </li>
         </ul>
-        <div *ngIf="logged == false">
-            <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
-            <button class="btn btn-link" routerLink="/login">Login</button>
-        </div>
-        <div *ngIf="logged">
-            <button class="btn btn-outline-danger my-2" (click)="logOut()">Sortir</button>
+        <div *ngIf="_userService.islogged();then logged; else notLogged">
+
         </div>
     </div>
 </nav>
+
+<ng-template #notLogged>
+    <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
+    <button class="btn btn-link" routerLink="/login">Login</button>
+</ng-template>
+<ng-template #logged>
+    <button class="btn btn-outline-danger my-2" (click)="logOut()">Sortir</button>
+</ng-template>

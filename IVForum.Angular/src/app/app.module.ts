@@ -17,7 +17,8 @@ import { HttpClient, HttpHandler, HttpClientModule, HTTP_INTERCEPTORS  } from '@
 import { AuthInterceptor } from './services/http-interceptor.service';
 import { AuthGuard } from './services/auth.guard';
 import { GlobalEventsManager } from './services/globalEvents.service';
-import { MainComponent } from './views/main/main.component';
+import { ExplorerComponent } from './views/explorar/explorer.component';
+import { ForumService } from './services/forum.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { MainComponent } from './views/main/main.component';
     LoginModal,
     HomeComponent,
     FooterComponent,
-    MainComponent
+    ExplorerComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +48,7 @@ import { MainComponent } from './views/main/main.component';
     multi: true
     },
     AuthGuard,
+    ForumService,
     GlobalEventsManager,
   ],
   bootstrap: [AppComponent]

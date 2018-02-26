@@ -1,0 +1,14 @@
+.body-explorer {
+    height: 100vh;
+    
+}
+.menu-explorer {
+    height: 100vh;
+    background-color: #DEDEDE;
+    box-sizing: border-box;
+    display: block;
+}
+.lat-menu-explorer{
+    flex-flow: column wrap !important;
+    flex-direction: column !important;
+}
