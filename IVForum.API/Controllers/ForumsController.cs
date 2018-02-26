@@ -196,7 +196,7 @@ namespace IVForum.API.Controllers
             }
             try
             {
-                return (forum.Owner.Id == user.Id) ? true : false;
+                return (forum.OwnerId == user.Id) ? true : false;
             } catch (Exception e)
             {
                 Debug.WriteLine(e);

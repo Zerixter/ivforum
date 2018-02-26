@@ -44,8 +44,17 @@ namespace IVForum.API.Data
                 .WithMany(x => x.Projects)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Project>()
+                .HasOne(x => x.Forum)
+                .WithMany(x => x.Projects)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<Forum>()
                 .HasMany(x => x.Wallets)
+                .WithOne(x => x.Forum);
+
+            builder.Entity<Forum>()
+                .HasMany(x => x.Projects)
                 .WithOne(x => x.Forum);
 
             builder.Entity<Wallet>()
