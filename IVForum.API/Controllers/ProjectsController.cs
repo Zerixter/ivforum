@@ -38,6 +38,13 @@ namespace IVForum.API.Controllers
             return null;
         }
 
+        [HttpGet("get/{userid}")]
+        public IEnumerable<Project> GetFromUser(string userid)
+        {
+            var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).ToList();
+            return Projects;
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ProjectViewModel model)
         {
@@ -82,7 +89,9 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
 
-            if (!ValidateUser(project))
+            Project ProjectToTest = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
+
+            if (!ValidateUser(ProjectToTest))
             {
                 Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
                 return BadRequest(Errors);
@@ -182,7 +191,7 @@ namespace IVForum.API.Controllers
                 return false;
             }
 
-            return (project.Owner == user) ? true : false;
+            return (project.Owner.Id == user.Id) ? true : false;
         }
     }
 }

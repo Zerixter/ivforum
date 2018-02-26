@@ -230,13 +230,13 @@ namespace IVForum.API.Migrations
                         column: x => x.ForumId,
                         principalTable: "Forums",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Projects_DbUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "DbUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(

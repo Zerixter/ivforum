@@ -350,7 +350,8 @@ namespace IVForum.API.Migrations
                 {
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Projects")
-                        .HasForeignKey("ForumId");
+                        .HasForeignKey("ForumId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")

@@ -27,6 +27,7 @@ namespace IVForum.API.Models
 		public string RepositoryUrl { get; set; }
 
 		public virtual Forum Forum { get; set; } = null;
+        public Guid OwnerId { get; set; }
 		[Required]
 		public virtual User Owner { get; set; }
         public virtual List<Bill> Bills { get; set; } = new List<Bill>();
