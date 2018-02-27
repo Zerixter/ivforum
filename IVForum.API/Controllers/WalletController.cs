@@ -49,18 +49,37 @@ namespace IVForum.API.Controllers
 
             Wallet wallet = new Wallet
             {
+                Id = Guid.NewGuid(),
                 Forum = ForumToSearch,
-                Owner = user
+                User = user
             };
 
             db.Wallets.Add(wallet);
             db.SaveChanges();
+
+            GetBillOptions(ForumToSearch, wallet);
 
             var Message = new
             {
                 Message = "El usuari s'ha subscrit exitosament a aquest forum."
             };
             return new JsonResult(Message);
+        }
+
+        public void GetBillOptions(Forum forum, Wallet wallet)
+        {
+            List<Transaction> Transactions = db.Transactions.Where(x => x.ForumId == forum.Id).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                BillOption option = new BillOption
+                {
+                    Name = transaction.Name,
+                    Value = transaction.Value,
+                    Wallet = wallet
+                };
+                db.BillOptions.Add(option);
+            }
+            db.SaveChanges();
         }
     }
 }

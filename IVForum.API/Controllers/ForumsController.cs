@@ -78,6 +78,8 @@ namespace IVForum.API.Controllers
             db.Forums.Add(forum);
             db.SaveChanges();
 
+            GetTransactions(forum);
+
             var Missatge = new
             {
                 Message = "El Forum s'ha afegit Correctament"
@@ -198,6 +200,32 @@ namespace IVForum.API.Controllers
             {
                 return false;
             }
+        }
+
+        public void GetTransactions(Forum forum)
+        {
+            db.Transactions.Add(new Transaction
+            {
+                Forum = forum,
+                Name = "20",
+                Value = 20
+            });
+
+            db.Transactions.Add(new Transaction
+            {
+                Forum = forum,
+                Name = "50",
+                Value = 50
+            });
+
+            db.Transactions.Add(new Transaction
+            {
+                Forum = forum,
+                Name = "100",
+                Value = 100
+            });
+
+            db.SaveChanges();
         }
     }
 }

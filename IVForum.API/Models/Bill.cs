@@ -10,12 +10,8 @@ namespace IVForum.API.Models
     {
         [Key]
         public Guid Id { get; set; }
-        [Required]
         public string Name { get; set; }
-        [Required]
         public int Value { get; set; }
         public string ImgUri { get; set; }
-
-        public virtual Wallet Wallet { get; set; }
     }
 }

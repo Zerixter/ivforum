@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180227143522_Initial")]
+    [Migration("20180227201142_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,24 +27,20 @@ namespace IVForum.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ImgUri");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<Guid?>("ProjectId");
+                    b.Property<string>("ImgUri");
+
+                    b.Property<string>("Name");
 
                     b.Property<int>("Value");
 
-                    b.Property<Guid?>("WalletId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("WalletId");
-
                     b.ToTable("Bills");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Bill");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Forum", b =>
@@ -70,15 +67,9 @@ namespace IVForum.API.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(100);
 
-                    b.Property<Guid?>("UserId");
-
-                    b.Property<Guid>("WalletId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Forums");
                 });
@@ -98,7 +89,7 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("FacebookUrl");
 
-                    b.Property<Guid?>("ForumId");
+                    b.Property<Guid>("ForumId");
 
                     b.Property<string>("Icon");
 
@@ -135,8 +126,6 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("FacebookUrl");
 
-                    b.Property<Guid?>("ForumId");
-
                     b.Property<string>("IdentityId");
 
                     b.Property<string>("RepositoryUrl");
@@ -146,8 +135,6 @@ namespace IVForum.API.Migrations
                     b.Property<string>("WebsiteUrl");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ForumId");
 
                     b.HasIndex("IdentityId");
 
@@ -218,14 +205,13 @@ namespace IVForum.API.Migrations
 
                     b.Property<Guid>("ForumId");
 
-                    b.Property<Guid>("OwnerId");
+                    b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ForumId")
-                        .IsUnique();
+                    b.HasIndex("ForumId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Wallets");
                 });
@@ -338,16 +324,43 @@ namespace IVForum.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("IVForum.API.Models.Bill", b =>
+            modelBuilder.Entity("IVForum.API.Models.BillOption", b =>
                 {
-                    b.HasOne("IVForum.API.Models.Project")
-                        .WithMany("Bills")
-                        .HasForeignKey("ProjectId");
+                    b.HasBaseType("IVForum.API.Models.Bill");
 
-                    b.HasOne("IVForum.API.Models.Wallet", "Wallet")
-                        .WithMany("Bills")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Property<Guid>("WalletId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("BillOption");
+
+                    b.HasDiscriminator().HasValue("BillOption");
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Transaction", b =>
+                {
+                    b.HasBaseType("IVForum.API.Models.Bill");
+
+                    b.Property<Guid>("ForumId");
+
+                    b.HasIndex("ForumId");
+
+                    b.ToTable("Transaction");
+
+                    b.HasDiscriminator().HasValue("Transaction");
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Vote", b =>
+                {
+                    b.HasBaseType("IVForum.API.Models.Bill");
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Vote");
+
+                    b.HasDiscriminator().HasValue("Vote");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Forum", b =>
@@ -356,10 +369,6 @@ namespace IVForum.API.Migrations
                         .WithMany("Forums")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("IVForum.API.Models.User")
-                        .WithMany("ParticipatingForums")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Project", b =>
@@ -367,7 +376,7 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Projects")
                         .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")
@@ -377,10 +386,6 @@ namespace IVForum.API.Migrations
 
             modelBuilder.Entity("IVForum.API.Models.User", b =>
                 {
-                    b.HasOne("IVForum.API.Models.Forum")
-                        .WithMany("Participants")
-                        .HasForeignKey("ForumId");
-
                     b.HasOne("IVForum.API.Models.UserModel", "Identity")
                         .WithMany()
                         .HasForeignKey("IdentityId");
@@ -389,13 +394,13 @@ namespace IVForum.API.Migrations
             modelBuilder.Entity("IVForum.API.Models.Wallet", b =>
                 {
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
-                        .WithOne("Wallet")
-                        .HasForeignKey("IVForum.API.Models.Wallet", "ForumId")
+                        .WithMany("Wallets")
+                        .HasForeignKey("ForumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("IVForum.API.Models.User", "Owner")
+                    b.HasOne("IVForum.API.Models.User", "User")
                         .WithMany("Wallets")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -441,6 +446,30 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.UserModel")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.BillOption", b =>
+                {
+                    b.HasOne("IVForum.API.Models.Wallet", "Wallet")
+                        .WithMany("Bills")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Transaction", b =>
+                {
+                    b.HasOne("IVForum.API.Models.Forum", "Forum")
+                        .WithMany("Transactions")
+                        .HasForeignKey("ForumId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IVForum.API.Models.Vote", b =>
+                {
+                    b.HasOne("IVForum.API.Models.Project", "Project")
+                        .WithMany("Votes")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

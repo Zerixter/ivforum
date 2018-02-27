@@ -91,6 +91,13 @@ namespace IVForum.API.Controllers
                 if (!regex.IsMatch(model.Password))
                 {
                     Errors.Add(new { Message = "La contrasenya introduida no és correcte: El format ha de ser el següent, ha de tenir mínim un numero, una lletra minúscula i una majuscula i ha de tenir una longitura de mínim 8 carácters" });
+                } else
+                {
+                    var UserCheck = db.Users.Where(x => x.UserName == model.Email).FirstOrDefault();
+                    if (UserCheck != null)
+                    {
+                        Errors.Add(new { Message = "Un usuari amb amb aquest correu electrònic ja existeix." });
+                    }
                 }
             } catch (Exception)
             {
@@ -183,6 +190,39 @@ namespace IVForum.API.Controllers
 
             var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
+        }
+
+        [HttpGet("delete")]
+        public async Task<IActionResult> Delete()
+        {
+            List<object> Errors = new List<object>();
+
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                var ASPUser = await db.Users.SingleAsync(c => c.Id == userId.Value);
+                var DBUser = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+
+                if (ASPUser != null && DBUser != null)
+                {
+                    db.Remove(DBUser);
+                    db.Remove(ASPUser);
+                    db.SaveChanges();
+
+                    var Message = new
+                    {
+                        Message = "S'ha esborrat el usuari correctament."
+                    };
+                    return new JsonResult(Message);
+                }
+
+                Errors.Add(new { Message = "S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)." });
+                return BadRequest(Errors);
+            } catch (Exception)
+            {
+                Errors.Add(new { Message = "S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)." });
+                return BadRequest(Errors);
+            }
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

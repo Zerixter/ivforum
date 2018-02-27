@@ -164,7 +164,6 @@ namespace IVForum.API.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Avatar = table.Column<string>(nullable: true),
                     FacebookUrl = table.Column<string>(nullable: true),
-                    ForumId = table.Column<Guid>(nullable: true),
                     IdentityId = table.Column<string>(nullable: true),
                     RepositoryUrl = table.Column<string>(nullable: true),
                     TwitterUrl = table.Column<string>(nullable: true),
@@ -192,9 +191,7 @@ namespace IVForum.API.Migrations
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(maxLength: 100, nullable: true),
-                    UserId = table.Column<Guid>(nullable: true),
-                    WalletId = table.Column<Guid>(nullable: false)
+                    Title = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,12 +202,6 @@ namespace IVForum.API.Migrations
                         principalTable: "DbUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Forums_DbUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "DbUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +213,7 @@ namespace IVForum.API.Migrations
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: false),
                     FacebookUrl = table.Column<string>(nullable: true),
-                    ForumId = table.Column<Guid>(nullable: true),
+                    ForumId = table.Column<Guid>(nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
@@ -239,7 +230,7 @@ namespace IVForum.API.Migrations
                         column: x => x.ForumId,
                         principalTable: "Forums",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Projects_DbUsers_OwnerId",
                         column: x => x.OwnerId,
@@ -254,7 +245,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     ForumId = table.Column<Guid>(nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,8 +257,8 @@ namespace IVForum.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Wallets_DbUsers_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Wallets_DbUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "DbUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
@@ -278,27 +269,35 @@ namespace IVForum.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
                     ImgUri = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false),
-                    ProjectId = table.Column<Guid>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
                     Value = table.Column<int>(nullable: false),
-                    WalletId = table.Column<Guid>(nullable: true)
+                    WalletId = table.Column<Guid>(nullable: true),
+                    ForumId = table.Column<Guid>(nullable: true),
+                    ProjectId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bills", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Bills_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bills_Wallets_WalletId",
                         column: x => x.WalletId,
                         principalTable: "Wallets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bills_Forums_ForumId",
+                        column: x => x.ForumId,
+                        principalTable: "Forums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Bills_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -341,19 +340,19 @@ namespace IVForum.API.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bills_ProjectId",
-                table: "Bills",
-                column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Bills_WalletId",
                 table: "Bills",
                 column: "WalletId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DbUsers_ForumId",
-                table: "DbUsers",
+                name: "IX_Bills_ForumId",
+                table: "Bills",
                 column: "ForumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bills_ProjectId",
+                table: "Bills",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DbUsers_IdentityId",
@@ -364,11 +363,6 @@ namespace IVForum.API.Migrations
                 name: "IX_Forums_OwnerId",
                 table: "Forums",
                 column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Forums_UserId",
-                table: "Forums",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ForumId",
@@ -383,33 +377,16 @@ namespace IVForum.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Wallets_ForumId",
                 table: "Wallets",
-                column: "ForumId",
-                unique: true);
+                column: "ForumId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wallets_OwnerId",
+                name: "IX_Wallets_UserId",
                 table: "Wallets",
-                column: "OwnerId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DbUsers_Forums_ForumId",
-                table: "DbUsers",
-                column: "ForumId",
-                principalTable: "Forums",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DbUsers_AspNetUsers_IdentityId",
-                table: "DbUsers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_DbUsers_Forums_ForumId",
-                table: "DbUsers");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -432,19 +409,19 @@ namespace IVForum.API.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Projects");
-
-            migrationBuilder.DropTable(
                 name: "Wallets");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Forums");
 
             migrationBuilder.DropTable(
                 name: "DbUsers");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
