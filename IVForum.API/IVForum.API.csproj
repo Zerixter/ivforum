@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Token\**" />
+    <Content Remove="Token\**" />
+    <EmbeddedResource Remove="Token\**" />
+    <None Remove="Token\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Assets\Images\" />
-    <Folder Include="Token\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

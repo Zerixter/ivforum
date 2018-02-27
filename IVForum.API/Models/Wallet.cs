@@ -12,9 +12,33 @@ namespace IVForum.API.Models
         public Guid Id { get; set; }
         [Required]
         public virtual User Owner { get; set; }
-        [Required]
+      
+        public Guid ForumId { get; set; }
         public virtual Forum Forum { get; set; }
-
-        public virtual List<Bill> Bills { get; set; } = new List<Bill>();
+        public virtual List<Bill> Bills { get; set; } = AssignWallet();
+        public static List<Bill> AssignWallet()
+        {
+            return new List<Bill>
+            {
+                new Bill
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "20",
+                    Value = 20
+                },
+                new Bill
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "50",
+                    Value = 50
+                },
+                new Bill
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "100",
+                    Value = 100
+                }
+            };
+        }
     }
 }

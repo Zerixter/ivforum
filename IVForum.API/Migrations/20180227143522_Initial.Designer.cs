@@ -11,7 +11,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180226183850_Initial")]
+    [Migration("20180227143522_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,9 +70,15 @@ namespace IVForum.API.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(100);
 
+                    b.Property<Guid?>("UserId");
+
+                    b.Property<Guid>("WalletId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Forums");
                 });
@@ -129,6 +135,8 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("FacebookUrl");
 
+                    b.Property<Guid?>("ForumId");
+
                     b.Property<string>("IdentityId");
 
                     b.Property<string>("RepositoryUrl");
@@ -138,6 +146,8 @@ namespace IVForum.API.Migrations
                     b.Property<string>("WebsiteUrl");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ForumId");
 
                     b.HasIndex("IdentityId");
 
@@ -212,7 +222,8 @@ namespace IVForum.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ForumId");
+                    b.HasIndex("ForumId")
+                        .IsUnique();
 
                     b.HasIndex("OwnerId");
 
@@ -345,6 +356,10 @@ namespace IVForum.API.Migrations
                         .WithMany("Forums")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IVForum.API.Models.User")
+                        .WithMany("ParticipatingForums")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Project", b =>
@@ -362,6 +377,10 @@ namespace IVForum.API.Migrations
 
             modelBuilder.Entity("IVForum.API.Models.User", b =>
                 {
+                    b.HasOne("IVForum.API.Models.Forum")
+                        .WithMany("Participants")
+                        .HasForeignKey("ForumId");
+
                     b.HasOne("IVForum.API.Models.UserModel", "Identity")
                         .WithMany()
                         .HasForeignKey("IdentityId");
@@ -370,8 +389,8 @@ namespace IVForum.API.Migrations
             modelBuilder.Entity("IVForum.API.Models.Wallet", b =>
                 {
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
-                        .WithMany("Wallets")
-                        .HasForeignKey("ForumId")
+                        .WithOne("Wallet")
+                        .HasForeignKey("IVForum.API.Models.Wallet", "ForumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")

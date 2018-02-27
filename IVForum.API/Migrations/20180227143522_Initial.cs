@@ -164,6 +164,7 @@ namespace IVForum.API.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Avatar = table.Column<string>(nullable: true),
                     FacebookUrl = table.Column<string>(nullable: true),
+                    ForumId = table.Column<Guid>(nullable: true),
                     IdentityId = table.Column<string>(nullable: true),
                     RepositoryUrl = table.Column<string>(nullable: true),
                     TwitterUrl = table.Column<string>(nullable: true),
@@ -191,7 +192,9 @@ namespace IVForum.API.Migrations
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(maxLength: 100, nullable: true)
+                    Title = table.Column<string>(maxLength: 100, nullable: true),
+                    UserId = table.Column<Guid>(nullable: true),
+                    WalletId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -202,6 +205,12 @@ namespace IVForum.API.Migrations
                         principalTable: "DbUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Forums_DbUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "DbUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -342,6 +351,11 @@ namespace IVForum.API.Migrations
                 column: "WalletId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DbUsers_ForumId",
+                table: "DbUsers",
+                column: "ForumId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DbUsers_IdentityId",
                 table: "DbUsers",
                 column: "IdentityId");
@@ -350,6 +364,11 @@ namespace IVForum.API.Migrations
                 name: "IX_Forums_OwnerId",
                 table: "Forums",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Forums_UserId",
+                table: "Forums",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ForumId",
@@ -364,16 +383,33 @@ namespace IVForum.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Wallets_ForumId",
                 table: "Wallets",
-                column: "ForumId");
+                column: "ForumId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wallets_OwnerId",
                 table: "Wallets",
                 column: "OwnerId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DbUsers_Forums_ForumId",
+                table: "DbUsers",
+                column: "ForumId",
+                principalTable: "Forums",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DbUsers_AspNetUsers_IdentityId",
+                table: "DbUsers");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_DbUsers_Forums_ForumId",
+                table: "DbUsers");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -402,13 +438,13 @@ namespace IVForum.API.Migrations
                 name: "Wallets");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Forums");
 
             migrationBuilder.DropTable(
                 name: "DbUsers");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

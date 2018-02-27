@@ -21,11 +21,11 @@ namespace IVForum.API.Models
 		public string Background { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
-		
         public Guid OwnerId { get; set; }
-        [Required]
         public virtual User Owner { get; set; }
-		public virtual List<Project> Projects { get; set; } = new List<Project>();
-        public virtual List<Wallet> Wallets { get; set; } = new List<Wallet>();
+        public Guid WalletId { get; set; }
+        public virtual Wallet Wallet { get; set; }
+        public virtual List<Project> Projects { get; set; } = new List<Project>();
+        public virtual List<User> Participants { get; set; } = new List<User>();
 	}
 }
