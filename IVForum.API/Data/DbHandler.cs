@@ -27,6 +27,9 @@ namespace IVForum.API.Data
 				.HasMany(x => x.Forums)
 				.WithOne(x => x.Owner);
 
+            builder.Entity<User>()
+                .HasMany(x => x.ParticipatingForums);
+
 			builder.Entity<User>()
 				.HasMany(x => x.Projects)
 				.WithOne(x => x.Owner);
@@ -41,6 +44,18 @@ namespace IVForum.API.Data
                 .HasForeignKey(x => x.OwnerId)
 				.OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Forum>()
+                .HasMany(x => x.Participants);
+
+            builder.Entity<Forum>()
+                .HasMany(x => x.Projects)
+                .WithOne(x => x.Forum);
+
+            builder.Entity<Forum>()
+                .HasOne(x => x.Wallet)
+                .WithOne(x => x.Forum)
+                .HasForeignKey<Forum>(x => x.WalletId);
+
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
                 .WithMany(x => x.Projects)
@@ -51,17 +66,10 @@ namespace IVForum.API.Data
                 .WithMany(x => x.Projects)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<Forum>()
-                .HasMany(x => x.Wallets)
-                .WithOne(x => x.Forum);
-
-            builder.Entity<Forum>()
-                .HasMany(x => x.Projects)
-                .WithOne(x => x.Forum);
-
             builder.Entity<Wallet>()
                 .HasOne(x => x.Forum)
-                .WithMany(x => x.Wallets);
+                .WithOne(x => x.Wallet)
+                .HasForeignKey<Wallet>(x => x.ForumId);
 
             builder.Entity<Wallet>()
                 .HasOne(x => x.Owner)
