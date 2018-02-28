@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace IVForum.API.Models
 {
@@ -18,7 +19,7 @@ namespace IVForum.API.Models
 		[MaxLength(500)]
 		public string Description { get; set; }
 		public string Icon { get; set; }
-		public string Background { get; set; }
+		public string Background { get; set; } = Path.Combine("Assets", "Images", "banner.jpg");
         public DateTime CreationDate { get; set; } = DateTime.Now;
 		
 		public string WebsiteUrl { get; set; }
@@ -26,7 +27,6 @@ namespace IVForum.API.Models
 		public string TwitterUrl { get; set; }
 		public string RepositoryUrl { get; set; }
 
-        public Guid ForumId { get; set; }
 		public virtual Forum Forum { get; set; } = null;
         public Guid OwnerId { get; set; }
 		public virtual User Owner { get; set; }

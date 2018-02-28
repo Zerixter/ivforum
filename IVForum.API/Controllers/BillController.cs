@@ -24,7 +24,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("vote")]
-        public IActionResult Vote(Project project, Bill bill)
+        public IActionResult Vote(Vote bill)
         {
             List<object> Errors = new List<object>();
 
@@ -39,7 +39,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
-            Project ProjectToValidate = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
+            Project ProjectToValidate = db.Projects.Where(x => x.Id == bill.ProjectId).FirstOrDefault();
             if (ProjectToValidate is null)
             {
                 Errors.Add(new { Message = "Aquest projecte no existeix." });
@@ -53,7 +53,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
-            Wallet WalletToValidate = db.Wallets.Where(x => x.ForumId == ProjectToValidate.ForumId && x.UserId == user.Id).FirstOrDefault();
+            Wallet WalletToValidate = db.Wallets.Where(x => x.ForumId == ProjectToValidate.Forum.Id && x.UserId == user.Id).FirstOrDefault();
             if (WalletToValidate is null)
             {
                 Errors.Add(new { Message = "Aquest wallet no existeix." });
