@@ -44,18 +44,47 @@ namespace IVForum.API.Controllers
             return Forums;
         }
 
+        [HttpGet("get/{id_forum}/projects")]
+        public IEnumerable<Project> GetProjects(string id_forum)
+        {
+            try
+            {
+                //Forum forum = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Projects).FirstOrDefault();
+                Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
+                return db.Projects.Where(x => x.Forum == forum).ToArray();
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return null;
+            }
+        }
+
         [HttpPost("subscribe")]
-        public IActionResult Subscribe(string ForumId, string ProjectId)
+        public IActionResult Subscribe([FromBody]SubscriptionViewModel model)
         {
             List<object> Errors = new List<object>();
-            Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == ProjectId).FirstOrDefault();
+            //if (ProjectId is null)
+            //{
+            //    Errors.Add(new { Message = "Falta la Id del projecte" });
+            //}
+            //if (ForumId is null)
+            //{
+            //    Errors.Add(new { Message = "Falta la Id del Forum" });
+            //}
+
+            //if (Errors.Count > 0)
+            //{
+            //    return BadRequest(Errors);
+            //}
+
+            Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).FirstOrDefault();
             if (ProjectToSearch is null)
             {
                 Errors.Add(new { Message = "No existeix aquest project" });
                 return BadRequest(Errors);
             }
 
-            Forum ForumToSearch = db.Forums.Where(x => x.Id.ToString() == ForumId).FirstOrDefault();
+            Forum ForumToSearch = db.Forums.Where(x => x.Id.ToString() == model.ForumId).FirstOrDefault();
             if (ForumToSearch is null)
             {
                 Errors.Add(new { Message = "No existeix aquest forum." });
@@ -114,6 +143,22 @@ namespace IVForum.API.Controllers
                 Message = "El Forum s'ha afegit Correctament"
             };
             return new OkObjectResult(Missatge);
+        }
+
+        [HttpPost("view")]
+        public IActionResult View([FromBody]ViewsViewModel model)
+        {
+            Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.ForumId);
+            if (forum is null)
+            {
+
+            }
+
+            forum.Views++;
+            db.Forums.Update(forum);
+            db.SaveChanges();
+            
+            return new OkObjectResult(null);
         }
 
         [HttpPost("update")]
