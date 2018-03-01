@@ -53,13 +53,13 @@ export class UserService extends BaseService {
             );
     }
 
-    login(userName: string, password: string) {
-        return this.http.post('http://localhost:57570/api/account/login', { userName, password })
+    login(email: string, password: string) {
+        return this.http.post('http://localhost:57570/api/account/login', { email, password })
         .map(
                 res => {
                     console.log("login correcto!");
                     this.token = res;
-                    localStorage.setItem('currentUser', JSON.stringify({ username: userName, token: this.token }));
+                    localStorage.setItem('currentUser', JSON.stringify({ email: email, token: this.token }));
                     return true;
                 },
                 err => {

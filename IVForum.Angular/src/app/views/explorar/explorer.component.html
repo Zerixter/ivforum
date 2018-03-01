@@ -1,29 +1,24 @@
 <div class="body-explorer">
-    <div class="row">
+    <div class="row" id="body-explorer">
         <nav class="menu-explorer col-sm-2 navbar navbar-expand-lg navbar-dark  bg-dark">
             <ul class="lat-menu-explorer navbar-nav mr-auto col-sm-12">
                 <li class="col-sm-12">
-                    <a class="nav-link col-sm-12">Buscar</a>
+                    <a class="btn btn-link btn-lg btn-block nav-link col-sm-12">Buscar</a>
                 </li>
                 <li class="col-sm-12">
-                    <a class="nav-link col-sm-12" (click)="getForums()">Forums Publics</a>
+                    <a class="btn btn-link btn-lg btn-block nav-link col-sm-12" (click)="getForums()">Forums Publics</a>
                 </li>
-                <li class="col-sm-12">
-                    <a class="nav-link col-sm-12" >Meus Forums</a>
-                </li>
-                <li class="col-sm-12">
-                    <a class="nav-link col-sm-12" data-toggle="modal" data-target="#newForumModal">Crear Forum</a>
-                </li>
+                <div *ngIf="_usersService.islogged();then logged;">
+
+                </div>
             </ul>
         </nav>
-        <div class="body-explorer col-sm-8 offset-1">
-            <div class="forum col-sm-12" *ngFor="let forum of forums">
-                <div class="row">
-                    <h3>{{forum.Title}}</h3>
-                </div>
-                <div class="row">
-                    <div class="description-forum col-sm-">
-                        <p>{{forum.Description}}</p>
+        <div class="list-explorer col-sm-8 offset-1">
+            <div *ngFor="let forum of forums" class="card forum-card col-sm-12" (click)="selectForum(forum)">
+                <div class="card-body row">
+                    <div class="card-body">
+                        <h5 class="card-title">{{forum.title}}</h5>
+                        <p class="card-text">{{forum.description}}</p>
                     </div>
                 </div>
             </div>
@@ -31,37 +26,49 @@
     </div>
 </div>
 
-<div class="modal fade col-sm-8" id="newForumModal" tabindex="-1" role="dialog" aria-labelledby="newForumModal" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Nou Forum</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-            <div class="form-group col-sm-4">
-                <label for="Title">Titol del forum:</label>
-                <input type="text" class="form-control" name="Title" id="Title">
+<div class="modal fade col-sm-12" id="newForumModal" tabindex="-1" role="dialog" aria-labelledby="newForumModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nou Forum</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-group col-sm-4">
-                <label for="Name">Nom del forum(solament el creador el pot veure):</label>
-                <input type="text" class="form-control" name="Name" id="Name">
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="Title">Titol del forum:</label>
+                            <input type="text" class="form-control" name="Title" id="Title" [(ngModel)]="title">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="Name">Nom del forum:</label>
+                            <input type="text" class="form-control" name="Name" id="Name" [(ngModel)]="name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label for="Description">Nom del forum:</label>
+                            <textarea class="form-control" name="Description" id="Description" rows="3" [(ngModel)]="description"></textarea>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group col-sm-8">
-                <label for="Description">Nom del forum(solament el creador el pot veure):</label>
-                <textarea class="form-control" name="Description" id="Description" rows="3"></textarea>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="setForum()">Save changes</button>
             </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+        </div>
     </div>
-  </div>    
 
 </div>
 
+<ng-template #logged>
+    <li class="col-sm-12">
+        <a class="btn btn-link btn-lg btn-block nav-link col-sm-12">Meus Forums</a>
+    </li>
+    <li class="col-sm-12">
+        <a class="btn btn-link btn-lg btn-block nav-link col-sm-12" data-toggle="modal" data-target="#newForumModal">Crear Forum</a>
+    </li>
+</ng-template>

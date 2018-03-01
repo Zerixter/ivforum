@@ -1,3 +1,4 @@
+import { ForumComponent } from './views/forum/forum.component';
 import { ExplorerComponent } from './views/explorar/explorer.component';
 import { LoginModal } from './views/shared/header/login/login.component';
 import { RegisterModal } from './views/shared/header/register/register.component';
@@ -15,6 +16,7 @@ const routes: Routes = [
     { path: 'register', component: RegisterModal},
     { path: 'login', component: LoginModal},
     { path: 'explorer', component: ExplorerComponent,canActivate: [AuthGuard]},
+    { path: 'forum', component: ForumComponent },
     { path: '**', component: HomeComponent },
     //{ path: 'path/:routeParam', component: MyComponent },
     //{ path: 'staticPath', component: ... },

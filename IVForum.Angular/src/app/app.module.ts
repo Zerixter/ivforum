@@ -1,6 +1,7 @@
+import { UserDetailsService } from './services/user-details-service';
 import { FooterComponent } from './views/shared/footer/footer.component';
 import { appRouting } from './app-navigation.module';
-
+import { NgForOf } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
@@ -19,6 +20,7 @@ import { AuthGuard } from './services/auth.guard';
 import { GlobalEventsManager } from './services/globalEvents.service';
 import { ExplorerComponent } from './views/explorar/explorer.component';
 import { ForumService } from './services/forum.service';
+import { ForumComponent } from './views/forum/forum.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { ForumService } from './services/forum.service';
     LoginModal,
     HomeComponent,
     FooterComponent,
-    ExplorerComponent
+    ExplorerComponent,
+    ForumComponent
   ],
   imports: [
     BrowserModule,
@@ -50,6 +53,7 @@ import { ForumService } from './services/forum.service';
     AuthGuard,
     ForumService,
     GlobalEventsManager,
+    UserDetailsService,
   ],
   bootstrap: [AppComponent]
 })

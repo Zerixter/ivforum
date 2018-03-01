@@ -1,13 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-dark  bg-dark">
+<nav class="header-nav navbar navbar-expand-lg navbar-dark  bg-dark">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li [routerLinkActive]="['active']" class="nav-item ">
                 <a class="nav-link" routerLink="">Principal</a>
             </li>
-            <li class="nav-item">
+            <li [routerLinkActive]="['active']" class="nav-item">
                 <a class="nav-link" routerLink="/explorer">Explorar</a>
             </li>
-            <li class="nav-item">
+            <li [routerLinkActive]="['active']" class="nav-item">
                 <a class="nav-link" routerLink="/register">NiIdea</a>
             </li>
         </ul>
@@ -21,6 +21,20 @@
     <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
     <button class="btn btn-link" routerLink="/login">Login</button>
 </ng-template>
+
 <ng-template #logged>
-    <button class="btn btn-outline-danger my-2" (click)="logOut()">Sortir</button>
+    <div class="dropdown " *ngIf="loaded">
+        <button class="btn btn-link " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            <div class="user-icon" >
+                <img src="{{userDetails.avatar}}" alt="" srcset="">
+            </div>
+            
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+    </div>
 </ng-template>
