@@ -1,0 +1,26 @@
+- api/account
+    - get: Información del usuario logeado
+    - get/id_usuario : Información del usuario
+    - register
+    - login
+    - delete
+    - subscribe : Usuario participa en un forum (Se le da un wallet)
+- api/forum
+    - get : Recibir todos los forums
+    - select: Recibir todos los datos de un forum concreto
+    - get/id_usuario : Recibir forums de un usuario
+    - get/id_forum/projects : Recibir proyectos de un forum
+    - create
+    - update
+    - delete
+    - subscribe : Un proyecto participa en el forum
+    - view : Añade una visita al forum
+- api/project
+    - get : Recibir todos los proyectos
+    - select : Recibir todos los datos de un proyecto
+    - get/id_usuario : Recibir todos los proyectos de un usuario
+    - create
+    - update
+    - delete
+    - vote : Votar proyecto
+- api/upload

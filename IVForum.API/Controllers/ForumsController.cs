@@ -49,7 +49,6 @@ namespace IVForum.API.Controllers
         {
             try
             {
-                //Forum forum = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Projects).FirstOrDefault();
                 Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
                 return db.Projects.Where(x => x.Forum == forum).ToArray();
             } catch (Exception e)
@@ -63,19 +62,20 @@ namespace IVForum.API.Controllers
         public IActionResult Subscribe([FromBody]SubscriptionViewModel model)
         {
             List<object> Errors = new List<object>();
-            //if (ProjectId is null)
-            //{
-            //    Errors.Add(new { Message = "Falta la Id del projecte" });
-            //}
-            //if (ForumId is null)
-            //{
-            //    Errors.Add(new { Message = "Falta la Id del Forum" });
-            //}
 
-            //if (Errors.Count > 0)
-            //{
-            //    return BadRequest(Errors);
-            //}
+            if (model.ForumId is null)
+            {
+                Errors.Add(new { Message = "S'ha de introduir la id del Forum." });
+            }
+            if (model.ProjectId is null)
+            {
+                Errors.Add(new { Message = "S'ha de introduir la id del Projecet" });
+            }
+
+            if (Errors.Count > 0)
+            {
+                return BadRequest(Errors);
+            }
 
             Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).FirstOrDefault();
             if (ProjectToSearch is null)
@@ -235,7 +235,7 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
 
-            var ForumToSelect = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            var ForumToSelect = db.Forums.Where(x => x.Id == forum.Id).Include(x => x.Owner).FirstOrDefault();
             if (ForumToSelect is null)
             {
                 Errors.Add(new { Message = "El forum que s'intenta seleccionar no existeix." });

@@ -9,7 +9,8 @@ namespace IVForum.API.Models
     {
 		[Key]
         public Guid Id { get; set; }
-
+        
+        [MaxLength(1000)]
         public string Description { get; set; }
         public string Avatar { get; set; } = @"Resources/Images/avatar.png";
 		public string WebsiteUrl { get; set; }

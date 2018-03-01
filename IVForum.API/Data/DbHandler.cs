@@ -59,8 +59,7 @@ namespace IVForum.API.Data
                     .WithMany(x => x.Projects);
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
-                .WithMany(x => x.Projects)
-                .HasForeignKey(x => x.OwnerId);
+                .WithMany(x => x.Projects);
             builder.Entity<Project>()
                 .HasMany(x => x.Votes)
                 .WithOne(x => x.Project); 
