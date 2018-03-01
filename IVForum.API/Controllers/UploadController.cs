@@ -18,7 +18,7 @@ namespace IVForum.API.Controllers
                 return Content("file not selected");
 
             var path = Path.Combine(
-                        Directory.GetCurrentDirectory(), "Assets/Images",
+                        Directory.GetCurrentDirectory(), @"Resources/Images",
                         file.FileName);
 
             using (var stream = new FileStream(path, FileMode.Create))

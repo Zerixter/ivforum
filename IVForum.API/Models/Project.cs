@@ -16,10 +16,10 @@ namespace IVForum.API.Models
 		[MaxLength(100)]
 		public string Title { get; set; }
 		[Required]
-		[MaxLength(500)]
+		[MaxLength(1000)]
 		public string Description { get; set; }
 		public string Icon { get; set; }
-		public string Background { get; set; } = Path.Combine("Assets", "Images", "banner.jpg");
+		public string Background { get; set; } = @"Resources/Images/banner.jpg";
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public int TotalMoney { get; set; } = 0;
 		

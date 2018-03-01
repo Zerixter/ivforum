@@ -30,7 +30,7 @@ namespace IVForum.API.Controllers
         {
             try
             {
-                return db.Forums.ToArray();
+                return db.Forums.Include(x => x.Owner).ToArray();
             } catch (Exception)
             {
                 return null;
@@ -269,7 +269,7 @@ namespace IVForum.API.Controllers
             {
                 var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
                 user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
-                return (forum.OwnerId == user.Id) ? true : false;
+                return (forum.Owner.Id == user.Id) ? true : false;
             } catch (Exception)
             {
                 return false;

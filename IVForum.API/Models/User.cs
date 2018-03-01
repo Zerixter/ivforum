@@ -10,7 +10,8 @@ namespace IVForum.API.Models
 		[Key]
         public Guid Id { get; set; }
 
-        public string Avatar { get; set; } = Path.Combine("Assets", "Images", "avatar.png");
+        public string Description { get; set; }
+        public string Avatar { get; set; } = @"Resources/Images/avatar.png";
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }
 		public string TwitterUrl { get; set; }
