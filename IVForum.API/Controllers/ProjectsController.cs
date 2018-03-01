@@ -25,7 +25,7 @@ namespace IVForum.API.Controllers
             claimsPrincipal = httpContextAccessor.HttpContext.User;
         }
 
-        /*[HttpGet("get")]
+        [HttpGet("get")]
         public IEnumerable<Project> Get()
         {
             try {
@@ -36,13 +36,13 @@ namespace IVForum.API.Controllers
                 return null;
             }
         }
-
+        
         [HttpGet("get/{userid}")]
         public IEnumerable<Project> GetFromUser(string userid)
         {
-            var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).ToList();
+            var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList();
             return Projects;
-        }*/
+        }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ProjectViewModel model)
@@ -90,7 +90,73 @@ namespace IVForum.API.Controllers
             return new JsonResult(Missatge);
         }
 
-        /*[HttpPost("update")]
+        [HttpPost("vote")]
+        public async Task<IActionResult> Vote([FromBody]VoteViewModel model)
+        {
+            List<object> Errors = new List<object>();
+
+            Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).Include(x => x.Forum).FirstOrDefault();
+            if (ProjectToSearch is null)
+            {
+                Errors.Add(new { Message = "Aquest projecte no existeix." });
+                return BadRequest(Errors);
+            }
+
+            Forum ForumToSearch = ProjectToSearch.Forum;
+            if (ForumToSearch is null)
+            {
+                Errors.Add(new { Message = "Aquest projecte no esta inscrit a cap forum per poder votar-lo." });
+                return BadRequest(Errors);
+            }
+
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+            } catch (Exception)
+            {
+                Errors.Add(new { Message = "T'has de loguejar per poder votar." });
+                return BadRequest(Errors);
+            }
+
+            Wallet WalletToSearch = db.Wallets.Where(x => x.ForumId == ForumToSearch.Id && x.UserId == user.Id).FirstOrDefault();
+            if (WalletToSearch is null)
+            {
+                Errors.Add(new { Message = "El usuari no participa en el forum per podar votar en el projecte." });
+                return BadRequest(Errors);
+            }
+
+            BillOption BillToSearch = db.BillOptions.Where(x => x.Value == int.Parse(model.Value) && x.WalletId == WalletToSearch.Id).FirstOrDefault();
+            if (BillToSearch is null)
+            {
+                Errors.Add(new { Message = "El usuari no te aquesta opció de vot." });
+                return BadRequest(Errors);
+            }
+
+            Vote vote = new Vote
+            {
+                 ImgUri = BillToSearch.ImgUri,
+                 Name = BillToSearch.Name,
+                 Value = BillToSearch.Value,
+                 Project = ProjectToSearch
+            };
+
+            ProjectToSearch.TotalMoney += vote.Value;
+
+            db.Remove(BillToSearch);
+            db.Votes.Add(vote);
+            db.Projects.Update(ProjectToSearch);
+            db.SaveChanges();
+
+            var Message = new
+            {
+                Message = "El vot s'ha realitzat correctament."
+            };
+            return new JsonResult(Message);
+        }
+
+        [HttpPost("update")]
         public IActionResult Update([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
@@ -185,7 +251,7 @@ namespace IVForum.API.Controllers
             }
             return Errors;
         }
-        /*
+        
         private bool ValidateUser(Project project)
         {
             User user = null;
@@ -198,6 +264,6 @@ namespace IVForum.API.Controllers
             {
                 return false;
             }
-        }*/
+        }
     }
 }

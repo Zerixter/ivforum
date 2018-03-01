@@ -21,10 +21,9 @@ namespace IVForum.API.Models
 		public string Icon { get; set; }
 		public string Background { get; set; } = Path.Combine("Assets", "Images", "banner.jpg");
         public DateTime CreationDate { get; set; } = DateTime.Now;
+        public int TotalMoney { get; set; } = 0;
 		
 		public string WebsiteUrl { get; set; }
-		public string FacebookUrl { get; set; }
-		public string TwitterUrl { get; set; }
 		public string RepositoryUrl { get; set; }
 
 		public virtual Forum Forum { get; set; } = null;

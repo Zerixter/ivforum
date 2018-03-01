@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace IVForum.API
 {
@@ -101,7 +103,10 @@ namespace IVForum.API
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder.AddEntityFrameworkStores<DbHandler>().AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,7 +116,7 @@ namespace IVForum.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseExceptionHandler(
                 builder =>
                 {
