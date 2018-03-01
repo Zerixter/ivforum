@@ -23,9 +23,8 @@ namespace IVForum.API.Models
 
         public Guid OwnerId { get; set; }
         public virtual User Owner { get; set; }
-        public Guid WalletId { get; set; }
-        public virtual Wallet Wallet { get; set; }
+        public virtual List<Wallet> Wallets { get; set; } = new List<Wallet>();
         public virtual List<Project> Projects { get; set; } = new List<Project>();
-        public virtual List<User> Participants { get; set; } = new List<User>();
+        public virtual List<Transaction> Transactions { get; set; } = new List<Transaction>();
 	}
 }
