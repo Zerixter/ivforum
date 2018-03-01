@@ -1,0 +1,21 @@
+<div class="forum card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+    <img class="forum-banner card-img-top" src="./assets/img/forum/banner.jpg" alt="">
+    <div class="card-body">
+        <h2 class="card-title">{{forum.title}}</h2>
+
+        <p-tabView class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <p-tabPanel header="Descripció">
+                <div class="card-text">
+                    {{forum.description}}
+                </div>
+                <button pButton type="button" label="Participar" class="ui-button-success offset-sm-4 offset-md-4 offset-lg-4 col-12 col-sm-4 col-md-4 col-lg-4"></button>
+            </p-tabPanel>
+            <p-tabPanel header="Projectes">
+                <div *ngFor="let project of projects" class="project">
+                    
+                </div>
+            </p-tabPanel>
+            
+        </p-tabView>
+    </div>
+</div>

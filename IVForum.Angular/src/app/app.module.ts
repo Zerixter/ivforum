@@ -1,6 +1,7 @@
+import { UserDetailsService } from './services/user-details-service';
 import { FooterComponent } from './views/shared/footer/footer.component';
 import { appRouting } from './app-navigation.module';
-
+import { NgForOf } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
@@ -16,6 +17,13 @@ import { HomeComponent } from './views/home/home-body.component';
 import { HttpClient, HttpHandler, HttpClientModule, HTTP_INTERCEPTORS  } from '@angular/common/http';
 import { AuthInterceptor } from './services/http-interceptor.service';
 import { AuthGuard } from './services/auth.guard';
+import { GlobalEventsManager } from './services/globalEvents.service';
+import { ExplorerComponent } from './views/explorar/explorer.component';
+import { ForumService } from './services/forum.service';
+import { ForumComponent } from './views/forum/forum.component';
+import { TabViewModule } from 'primeng/tabview';
+import { ProyectoService } from './services/proyecto.service';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -24,8 +32,9 @@ import { AuthGuard } from './services/auth.guard';
     RegisterModal,
     LoginModal,
     HomeComponent,
-    FooterComponent
-    
+    FooterComponent,
+    ExplorerComponent,
+    ForumComponent
   ],
   imports: [
     BrowserModule,
@@ -33,18 +42,24 @@ import { AuthGuard } from './services/auth.guard';
     HttpModule,
     appRouting,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TabViewModule,
+    ButtonModule
   ],
   providers: [
     UserService,
     ConfigService,
     HttpClient,
-    AuthGuard,
     {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
-    }
+    },
+    AuthGuard,
+    ForumService,
+    GlobalEventsManager,
+    UserDetailsService,
+    ProyectoService
   ],
   bootstrap: [AppComponent]
 })

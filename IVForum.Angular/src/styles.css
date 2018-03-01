@@ -1,4 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
+body{
+    background-color: #e7e7de !important;
+}
+
 .container-fluid {
     padding: 0 0 !important;
+    min-height: 100vh;
 }
+
+.home-head-box {
+    background-color: #444b4b;
+    height: 400px;
+}
+
+.home-circle {
+    height: 200px;
+    width: 200px;
+}
+
+.home-body{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.home-box{
+    margin-top: 20px;
+}
+
+.relleno-sm{
+    height: 150px;
+}
+
+.list-explorer {
+    margin-top: 15px;
+}
+.menu-explorer {
+    height: 100vh;
+    box-sizing: border-box;
+    display: block;
+    background-color: #00587a !important;
+}
+#body-explorer{
+    margin-right: 0 !important;
+}
+.lat-menu-explorer{
+    flex-flow: column wrap !important;
+    flex-direction: column !important;
+}
+

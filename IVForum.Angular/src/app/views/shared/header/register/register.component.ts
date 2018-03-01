@@ -33,8 +33,11 @@ export class RegisterModal implements OnInit {
     }
 
     onSubmit(){
-        if(this._userService.register(this.email,this.password,this.name,this.surname)){
-            this.router.navigateByUrl('/login');
-        }
+        this._userService.register(this.email,this.password,this.name,this.surname)
+            .subscribe( data => {
+                if (data) {
+                    this.router.navigateByUrl('/login');
+                }
+            });
     }
 }

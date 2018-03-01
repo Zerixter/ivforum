@@ -1,0 +1,17 @@
+.list-explorer {
+    margin-top: 15px;
+}
+.menu-explorer {
+    height: 100vh;
+    box-sizing: border-box;
+    display: block;
+    background-color: #00587a !important;
+}
+#body-explorer{
+    margin-right: 0 !important;
+}
+.lat-menu-explorer{
+    flex-flow: column wrap !important;
+    flex-direction: column !important;
+}
+

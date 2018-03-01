@@ -6,20 +6,23 @@ import 'rxjs/add/operator/catch';
 import { UserService } from './users.service';
 import { Router } from '@angular/router';
 
-
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+    
     intercept(req: HttpRequest<any>,
         next: HttpHandler): Observable<HttpEvent<any>> {
-
-        const idToken = localStorage.getItem("currentUser");
-
+            console.log("interceptor");
+        var idToken
+        try{
+         idToken= localStorage.getItem("currentUser");
+        }catch(err){
+            console.log(err);
+        }
         if (idToken) {
             const cloned = req.clone({
                 headers: req.headers.set("Authorization",
-                    "Bearer " + idToken)
+                    "Bearer " + JSON.parse(idToken).token.auth_token)
             });
-            console.log(cloned);
             return next.handle(cloned);
         }
         else {

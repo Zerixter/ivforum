@@ -6,6 +6,7 @@ import { BaseService } from "./base.service";
 
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
 
 // Add the RxJS Observable operators we need in this app.
 
@@ -19,7 +20,7 @@ export class UserService extends BaseService {
 
     baseUrl: string = '';
     
-    public token: string = null;
+    public token = null;
 
     // Observable navItem source
 
@@ -34,30 +35,31 @@ export class UserService extends BaseService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         console.log("patata");
-        return this.http.post("http://localhost:57570/api/accounts", {
+        return this.http.post("http://localhost:57570/api/account/register", {
             name: nom,
             surname: cognom,
             email: mail,
             password: contraseña
         })
-            .subscribe(
+            .map(
                 res => {
-                    console.log(res);
+                    console.log("registro corecto");
                     return true;
                 },
                 err => {
                     console.log(err);
+                    return false;
                 }
             );
     }
 
-    login(userName: string, password: string) {
-        console.log("intenta");
-        this.http.post('http://localhost:57570/api/auth', { userName, password })
-            .subscribe(
+    login(email: string, password: string) {
+        return this.http.post('http://localhost:57570/api/account/login', { email, password })
+        .map(
                 res => {
-                    console.log(res);
-                    this.setSession(res);
+                    console.log("login correcto!");
+                    this.token = res;
+                    localStorage.setItem('currentUser', JSON.stringify({ email: email, token: this.token }));
                     return true;
                 },
                 err => {
@@ -67,13 +69,9 @@ export class UserService extends BaseService {
             )
     }
 
-    private setSession(authResult) {
-        this.token = authResult.auth_token;
-        localStorage.setItem('currentUser', authResult.auth_token);
-    }
 
     islogged(){
-        if (this.token != null){
+        if (localStorage.getItem('currentUser') != null){
             return true;
         }
         else {
@@ -82,7 +80,6 @@ export class UserService extends BaseService {
     }
 
     logout(): void {
-        localStorage.removeItem('currentUser');
-        this.http.get(URL + 'logout');
+        localStorage.removeItem('currentUser');    
     }
 }
