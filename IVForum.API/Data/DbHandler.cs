@@ -52,13 +52,12 @@ namespace IVForum.API.Data
             builder.Entity<Forum>()
                 .HasMany(x => x.Projects)
                 .WithOne(x => x.Forum)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
             #region Project
             builder.Entity<Project>()
                     .HasOne(x => x.Forum)
-                    .WithMany(x => x.Projects)
-                    .HasForeignKey(x => x.ForumId);
+                    .WithMany(x => x.Projects);
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
                 .WithMany(x => x.Projects)

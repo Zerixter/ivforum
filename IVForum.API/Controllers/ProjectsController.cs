@@ -13,19 +13,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [Route("api/projects")]
+    [Route("api/project")]
     public class ProjectsController : Controller
     {
         private readonly DbHandler db;
         private readonly ClaimsPrincipal claimsPrincipal;
 
-        public ProjectsController(DbHandler _db, ClaimsPrincipal _claimsPrincipal)
+        public ProjectsController(DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
             db = _db;
-            claimsPrincipal = _claimsPrincipal;
+            claimsPrincipal = httpContextAccessor.HttpContext.User;
         }
 
-        [HttpGet("get")]
+        /*[HttpGet("get")]
         public IEnumerable<Project> Get()
         {
             try {
@@ -42,7 +42,7 @@ namespace IVForum.API.Controllers
         {
             var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).ToList();
             return Projects;
-        }
+        }*/
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ProjectViewModel model)
@@ -74,9 +74,14 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest(Errors);
             }
-
-            db.Projects.Add(project);
-            db.SaveChanges();
+            try
+            {
+                db.Projects.Add(project);
+                db.SaveChanges();
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
 
             var Missatge = new
             {
@@ -85,7 +90,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Missatge);
         }
 
-        [HttpPost("update")]
+        /*[HttpPost("update")]
         public IActionResult Update([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
@@ -161,7 +166,7 @@ namespace IVForum.API.Controllers
             }
 
             return new JsonResult(ProjectToSelect);
-        }
+        }*/
 
         private List<object> ValidateProject(Project project)
         {
@@ -180,7 +185,7 @@ namespace IVForum.API.Controllers
             }
             return Errors;
         }
-
+        /*
         private bool ValidateUser(Project project)
         {
             User user = null;
@@ -193,6 +198,6 @@ namespace IVForum.API.Controllers
             {
                 return false;
             }
-        }
+        }*/
     }
 }

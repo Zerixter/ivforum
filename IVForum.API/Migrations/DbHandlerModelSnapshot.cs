@@ -88,7 +88,7 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("FacebookUrl");
 
-                    b.Property<Guid>("ForumId");
+                    b.Property<Guid?>("ForumId");
 
                     b.Property<string>("Icon");
 

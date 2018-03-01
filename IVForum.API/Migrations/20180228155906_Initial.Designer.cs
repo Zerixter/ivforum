@@ -12,7 +12,7 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180227201142_Initial")]
+    [Migration("20180228155906_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,7 +89,7 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("FacebookUrl");
 
-                    b.Property<Guid>("ForumId");
+                    b.Property<Guid?>("ForumId");
 
                     b.Property<string>("Icon");
 

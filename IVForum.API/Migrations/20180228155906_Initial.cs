@@ -213,7 +213,7 @@ namespace IVForum.API.Migrations
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: false),
                     FacebookUrl = table.Column<string>(nullable: true),
-                    ForumId = table.Column<Guid>(nullable: false),
+                    ForumId = table.Column<Guid>(nullable: true),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
@@ -285,7 +285,7 @@ namespace IVForum.API.Migrations
                         column: x => x.WalletId,
                         principalTable: "Wallets",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Bills_Forums_ForumId",
                         column: x => x.ForumId,
