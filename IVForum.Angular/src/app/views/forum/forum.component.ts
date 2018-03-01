@@ -2,6 +2,7 @@ import { UserService } from './../../services/users.service';
 import { Component, OnInit } from '@angular/core';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
+import { ProyectoService } from '../../services/proyecto.service';
 
 @Component({
     selector: 'forumComponent',
@@ -12,9 +13,10 @@ import { Router } from '@angular/router';
 export class ForumComponent implements OnInit {
     
     private forum;
-
+    private projects = [];
     constructor(
         private _usersService: UserService,
+        private _projectService: ProyectoService,
         private _forumService: ForumService,
         private _router: Router
     ) { }

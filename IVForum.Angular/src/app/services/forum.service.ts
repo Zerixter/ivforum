@@ -34,7 +34,7 @@ export class ForumService {
         })
             .map(
                 res => {
-                    console.log("    Enviado");
+                    console.log("Enviado");
                     return true;
                 },
                 err => {

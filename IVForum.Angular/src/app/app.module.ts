@@ -21,6 +21,9 @@ import { GlobalEventsManager } from './services/globalEvents.service';
 import { ExplorerComponent } from './views/explorar/explorer.component';
 import { ForumService } from './services/forum.service';
 import { ForumComponent } from './views/forum/forum.component';
+import { TabViewModule } from 'primeng/tabview';
+import { ProyectoService } from './services/proyecto.service';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { ForumComponent } from './views/forum/forum.component';
     HttpModule,
     appRouting,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TabViewModule,
+    ButtonModule
   ],
   providers: [
     UserService,
@@ -54,6 +59,7 @@ import { ForumComponent } from './views/forum/forum.component';
     ForumService,
     GlobalEventsManager,
     UserDetailsService,
+    ProyectoService
   ],
   bootstrap: [AppComponent]
 })

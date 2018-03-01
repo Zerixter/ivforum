@@ -232,7 +232,7 @@ namespace IVForum.API.Controllers
             }
 
             return new JsonResult(ProjectToSelect);
-        }*/
+        }
 
         private List<object> ValidateProject(Project project)
         {
