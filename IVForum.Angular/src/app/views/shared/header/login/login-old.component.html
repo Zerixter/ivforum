@@ -1,0 +1,23 @@
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="registerTitleLabel">Login:</h5>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="capitan@conbarco.com" [(ngModel)]="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="email" class="form-control" id="password" name="password" placeholder="capitan@conbarco.com" [(ngModel)]="email">
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>

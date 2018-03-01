@@ -1,0 +1,32 @@
+<div class="row">
+    <br>
+    <h1 class="col-sm-4 offset-sm-2">Entrar</h1>
+    <br>
+</div>
+<div class="row">
+    <div class="col-sm-4 offset-sm-2">
+        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+            <div class="form-group">
+                <label for="email">Direccio d'Email:</label>
+                <input type="email" formControlName="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" [(ngModel)]="email"
+                    placeholder="paco@mail.com">
+                <div style="color:red;" *ngIf="loginForm.controls.email.invalid && loginForm.controls.email.touched">
+                    La direcció d'e-mail introduïda no es valida!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Contrasenya:</label>
+                <input type="password" formControlName="password" class="form-control" id="password" name="password" [(ngModel)]="password"
+                    aria-describedby="emailHelp" placeholder="*********">
+                <div style="color:red;" *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched">
+                    La contrasenya introduïda no es valida!
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" [disabled]="!loginForm.valid">Entrar</button>
+        </form>
+    </div>
+    <div class="col-sm-4 offset-sm-1">
+        <br>
+        <button type="button" class="btn btn-primary btn-block">Google</button>
+    </div>
+</div>
