@@ -44,6 +44,35 @@ namespace IVForum.API.Controllers
             return Forums;
         }
 
+        [HttpPost("subscribe")]
+        public IActionResult Subscribe(string ForumId, string ProjectId)
+        {
+            List<object> Errors = new List<object>();
+            Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == ProjectId).FirstOrDefault();
+            if (ProjectToSearch is null)
+            {
+                Errors.Add(new { Message = "No existeix aquest project" });
+                return BadRequest(Errors);
+            }
+
+            Forum ForumToSearch = db.Forums.Where(x => x.Id.ToString() == ForumId).FirstOrDefault();
+            if (ForumToSearch is null)
+            {
+                Errors.Add(new { Message = "No existeix aquest forum." });
+                return BadRequest(Errors);
+            }
+
+            ProjectToSearch.Forum = ForumToSearch;
+            db.Update(ProjectToSearch);
+            db.SaveChanges();
+
+            var Message = new
+            {
+                Message = "S'ha subscrit aquest projecte al forum correctament."
+            };
+            return new JsonResult(Message);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ForumViewModel model)
         {
