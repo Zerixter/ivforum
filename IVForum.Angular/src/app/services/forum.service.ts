@@ -49,7 +49,6 @@ export class ForumService {
     }
 
     getSelectedForum() {
-        console.log(this.selectedForum);
         return this.selectedForum;
     }
 }

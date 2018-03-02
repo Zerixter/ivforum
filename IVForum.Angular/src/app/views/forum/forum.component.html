@@ -8,7 +8,7 @@
                 <div class="card-text">
                     {{forum.description}}
                 </div>
-                <button pButton type="button" label="Participar" class="ui-button-success offset-sm-4 offset-md-4 offset-lg-4 col-12 col-sm-4 col-md-4 col-lg-4"></button>
+                
             </p-tabPanel>
             <p-tabPanel header="Projectes">
                 <div *ngFor="let project of projects" class="project">
@@ -17,5 +17,9 @@
             </p-tabPanel>
             
         </p-tabView>
+        
+    </div>
+    <div class="card-footer">
+        <button pButton type="button" label="Participar" class="ui-button-success offset-sm-4 offset-md-4 offset-lg-4 col-12 col-sm-4 col-md-4 col-lg-4" (click)="subscribe()"></button>
     </div>
 </div>

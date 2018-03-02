@@ -5,8 +5,8 @@ import { HttpClient } from '@angular/common/http';
 export class ProyectoService {
     constructor(private http: HttpClient) {
     }
-    getForums(filter) {
-        this.http.get("http://localhost:57570/api/proyecto/get",filter)
+    getProjects(filter) {
+        this.http.get("http://localhost:57570/api/project/get",filter)
         .subscribe(
             res => {
                 console.log(res);
@@ -18,12 +18,25 @@ export class ProyectoService {
         );
     }
 
-    setForum(proyecto) {
+    getProjectForum(id) {
+        this.http.get("http://localhost:57570/api/forum/get/"+id+"/projects")
+        .subscribe(
+            res => {
+                console.log(res);
+                return res;
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
+    setProject(proyecto) {
         var body;
-        return this.http.post("http://localhost:57570/api/proyecto/post",proyecto)
+        return this.http.post("http://localhost:57570/api/project/create",proyecto)
             .map(
                 res => {
-                    console.log("Forum Enviado");
+                    console.log("Proyecto Enviado");
                     return true;
                 },
                 err => {
@@ -32,4 +45,5 @@ export class ProyectoService {
                 }
             );
     }
+
 }

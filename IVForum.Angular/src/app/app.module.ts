@@ -24,6 +24,7 @@ import { ForumComponent } from './views/forum/forum.component';
 import { TabViewModule } from 'primeng/tabview';
 import { ProyectoService } from './services/proyecto.service';
 import { ButtonModule } from 'primeng/button';
+import { WalletService } from './services/wallet.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { ButtonModule } from 'primeng/button';
     ForumService,
     GlobalEventsManager,
     UserDetailsService,
-    ProyectoService
+    ProyectoService,
+    WalletService
   ],
   bootstrap: [AppComponent]
 })
