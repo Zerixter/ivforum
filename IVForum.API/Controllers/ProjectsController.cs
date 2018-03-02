@@ -45,6 +45,18 @@ namespace IVForum.API.Controllers
             return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList(); ;
         }
 
+        [HttpGet("select/{project_id}")]
+        public IActionResult Select(string project_id)
+        {
+            var ProjectToSelect = db.Projects.Where(x => x.Id.ToString() == project_id).Include(x => x.Owner).FirstOrDefault();
+            if (ProjectToSelect is null)
+            {
+                return BadRequest(Message.GetMessage("El projecte que s'intenta seleccionar no existeix."));
+            }
+
+            return new JsonResult(ProjectToSelect);
+        }
+
         [HttpPost("create")]
         public IActionResult Create([FromBody]ProjectViewModel model)
         {
@@ -174,18 +186,6 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
 
             return new JsonResult(Message.GetMessage("S'ha eliminat el projecte correctament."));
-        }
-
-        [HttpPost("select")]
-        public IActionResult Select([FromBody]Project project)
-        {
-            var ProjectToSelect = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
-            if (ProjectToSelect is null)
-            {
-                return BadRequest(Message.GetMessage("El projecte que s'intenta seleccionar no existeix."));
-            }
-
-            return new JsonResult(ProjectToSelect);
         }
 
         [HttpPost("view")]
