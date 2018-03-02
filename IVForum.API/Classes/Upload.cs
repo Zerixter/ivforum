@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-namespace IVForum.API.Controllers
+namespace IVForum.API.Classes
 {
-    [Route("api/upload")]
-    public class UploadController : Controller
+    public class Upload
     {
-        [HttpPost]
-        public string UploadFile(IFormFile file)
+        public static string UploadFile(IFormFile file)
         {
-            List<object> Errors = new List<object>();
             if (file == null || file.Length == 0)
                 return null;
 

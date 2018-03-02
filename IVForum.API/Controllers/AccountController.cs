@@ -1,4 +1,5 @@
 ﻿using IVForum.API.Auth;
+using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Helpers;
 using IVForum.API.Models;
@@ -224,6 +225,102 @@ namespace IVForum.API.Controllers
                 Errors.Add(new { Message = "S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)." });
                 return BadRequest(Errors);
             }
+        }
+
+        [HttpPost("subscribe")]
+        public async Task<IActionResult> Subscribe([FromBody]Forum forum)
+        {
+            List<object> Errors = new List<object>();
+
+            Forum ForumToSearch = db.Forums.Where(x => x.Id == forum.Id).SingleOrDefault();
+            if (ForumToSearch is null)
+            {
+                Errors.Add(new { Message = "Aquest forum no existeix." });
+                return BadRequest(Errors);
+            }
+
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+            }
+            catch (Exception)
+            {
+                Errors.Add(new { Message = "No hi ha cap usuari loguejat." });
+                return BadRequest(Errors);
+            }
+
+            Wallet wallet = new Wallet
+            {
+                Id = Guid.NewGuid(),
+                Forum = ForumToSearch,
+                User = user
+            };
+
+            db.Wallets.Add(wallet);
+            db.SaveChanges();
+
+            GetBillOptions(ForumToSearch, wallet);
+
+            var Message = new
+            {
+                Message = "El usuari s'ha subscrit exitosament a aquest forum."
+            };
+            return new JsonResult(Message);
+        }
+
+        [HttpPost("avatar")]
+        public IActionResult UpdateAvatar(IFormFile file)
+        {
+            List<object> Errors = new List<object>();
+            var Path = Upload.UploadFile(file);
+            if (Path is null)
+            {
+                Errors.Add(new { Message = "Ha sorgit un error al intentar pujar la imatge en el servidor." });
+                return BadRequest(Errors);
+            }
+
+            User user = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
+            }
+            catch (Exception)
+            {
+                var Error = new
+                {
+                    Message = "S'ha de loguejar por poder canviar la imatge de perfil."
+                };
+                return BadRequest(Error);
+            }
+
+            user.Avatar = Path;
+            db.DbUsers.Update(user);
+            db.SaveChanges();
+
+            var Message = new
+            {
+                Message ="aaaaaaaaaaa"
+            };
+            return new JsonResult(Message);
+        }
+
+        public void GetBillOptions(Forum forum, Wallet wallet)
+        {
+            List<Transaction> Transactions = db.Transactions.Where(x => x.ForumId == forum.Id).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                BillOption option = new BillOption
+                {
+                    Name = transaction.Name,
+                    Value = transaction.Value,
+                    Wallet = wallet
+                };
+                db.BillOptions.Add(option);
+            }
+            db.SaveChanges();
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

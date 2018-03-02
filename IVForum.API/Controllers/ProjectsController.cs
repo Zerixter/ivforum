@@ -29,7 +29,7 @@ namespace IVForum.API.Controllers
         public IEnumerable<Project> Get()
         {
             try {
-                return db.Projects.ToArray();
+                return db.Projects.Include(x => x.Owner).ToArray();
             } catch (Exception)
             {
 
@@ -203,7 +203,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
-            Project ProjectToDelete = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
+            Project ProjectToDelete = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
             if (ProjectToDelete is null)
             {
                 Errors.Add(new { Message = "El forum que s'intenta eliminar no existeix." });
@@ -225,7 +225,7 @@ namespace IVForum.API.Controllers
         {
             List<object> Errors = new List<object>();
 
-            var ProjectToSelect = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
+            var ProjectToSelect = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
             if (ProjectToSelect is null)
             {
                 Errors.Add(new { Message = "El projecte que s'intenta seleccionar no existeix." });
@@ -259,7 +259,7 @@ namespace IVForum.API.Controllers
             {
                 var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
                 user = db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value).GetAwaiter().GetResult();
-                return (project.OwnerId == user.Id) ? true : false;
+                return (project.Owner.Id == user.Id) ? true : false;
             } catch (Exception)
             {
                 return false;

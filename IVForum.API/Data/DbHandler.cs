@@ -36,13 +36,12 @@ namespace IVForum.API.Data
                 .WithOne(x => x.Owner)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.Entity<User>()
-                .HasMany(x => x.Wallets); 
+                .HasMany(x => x.Wallets);
             #endregion
             #region Forum
             builder.Entity<Forum>()
                     .HasOne(x => x.Owner)
-                    .WithMany(x => x.Forums)
-                    .HasForeignKey(x => x.OwnerId);
+                    .WithMany(x => x.Forums);
             builder.Entity<Forum>()
                 .HasMany(x => x.Wallets)
                 .WithOne(x => x.Forum);
@@ -60,8 +59,7 @@ namespace IVForum.API.Data
                     .WithMany(x => x.Projects);
             builder.Entity<Project>()
                 .HasOne(x => x.Owner)
-                .WithMany(x => x.Projects)
-                .HasForeignKey(x => x.OwnerId);
+                .WithMany(x => x.Projects);
             builder.Entity<Project>()
                 .HasMany(x => x.Votes)
                 .WithOne(x => x.Project); 
