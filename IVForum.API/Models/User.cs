@@ -23,5 +23,5 @@ namespace IVForum.API.Models
         public virtual List<Forum> Forums { get; set; } = new List<Forum>();
 		public virtual List<Project> Projects { get; set; } = new List<Project>();
         public virtual List<Wallet> Wallets { get; set; } = new List<Wallet>();
-	}
+    }
 }

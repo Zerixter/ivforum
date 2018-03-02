@@ -194,6 +194,57 @@ namespace IVForum.API.Controllers
             return new OkObjectResult(jwt);
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromBody]UserViewModel model)
+        {
+            List<object> Errors = new List<object>();
+
+            User UserToEdit = null;
+            try
+            {
+                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
+                UserToEdit = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
+            } catch (Exception)
+            {
+                Errors.Add(new { Message = "Per poder modificar les dades d'un usuari s'ha de loguejar primer." });
+                return BadRequest(Errors);
+            }
+
+            if (model.Description != null)
+            {
+                if (!(model.Description.Length > 1000))
+                {
+                    UserToEdit.Description = model.Description;
+                }
+            }
+
+            if (model.FacebookUrl != null)
+            {
+                UserToEdit.FacebookUrl = model.FacebookUrl;
+            }
+            if (model.RepositoryUrl != null)
+            {
+                UserToEdit.RepositoryUrl = model.RepositoryUrl;
+            }
+            if (model.TwitterUrl != null)
+            {
+                UserToEdit.TwitterUrl = model.TwitterUrl;
+            }
+            if (model.WebsiteUrl != null)
+            {
+                UserToEdit.WebsiteUrl = model.WebsiteUrl;
+            }
+
+            db.DbUsers.Update(UserToEdit);
+            db.SaveChanges();
+
+            var Message = new
+            {
+                Message = "S'ha modificat les dades del usuari correctament."
+            };
+            return new JsonResult(Message);
+        }
+
         [HttpGet("delete")]
         public async Task<IActionResult> Delete()
         {
@@ -302,7 +353,7 @@ namespace IVForum.API.Controllers
 
             var Message = new
             {
-                Message ="aaaaaaaaaaa"
+                Message ="S'ha actualitzat el avatar correctament."
             };
             return new JsonResult(Message);
         }

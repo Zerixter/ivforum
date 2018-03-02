@@ -40,8 +40,33 @@ namespace IVForum.API.Controllers
         [HttpGet("get/{userid}")]
         public IEnumerable<Forum> GetFromUser(string userid)
         {
-            var Forums = db.Forums.Where(x => x.Owner.IdentityId == userid).ToList();
+            var Forums = db.Forums.Where(x => x.Owner.IdentityId == userid).ToArray();
             return Forums;
+        }
+
+        [HttpGet("get/subscribed/{id_user}")]
+        public IEnumerable<Forum> GetForumsSubscribedUser(string id_user)
+        {
+            User user = null;
+            try
+            {
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == id_user).GetAwaiter().GetResult();
+                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id == user.Id).Include(x => x.User).ToList();
+                List<Forum> Forums = new List<Forum>();
+                foreach (var wallet in Wallets)
+                {
+                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).FirstOrDefault();
+                    if (forum != null)
+                    {
+                        Forums.Add(forum);
+                    }
+                }
+                return Forums;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpGet("get/{id_forum}/projects")]
