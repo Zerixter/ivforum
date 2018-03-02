@@ -188,6 +188,22 @@ namespace IVForum.API.Controllers
             return new JsonResult(ProjectToSelect);
         }
 
+        [HttpPost("view")]
+        public IActionResult View([FromBody]ViewsViewModel model)
+        {
+            Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == model.ProjectId);
+            if (project is null)
+            {
+                return BadRequest(Message.GetMessage("El projecte no existeix"));
+            }
+
+            project.Views++;
+            db.Projects.Update(project);
+            db.SaveChanges();
+
+            return new OkObjectResult(null);
+        }
+
         private Project UpdateProject(Project ProjectToEdit, Project project)
         {
             if (project.Name != null)

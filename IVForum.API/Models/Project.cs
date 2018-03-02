@@ -22,6 +22,7 @@ namespace IVForum.API.Models
 		public string Background { get; set; } = @"Resources/Images/banner.jpg";
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public int TotalMoney { get; set; } = 0;
+        public int Views { get; set; } = 0;
 		
 		public string WebsiteUrl { get; set; }
 		public string RepositoryUrl { get; set; }

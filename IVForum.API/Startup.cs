@@ -19,6 +19,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace IVForum.API
 {
