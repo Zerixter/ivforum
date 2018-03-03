@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IVForum.API.Controllers
 {
-    [Route("api/subscribtion")]
-    public class SubscribtionController : Controller
+    [Route("api/subscription")]
+    public class SubscriptionController : Controller
     {
         private readonly DbHandler db;
         private readonly UserGetter userGetter;
 
-        public SubscribtionController(DbHandler _db, IHttpContextAccessor httpContextAccessor)
+        public SubscriptionController(DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
             db = _db;
             userGetter = new UserGetter(db, httpContextAccessor);
