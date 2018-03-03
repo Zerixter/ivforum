@@ -5,11 +5,10 @@ import { HttpClient } from '@angular/common/http';
 export class ProyectoService {
     constructor(private http: HttpClient) {
     }
-    getForums(filter) {
-        this.http.get("http://localhost:57570/api/proyecto/get",filter)
+    getProjects(filter) {
+        return this.http.get("http://localhost:57570/api/project/get",filter)
         .subscribe(
             res => {
-                console.log(res);
                 return res;
             },
             err => {
@@ -18,12 +17,39 @@ export class ProyectoService {
         );
     }
 
-    setForum(proyecto) {
+    getProjectForum(idForum) {
+        return this.http.get("http://localhost:57570/api/forum/get/"+idForum+"/projects")
+        .map(
+            res => {
+                return res;
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
+    getProjectUser(idUser) {
+        return this.http.get("http://localhost:57570/api/project/get/"+idUser)
+        .map(
+            res => {
+                return res;
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
+    setProject(title:string,name:string,description:string) {
         var body;
-        return this.http.post("http://localhost:57570/api/proyecto/post",proyecto)
+        return this.http.post("http://localhost:57570/api/project/create",{
+            title:title,
+            name:name,
+            description:description
+        })
             .map(
                 res => {
-                    console.log("Forum Enviado");
                     return true;
                 },
                 err => {
@@ -32,4 +58,5 @@ export class ProyectoService {
                 }
             );
     }
+
 }

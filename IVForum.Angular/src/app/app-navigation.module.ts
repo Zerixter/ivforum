@@ -15,7 +15,7 @@ const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'register', component: RegisterModal},
     { path: 'login', component: LoginModal},
-    { path: 'explorer', component: ExplorerComponent,canActivate: [AuthGuard]},
+    { path: 'explorer', component: ExplorerComponent},
     { path: 'forum', component: ForumComponent },
     { path: '**', component: HomeComponent },
     //{ path: 'path/:routeParam', component: MyComponent },

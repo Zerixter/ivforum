@@ -44,12 +44,30 @@ export class ForumService {
             );
     }
 
+    myForums(idUser:string) {
+        return this.http.get("http://localhost:57570/api/forum/get/"+idUser)
+            .map(
+                res => console.log(res),
+                err => console.log(err)
+            );
+    }
+
     setSelectForum(forum) {
         this.selectedForum = forum;
     }
 
     getSelectedForum() {
-        console.log(this.selectedForum);
         return this.selectedForum;
+    }
+
+    asignProject(forumId,projectId) {
+        return this.http.post("http://localhost:57570/api/forum/subscribe",{
+            forumId:forumId,
+            projectId:projectId
+        })
+            .map(
+                res => res,
+                err => console.log(err)
+            );
     }
 }

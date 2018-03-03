@@ -1,21 +1,102 @@
 <div class="forum card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
     <img class="forum-banner card-img-top" src="./assets/img/forum/banner.jpg" alt="">
     <div class="card-body">
-        <h2 class="card-title">{{forum.title}}</h2>
+        <div class="row">
+            <h2 class="card-title col-3 col-sm-3 col-md-3 col-lg-3">{{forum.title}}</h2>
 
+        </div>
         <p-tabView class="col-12 col-sm-12 col-md-12 col-lg-12">
             <p-tabPanel header="Descripció">
                 <div class="card-text">
                     {{forum.description}}
                 </div>
-                <button pButton type="button" label="Participar" class="ui-button-success offset-sm-4 offset-md-4 offset-lg-4 col-12 col-sm-4 col-md-4 col-lg-4"></button>
             </p-tabPanel>
             <p-tabPanel header="Projectes">
                 <div *ngFor="let project of projects" class="project">
-                    
+                    <div class="card">
+                        <div class="row">
+                            <img class="card-img-left rounded col-2 col-sm-2 col-md-2 col-lg-2" src="./assets/project/default-project.png">
+                            <div class="card-body">
+                                <h5 class="card-title">{{project.title}}</h5>
+                                <p class="card-text">{{project.description}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </p-tabPanel>
-            
+
         </p-tabView>
+
+    </div>
+    <div class="card-footer" *ngIf="_usersService.islogged();then logged;">
+        
     </div>
 </div>
+
+<div class="modal fade" id="createProject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">Nou projecte:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group  col-6 col-sm-6 col-md-6 col-lg-6">
+                        <label for="title">Titol</label>
+                        <input class="form-control" id="title" [(ngModel)]="title">
+                    </div>
+                    <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                        <label for="name">Nom</label>
+                        <input class="form-control" id="name" [(ngModel)]="name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+                        <label for="description">Descripcio</label>
+                        <textarea class="form-control" id="description" rows='3' [(ngModel)]="description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tancar</button>
+                <button type="button" class="btn btn-primary" (click)="createProject()" data-toggle="modal" data-target="#createProject"
+                    data-dismiss="modal">Desar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="listarProjects" tabindex="-1" role="dialog" aria-labelledby="listarProjects" aria-hidden="true">
+    <div class="modal-dialog projectModal col-12 col-sm-10 col-md-10 col-lg-10" role="document">
+        <div class="modal-content col-12 col-sm-10 col-md-10 col-lg-10s">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">Meus projectes:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row col-12 col-sm-12 col-md-12 col-lg-12" *ngFor="let pro of myProjects">
+                    <div class="card col-12 col-sm-12 col-md-12 col-lg-12" (click)="participate(pro)" data-dismiss="modal">
+                        <div class="card-body col-12 col-sm-12 col-md-12 col-lg-12">
+                            <h5 class="card-title">{{pro.title}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createProject" data-dismiss="modal">Nou Projecte</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tancar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template  #logged>
+        <p-messages [(value)]="msgs"></p-messages>
+        <button pButton type="button" label="Participar" (click)="subscrib()"></button>
+        <button pButton type="button" label="Afegir projecte" data-toggle="modal" (click)="getMyProjects()" data-target="#listarProjects" class="ui-button-success"></button>
+</ng-template>

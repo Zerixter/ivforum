@@ -24,6 +24,11 @@ import { ForumComponent } from './views/forum/forum.component';
 import { TabViewModule } from 'primeng/tabview';
 import { ProyectoService } from './services/proyecto.service';
 import { ButtonModule } from 'primeng/button';
+import { WalletService } from './services/wallet.service';
+import { ScrollPanelModule } from 'primeng/scrollPanel';
+import { SharedModule } from 'primeng/primeng';
+import {MessageService} from 'primeng/components/common/messageservice';
+import {MessagesModule} from 'primeng/messages';
 
 @NgModule({
   declarations: [
@@ -44,7 +49,10 @@ import { ButtonModule } from 'primeng/button';
     HttpClientModule,
     ReactiveFormsModule,
     TabViewModule,
-    ButtonModule
+    ButtonModule,
+    SharedModule,
+    ScrollPanelModule,
+    MessagesModule
   ],
   providers: [
     UserService,
@@ -59,7 +67,9 @@ import { ButtonModule } from 'primeng/button';
     ForumService,
     GlobalEventsManager,
     UserDetailsService,
-    ProyectoService
+    ProyectoService,
+    WalletService,
+    MessageService
   ],
   bootstrap: [AppComponent]
 })
