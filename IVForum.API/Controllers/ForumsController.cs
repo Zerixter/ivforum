@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
@@ -18,11 +19,13 @@ namespace IVForum.API.Controllers
     {
         private readonly DbHandler db;
         private readonly ClaimsPrincipal claimsPrincipal;
+        private readonly UserGetter userGetter;
 
         public ForumsController(DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
             db = _db;
             claimsPrincipal = httpContextAccessor.HttpContext.User;
+            userGetter = new UserGetter(db, httpContextAccessor);
         }
 
         [HttpGet("get")]
@@ -31,7 +34,8 @@ namespace IVForum.API.Controllers
             try
             {
                 return db.Forums.Include(x => x.Owner).ToArray();
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -40,8 +44,32 @@ namespace IVForum.API.Controllers
         [HttpGet("get/{userid}")]
         public IEnumerable<Forum> GetFromUser(string userid)
         {
-            var Forums = db.Forums.Where(x => x.Owner.IdentityId == userid).ToList();
-            return Forums;
+            return db.Forums.Where(x => x.Owner.IdentityId == userid).ToArray();
+        }
+
+        [HttpGet("get/subscribed/{id_user}")]
+        public IEnumerable<Forum> GetForumsSubscribedUser(string id_user)
+        {
+            User user = null;
+            try
+            {
+                user = userGetter.GetUser(id_user);
+                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id == user.Id).Include(x => x.User).ToList();
+                List<Forum> Forums = new List<Forum>();
+                foreach (var wallet in Wallets)
+                {
+                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).FirstOrDefault();
+                    if (forum != null)
+                    {
+                        Forums.Add(forum);
+                    }
+                }
+                return Forums;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpGet("get/{id_forum}/projects")]
@@ -51,9 +79,8 @@ namespace IVForum.API.Controllers
             {
                 Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
                 return db.Projects.Where(x => x.Forum == forum).ToArray();
-            } catch (Exception e)
+            } catch (Exception)
             {
-                Debug.WriteLine(e);
                 return null;
             }
         }
@@ -65,11 +92,11 @@ namespace IVForum.API.Controllers
 
             if (model.ForumId is null)
             {
-                Errors.Add(new { Message = "S'ha de introduir la id del Forum." });
+                Errors.Add(Message.GetMessage("S'ha de introduir la id del Forum."));
             }
             if (model.ProjectId is null)
             {
-                Errors.Add(new { Message = "S'ha de introduir la id del Projecet" });
+                Errors.Add(Message.GetMessage("S'ha de introduir la id del Projecet"));
             }
 
             if (Errors.Count > 0)
@@ -80,14 +107,14 @@ namespace IVForum.API.Controllers
             Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).FirstOrDefault();
             if (ProjectToSearch is null)
             {
-                Errors.Add(new { Message = "No existeix aquest project" });
+                Errors.Add(Message.GetMessage("No existeix aquest project"));
                 return BadRequest(Errors);
             }
 
             Forum ForumToSearch = db.Forums.Where(x => x.Id.ToString() == model.ForumId).FirstOrDefault();
             if (ForumToSearch is null)
             {
-                Errors.Add(new { Message = "No existeix aquest forum." });
+                Errors.Add(Message.GetMessage("No existeix aquest forum."));
                 return BadRequest(Errors);
             }
 
@@ -95,27 +122,18 @@ namespace IVForum.API.Controllers
             db.Update(ProjectToSearch);
             db.SaveChanges();
 
-            var Message = new
-            {
-                Message = "S'ha subscrit aquest projecte al forum correctament."
-            };
-            return new JsonResult(Message);
+            return new JsonResult(Message.GetMessage("S'ha subscrit aquest projecte al forum correctament."));
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]ForumViewModel model)
+        public IActionResult Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
 
-            User user = null;
-            try
+            User user = userGetter.GetUser();
+            if (user is null)
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
-            } catch (Exception)
-            {
-                Errors.Add(new { Message = "El usuari que intenta crear el forum és incorrecte." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta crear el forum és incorrecte."));
             }
 
             Forum forum = new Forum
@@ -137,12 +155,7 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
 
             GetTransactions(forum);
-
-            var Missatge = new
-            {
-                Message = "El Forum s'ha afegit Correctament"
-            };
-            return new OkObjectResult(Missatge);
+            return new OkObjectResult(Message.GetMessage("El Forum s'ha afegit Correctament"));
         }
 
         [HttpPost("view")]
@@ -151,7 +164,7 @@ namespace IVForum.API.Controllers
             Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.ForumId);
             if (forum is null)
             {
-
+                return BadRequest(Message.GetMessage("El forum no existeix"));
             }
 
             forum.Views++;
@@ -165,13 +178,11 @@ namespace IVForum.API.Controllers
         public IActionResult Update([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
-
             Forum ForumToTest = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
 
             if (!ValidateUser(ForumToTest))
             {
-                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte o el forum que s'intenta editar no existeix." });
-                return BadRequest(Errors);
+                Message.GetMessage("El usuari que intenta editar aquest projecte és incorrecte o el forum que s'intenta editar no existeix.");
             }
 
             Errors = ValidateForum(forum);
@@ -183,22 +194,15 @@ namespace IVForum.API.Controllers
             Forum ForumToEdit = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
             if (ForumToEdit is null)
             {
-                Errors.Add(new { Message = "El forum que s'intenta editar és incorrecte." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El forum que s'intenta editar és incorrecte."));
             }
 
-            ForumToEdit.Name = forum.Name;
-            ForumToEdit.Title = forum.Title;
-            ForumToEdit.Description = forum.Description;
-            ForumToEdit.Icon = forum.Icon;
-            ForumToEdit.Background = forum.Background;
+            ForumToEdit = UpdateForum(ForumToEdit, forum);
 
             db.Forums.Update(ForumToEdit);
             db.SaveChanges();
 
-
-            var Missatge = new { Missatge = "El forum s'ha editat correctament." };
-            return new JsonResult(Missatge);
+            return new JsonResult(Message.GetMessage("El forum s'ha editat correctament."));
         }
 
         [HttpPost("delete")]
@@ -208,26 +212,21 @@ namespace IVForum.API.Controllers
 
             if (!ValidateUser(forum))
             {
-                Errors.Add(new { Message = "El usuari que intenta esborrar aquest forum és incorrecte" });
+                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
                 return BadRequest(Errors);
             }
 
             var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
             if (ForumToDelete is null)
             {
-                Errors.Add(new { Message = "El forum que s'intenta eliminar no existeix." });
+                Errors.Add(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
                 return BadRequest(Errors);
             }
 
             db.Forums.Remove(ForumToDelete);
             db.SaveChanges();
 
-            var Message = new
-            {
-                Message = "S'ha eliminat el forum correctament."
-            };
-
-            return new JsonResult(Message);
+            return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
         }
 
         [HttpPost("select")]
@@ -238,7 +237,7 @@ namespace IVForum.API.Controllers
             var ForumToSelect = db.Forums.Where(x => x.Id == forum.Id).Include(x => x.Owner).FirstOrDefault();
             if (ForumToSelect is null)
             {
-                Errors.Add(new { Message = "El forum que s'intenta seleccionar no existeix." });
+                Errors.Add(Message.GetMessage("El forum que s'intenta seleccionar no existeix."));
             }
 
             return new JsonResult(ForumToSelect);
@@ -249,31 +248,61 @@ namespace IVForum.API.Controllers
             List<object> Errors = new List<object>();
             if (forum.Title is null)
             {
-                Errors.Add(new { Message = "No s'ha introduit cap títol al forum, Introdueix un títol." });
+                Errors.Add(Message.GetMessage("No s'ha introduit cap títol al forum, Introdueix un títol."));
             }
             if (forum.Name is null)
             {
-                Errors.Add(new { Message = "No s'ha introduit cap nom al forum, Introdueix un nom." });
+                Errors.Add(Message.GetMessage("No s'ha introduit cap nom al forum, Introdueix un nom."));
             }
             if (forum.Description is null)
             {
-                Errors.Add(new { Message = "No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum." });
+                Errors.Add(Message.GetMessage("No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum."));
+            }
+            if (forum.Description.Length > 1000)
+            {
+                Errors.Add(Message.GetMessage("La llargada de la descripció no pot ser més llarga de 1000 carácters."));
             }
             return Errors;
         }
 
         public bool ValidateUser(Forum forum)
         {
-            User user = null;
+            User user = userGetter.GetUser();
             try
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
                 return (forum.Owner.Id == user.Id) ? true : false;
             } catch (Exception)
             {
                 return false;
             }
+        }
+
+        public Forum UpdateForum(Forum ForumToEdit, Forum forum)
+        {
+            if (forum.Name != null)
+            {
+                ForumToEdit.Name = forum.Name;
+            }
+            if (forum.Title != null)
+            {
+                ForumToEdit.Title = forum.Title;
+            }
+            if (forum.Description != null)
+            {
+                if (!(forum.Description.Length > 1000))
+                {
+                    ForumToEdit.Description = forum.Description;
+                }
+            }
+            if (forum.Icon != null)
+            {
+                ForumToEdit.Icon = forum.Icon;
+            }
+            if (forum.Icon != null)
+            {
+                ForumToEdit.Background = forum.Background;
+            }
+            return ForumToEdit;
         }
 
         public void GetTransactions(Forum forum)

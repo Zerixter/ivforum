@@ -35,5 +35,19 @@ namespace IVForum.API.Classes
                 return null;
             }
         }
+
+        public User GetUser(string userid)
+        {
+            User user = null;
+            try
+            {
+                user = db.DbUsers.SingleAsync(c => c.IdentityId == userid).GetAwaiter().GetResult();
+                return user;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

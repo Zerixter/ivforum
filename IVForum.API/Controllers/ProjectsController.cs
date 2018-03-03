@@ -10,6 +10,7 @@ using IVForum.API.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using IVForum.API.Classes;
 
 namespace IVForum.API.Controllers
 {
@@ -18,11 +19,13 @@ namespace IVForum.API.Controllers
     {
         private readonly DbHandler db;
         private readonly ClaimsPrincipal claimsPrincipal;
+        private readonly UserGetter userGetter;
 
         public ProjectsController(DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
             db = _db;
             claimsPrincipal = httpContextAccessor.HttpContext.User;
+            userGetter = new UserGetter(db, httpContextAccessor);
         }
 
         [HttpGet("get")]
@@ -32,7 +35,6 @@ namespace IVForum.API.Controllers
                 return db.Projects.Include(x => x.Owner).ToArray();
             } catch (Exception)
             {
-
                 return null;
             }
         }
@@ -40,24 +42,30 @@ namespace IVForum.API.Controllers
         [HttpGet("get/{userid}")]
         public IEnumerable<Project> GetFromUser(string userid)
         {
-            var Projects = db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList();
-            return Projects;
+            return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList(); ;
+        }
+
+        [HttpGet("select/{project_id}")]
+        public IActionResult Select(string project_id)
+        {
+            var ProjectToSelect = db.Projects.Where(x => x.Id.ToString() == project_id).Include(x => x.Owner).FirstOrDefault();
+            if (ProjectToSelect is null)
+            {
+                return BadRequest(Message.GetMessage("El projecte que s'intenta seleccionar no existeix."));
+            }
+
+            return new JsonResult(ProjectToSelect);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]ProjectViewModel model)
+        public IActionResult Create([FromBody]ProjectViewModel model)
         {
             List<object> Errors = new List<object>();
 
-            User user = null;
-            try
+            User user = userGetter.GetUser();
+            if (user is null)
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = await db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
-            } catch (Exception)
-            {
-                Errors.Add(new { Message = "El usuari que intenta crear el projecte és incorrecte." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta crear el projecte és incorrecte."));
             }
 
             Project project = new Project
@@ -74,64 +82,44 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest(Errors);
             }
-            try
-            {
-                db.Projects.Add(project);
-                db.SaveChanges();
-            } catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
 
-            var Missatge = new
-            {
-                Message = "S'ha creat el projecte correctament"
-            };
-            return new JsonResult(Missatge);
+            db.Projects.Add(project);
+            db.SaveChanges();
+
+            return new JsonResult(Message.GetMessage("S'ha creat el projecte correctament"));
         }
 
         [HttpPost("vote")]
-        public async Task<IActionResult> Vote([FromBody]VoteViewModel model)
+        public IActionResult Vote([FromBody]VoteViewModel model)
         {
-            List<object> Errors = new List<object>();
-
             Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).Include(x => x.Forum).FirstOrDefault();
             if (ProjectToSearch is null)
             {
-                Errors.Add(new { Message = "Aquest projecte no existeix." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("Aquest projecte no existeix."));
             }
 
             Forum ForumToSearch = ProjectToSearch.Forum;
             if (ForumToSearch is null)
             {
-                Errors.Add(new { Message = "Aquest projecte no esta inscrit a cap forum per poder votar-lo." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("Aquest projecte no esta inscrit a cap forum per poder votar-lo."));
             }
 
-            User user = null;
-            try
+            User user = userGetter.GetUser();
+            if (user is null)
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
-            } catch (Exception)
-            {
-                Errors.Add(new { Message = "T'has de loguejar per poder votar." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("T'has de loguejar per poder votar."));
             }
 
             Wallet WalletToSearch = db.Wallets.Where(x => x.ForumId == ForumToSearch.Id && x.UserId == user.Id).FirstOrDefault();
             if (WalletToSearch is null)
             {
-                Errors.Add(new { Message = "El usuari no participa en el forum per podar votar en el projecte." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari no participa en el forum per podar votar en el projecte."));
             }
 
             BillOption BillToSearch = db.BillOptions.Where(x => x.Value == int.Parse(model.Value) && x.WalletId == WalletToSearch.Id).FirstOrDefault();
             if (BillToSearch is null)
             {
-                Errors.Add(new { Message = "El usuari no te aquesta opció de vot." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari no te aquesta opció de vot."));
             }
 
             Vote vote = new Vote
@@ -149,24 +137,18 @@ namespace IVForum.API.Controllers
             db.Projects.Update(ProjectToSearch);
             db.SaveChanges();
 
-            var Message = new
-            {
-                Message = "El vot s'ha realitzat correctament."
-            };
-            return new JsonResult(Message);
+            return new JsonResult(Message.GetMessage("El vot s'ha realitzat correctament."));
         }
 
         [HttpPost("update")]
         public IActionResult Update([FromBody]Project project)
         {
             List<object> Errors = new List<object>();
-
             Project ProjectToTest = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
 
             if (!ValidateUser(ProjectToTest))
             {
-                Errors.Add(new { Message = "El usuari que intenta editar aquest projecte és incorrecte" });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta editar aquest projecte és incorrecte"));
             }
 
             Errors = ValidateProject(project);
@@ -178,60 +160,77 @@ namespace IVForum.API.Controllers
             Project ProjectToEdit = db.Projects.Where(x => x.Id == project.Id).FirstOrDefault();
             if (ProjectToEdit is null)
             {
-                Errors.Add(new { Message = "El projecte que s'intenta editar és incorrecte." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El projecte que s'intenta editar és incorrecte."));
             }
 
-            ProjectToEdit.Name = project.Name;
-            ProjectToEdit.Title = project.Title;
-            ProjectToEdit.Description = project.Description;
-            ProjectToEdit.Icon = project.Icon;
-            ProjectToEdit.Background = project.Background;
+            ProjectToEdit = UpdateProject(ProjectToEdit, project);
 
-            var Missatge = new { Missatge = "El projecte s'ha editat correctament." };
-            return new JsonResult(Missatge);
+            return new JsonResult(Message.GetMessage("El projecte s'ha editat correctament."));
         }
 
         [HttpPost("delete")]
         public IActionResult Delete([FromBody]Project project)
         {
-            List<object> Errors = new List<object>();
-
             if (!ValidateUser(project))
             {
-                Errors.Add(new { Message = "El usuari que intenta esborrar aquest projecte és incorrecte" });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest projecte és incorrecte"));
             }
 
             Project ProjectToDelete = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
             if (ProjectToDelete is null)
             {
-                Errors.Add(new { Message = "El forum que s'intenta eliminar no existeix." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
             }
 
             db.Projects.Remove(ProjectToDelete);
             db.SaveChanges();
 
-            var Message = new
-            {
-                Message = "S'ha eliminat el projecte correctament."
-            };
-            return new JsonResult(Message);
+            return new JsonResult(Message.GetMessage("S'ha eliminat el projecte correctament."));
         }
 
-        [HttpPost("select")]
-        public JsonResult Select([FromBody]Project project)
+        [HttpPost("view")]
+        public IActionResult View([FromBody]ViewsViewModel model)
         {
-            List<object> Errors = new List<object>();
-
-            var ProjectToSelect = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
-            if (ProjectToSelect is null)
+            Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == model.ProjectId);
+            if (project is null)
             {
-                Errors.Add(new { Message = "El projecte que s'intenta seleccionar no existeix." });
+                return BadRequest(Message.GetMessage("El projecte no existeix"));
             }
 
-            return new JsonResult(ProjectToSelect);
+            project.Views++;
+            db.Projects.Update(project);
+            db.SaveChanges();
+
+            return new OkObjectResult(null);
+        }
+
+        private Project UpdateProject(Project ProjectToEdit, Project project)
+        {
+            if (project.Name != null)
+            {
+                ProjectToEdit.Name = project.Name;
+            }
+            if (project.Title != null)
+            {
+                ProjectToEdit.Title = project.Title;
+            }
+            if (project.Description != null)
+            {
+                if (!(project.Description.Length > 1000))
+                {
+                    ProjectToEdit.Description = project.Description;
+                }
+            }
+            if (project.Icon != null)
+            {
+                ProjectToEdit.Icon = project.Icon;
+            }
+            if (project.Background != null)
+            {
+                ProjectToEdit.Background = project.Background;
+            }
+            
+            return ProjectToEdit;
         }
 
         private List<object> ValidateProject(Project project)
@@ -249,6 +248,10 @@ namespace IVForum.API.Controllers
             {
                 Errors.Add(new { Message = "S'ha deixat el camp de títol buit." });
             }
+            if (project.Description.Length > 1000)
+            {
+                Errors.Add(new { Message = "La llargada de la descripció no pot ser més llarga de 1000 carácters." });
+            }
             return Errors;
         }
         
@@ -257,8 +260,7 @@ namespace IVForum.API.Controllers
             User user = null;
             try
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value).GetAwaiter().GetResult();
+                user = userGetter.GetUser();
                 return (project.Owner.Id == user.Id) ? true : false;
             } catch (Exception)
             {
