@@ -6,7 +6,7 @@ export class WalletService {
 
     constructor(private http: HttpClient) { }
 
-    public subscribe(id) {
+    public join(id) {
         return this.http.post("http://localhost:57570/api/account/subscribe", id)
             .map(
                 res => res,

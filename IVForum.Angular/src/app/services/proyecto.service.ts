@@ -6,10 +6,9 @@ export class ProyectoService {
     constructor(private http: HttpClient) {
     }
     getProjects(filter) {
-        this.http.get("http://localhost:57570/api/project/get",filter)
+        return this.http.get("http://localhost:57570/api/project/get",filter)
         .subscribe(
             res => {
-                console.log(res);
                 return res;
             },
             err => {
@@ -18,11 +17,10 @@ export class ProyectoService {
         );
     }
 
-    getProjectForum(id) {
-        this.http.get("http://localhost:57570/api/forum/get/"+id+"/projects")
-        .subscribe(
+    getProjectForum(idForum) {
+        return this.http.get("http://localhost:57570/api/forum/get/"+idForum+"/projects")
+        .map(
             res => {
-                console.log(res);
                 return res;
             },
             err => {
@@ -31,12 +29,27 @@ export class ProyectoService {
         );
     }
 
-    setProject(proyecto) {
+    getProjectUser(idUser) {
+        return this.http.get("http://localhost:57570/api/project/get/"+idUser)
+        .map(
+            res => {
+                return res;
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
+    setProject(title:string,name:string,description:string) {
         var body;
-        return this.http.post("http://localhost:57570/api/project/create",proyecto)
+        return this.http.post("http://localhost:57570/api/project/create",{
+            title:title,
+            name:name,
+            description:description
+        })
             .map(
                 res => {
-                    console.log("Proyecto Enviado");
                     return true;
                 },
                 err => {

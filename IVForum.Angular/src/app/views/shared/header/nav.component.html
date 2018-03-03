@@ -8,7 +8,7 @@
                 <a class="nav-link" routerLink="/explorer">Explorar</a>
             </li>
             <li [routerLinkActive]="['active']" class="nav-item">
-                <a class="nav-link" routerLink="/register">NiIdea</a>
+                <a class="nav-link" routerLink="/app">Aplicació</a>
             </li>
         </ul>
         <div *ngIf="_userService.islogged();then logged; else notLogged">
@@ -18,11 +18,15 @@
 </nav>
 
 <ng-template #notLogged>
-    <button class="btn btn-outline-success my-2" routerLink="/register">Register</button>
-    <button class="btn btn-link" routerLink="/login">Login</button>
+    <button class="btn btn-outline-success my-2" routerLink="/register">Nou Compte</button>
+    <button class="btn btn-link" routerLink="/login">Entrar</button>
 </ng-template>
 
-<ng-template #logged>
+<ng-template  #logged>
+        <button class="btn btn-link" (click)="logOut()">Sortir</button>
+</ng-template>
+
+<ng-template>
     <div class="dropdown " *ngIf="loaded">
         <button class="btn btn-link " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
