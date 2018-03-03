@@ -52,7 +52,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El usuari s'ha subscrit exitosament a aquest forum."));
         }
 
-        [HttpPost("subscribe")]
+        [HttpPost("subscribe/project")]
         public IActionResult Subscribe([FromBody]SubscriptionViewModel model)
         {
             List<object> Errors = new List<object>();
