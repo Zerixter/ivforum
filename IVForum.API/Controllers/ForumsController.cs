@@ -85,6 +85,20 @@ namespace IVForum.API.Controllers
             }
         }
 
+        [HttpGet("select/{id_forum}")]
+        public IActionResult Select(string id_forum)
+        {
+            List<object> Errors = new List<object>();
+
+            var ForumToSelect = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
+            if (ForumToSelect is null)
+            {
+                Errors.Add(Message.GetMessage("El forum que s'intenta seleccionar no existeix."));
+            }
+
+            return new JsonResult(ForumToSelect);
+        }
+
         [HttpPost("subscribe")]
         public IActionResult Subscribe([FromBody]SubscriptionViewModel model)
         {
@@ -227,20 +241,6 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
 
             return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
-        }
-
-        [HttpPost("select")]
-        public IActionResult Select([FromBody]Forum forum)
-        {
-            List<object> Errors = new List<object>();
-
-            var ForumToSelect = db.Forums.Where(x => x.Id == forum.Id).Include(x => x.Owner).FirstOrDefault();
-            if (ForumToSelect is null)
-            {
-                Errors.Add(Message.GetMessage("El forum que s'intenta seleccionar no existeix."));
-            }
-
-            return new JsonResult(ForumToSelect);
         }
 
         public List<object> ValidateForum(Forum forum)
