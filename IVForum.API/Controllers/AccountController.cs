@@ -51,6 +51,8 @@ namespace IVForum.API.Controllers
             {
                 Id = user.Id.ToString(),
                 Avatar = user.Avatar,
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
                 Description = user.Description,
                 Email = user.Identity.Email,
                 FacebookUrl = user.FacebookUrl,
