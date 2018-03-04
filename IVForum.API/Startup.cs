@@ -20,6 +20,8 @@ using System.IO;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace IVForum.API
 {
@@ -37,6 +39,8 @@ namespace IVForum.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), @"Resources/Images")));
@@ -133,6 +137,10 @@ namespace IVForum.API
             app.UseCors(
                 "all"
                 );
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
