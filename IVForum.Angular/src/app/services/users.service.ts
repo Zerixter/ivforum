@@ -18,7 +18,6 @@ import { ConfigService } from './config.service';
 
 export class UserService extends BaseService {
 
-    baseUrl: string = '';
     
     public token = null;
 
