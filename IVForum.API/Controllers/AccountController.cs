@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("AllowSpecificOrigin")]
     [Route("api/account")]
     public class AccountController : Controller
     {
