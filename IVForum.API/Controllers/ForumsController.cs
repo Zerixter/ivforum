@@ -52,7 +52,7 @@ namespace IVForum.API.Controllers
         [HttpGet("get/personal/{userid}")]
         public IEnumerable<Forum> GetPersonal(string userid)
         {
-            return db.Forums.Where(x => x.Owner.Id.ToString() == userid).ToArray();
+            return db.Forums.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToArray();
         }
 
         [HttpGet("get/subscribed/{id_user}")]
