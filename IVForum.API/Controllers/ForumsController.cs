@@ -46,7 +46,7 @@ namespace IVForum.API.Controllers
         [HttpGet("get/{userid}")]
         public IEnumerable<Forum> GetFromUser(string userid)
         {
-            return db.Forums.Where(x => x.Owner.IdentityId == userid).ToArray();
+            return db.Forums.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToArray();
         }
 
         [HttpGet("get/subscribed/{id_user}")]
