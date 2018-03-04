@@ -8,12 +8,14 @@ using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
+    [Authorize(Policy = "ApiUser")]
     [Route("api/forum")]
     public class ForumsController : Controller
     {

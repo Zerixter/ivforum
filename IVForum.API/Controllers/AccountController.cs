@@ -4,6 +4,7 @@ using IVForum.API.Data;
 using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,7 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpGet("get")]
         public IActionResult Get()
         {
@@ -52,6 +54,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(user);
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpGet("get/{userid}")]
         public IActionResult Get(string userid)
         {
@@ -64,6 +67,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(user);
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpGet("get/forum/{id_forum}")]
         public IActionResult GetForum(string id_forum)
         {
@@ -194,6 +198,7 @@ namespace IVForum.API.Controllers
             return new OkObjectResult(jwt);
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpPost("update")]
         public IActionResult Update([FromBody]UserViewModel model)
         {
@@ -211,6 +216,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("S'ha modificat les dades del usuari correctament."));
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpGet("delete")]
         public async Task<IActionResult> Delete()
         {
@@ -264,6 +270,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El usuari s'ha subscrit exitosament a aquest forum."));
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpPost("avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
         {

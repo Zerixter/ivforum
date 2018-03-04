@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IVForum.API.Classes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IVForum.API.Controllers
 {
+    [Authorize(Policy = "ApiUser")]
     [Route("api/project")]
     public class ProjectsController : Controller
     {
