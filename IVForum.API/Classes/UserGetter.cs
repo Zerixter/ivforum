@@ -27,7 +27,7 @@ namespace IVForum.API.Classes
             try
             {
                 var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.Where(c => c.IdentityId == userId.Value).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.IdentityId == userId.Value).Include(x => x.Identity).FirstOrDefault();
                 return user;
             }
             catch (Exception)

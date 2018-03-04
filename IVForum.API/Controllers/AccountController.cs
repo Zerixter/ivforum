@@ -75,6 +75,8 @@ namespace IVForum.API.Controllers
             UserViewModel model = new UserViewModel
             {
                 Id = user.Id.ToString(),
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
                 Avatar = user.Avatar,
                 Description = user.Description,
                 Email = user.Identity.Email,
