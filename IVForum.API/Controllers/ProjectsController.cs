@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IVForum.API.Classes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/project")]
     public class ProjectsController : Controller

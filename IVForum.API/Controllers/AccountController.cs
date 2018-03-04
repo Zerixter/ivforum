@@ -5,6 +5,7 @@ using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
-    [EnableCors("AllowSpecificOrigin")]
+    [EnableCors("all")]
     [Route("api/account")]
     public class AccountController : Controller
     {
