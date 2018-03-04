@@ -47,11 +47,23 @@ namespace IVForum.API.Controllers
         {
             User user = userGetter.GetUser();
 
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id.ToString(),
+                Avatar = user.Avatar,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No hi ha cap usuari connectat per poder visualtizar les dades."));
             }
-            return new JsonResult(user);
+            return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
@@ -60,11 +72,23 @@ namespace IVForum.API.Controllers
         {
             User user = userGetter.GetUser(userid);
 
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id.ToString(),
+                Avatar = user.Avatar,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No existeix cap usuari amb aquesta id en la base de dades."));
             }
-            return new JsonResult(user);
+            return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
