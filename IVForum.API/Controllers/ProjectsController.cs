@@ -47,6 +47,12 @@ namespace IVForum.API.Controllers
             return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList(); ;
         }
 
+        [HttpGet("get/personal/{userid}")]
+        public IEnumerable<Project> GetPersonal(string userid)
+        {
+            return db.Projects.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToList(); ;
+        }
+
         [HttpGet("select/{project_id}")]
         public IActionResult Select(string project_id)
         {
