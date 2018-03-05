@@ -22,6 +22,7 @@ namespace IVForum.API.Data
 		{
 			base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlServer(DbInfo.ConnectionString);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
 		protected override void OnModelCreating(ModelBuilder builder)
