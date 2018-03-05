@@ -115,6 +115,25 @@ namespace IVForum.API.Controllers
             return new JsonResult(wallet);
         }
 
+        [HttpGet("get/bills/{forum_id}")]
+        public IEnumerable<BillOption> GetBillsForum(string forum_id)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return null;
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == forum_id).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return null;
+            }
+
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            return bills;
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
