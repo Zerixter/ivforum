@@ -5,6 +5,7 @@ using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("all")]
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -47,11 +49,25 @@ namespace IVForum.API.Controllers
         {
             User user = userGetter.GetUser();
 
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id.ToString(),
+                Avatar = user.Avatar,
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No hi ha cap usuari connectat per poder visualtizar les dades."));
             }
-            return new JsonResult(user);
+            return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
@@ -60,11 +76,25 @@ namespace IVForum.API.Controllers
         {
             User user = userGetter.GetUser(userid);
 
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id.ToString(),
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
+                Avatar = user.Avatar,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No existeix cap usuari amb aquesta id en la base de dades."));
             }
-            return new JsonResult(user);
+            return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
@@ -83,6 +113,25 @@ namespace IVForum.API.Controllers
                 return BadRequest();
             }
             return new JsonResult(wallet);
+        }
+
+        [HttpGet("get/bills/{forum_id}")]
+        public IEnumerable<BillOption> GetBillsForum(string forum_id)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return null;
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == forum_id).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return null;
+            }
+
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            return bills;
         }
 
         [HttpPost("register")]

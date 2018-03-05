@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IVForum.API.Classes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/project")]
     public class ProjectsController : Controller
@@ -45,6 +47,12 @@ namespace IVForum.API.Controllers
         public IEnumerable<Project> GetFromUser(string userid)
         {
             return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList(); ;
+        }
+
+        [HttpGet("get/personal/{userid}")]
+        public IEnumerable<Project> GetPersonal(string userid)
+        {
+            return db.Projects.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToList(); ;
         }
 
         [HttpGet("select/{project_id}")]

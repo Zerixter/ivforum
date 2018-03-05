@@ -9,12 +9,14 @@ using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/forum")]
     public class ForumsController : Controller
@@ -46,7 +48,13 @@ namespace IVForum.API.Controllers
         [HttpGet("get/{userid}")]
         public IEnumerable<Forum> GetFromUser(string userid)
         {
-            return db.Forums.Where(x => x.Owner.IdentityId == userid).ToArray();
+            return db.Forums.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToArray();
+        }
+
+        [HttpGet("get/personal/{userid}")]
+        public IEnumerable<Forum> GetPersonal(string userid)
+        {
+            return db.Forums.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToArray();
         }
 
         [HttpGet("get/subscribed/{id_user}")]
