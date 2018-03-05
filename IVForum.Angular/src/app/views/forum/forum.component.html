@@ -15,21 +15,34 @@
                 <div *ngFor="let project of projects" class="project">
                     <div class="card">
                         <div class="row">
-                            <img class="card-img-left rounded col-2 col-sm-2 col-md-2 col-lg-2" src="./assets/project/default-project.png">
+                            <img class="project-logo card-img-left rounded col-1 col-sm-1 col-md-1 col-lg-1" src=".\assets\img\project\default-project.png">
                             <div class="card-body">
-                                <h5 class="card-title">{{project.title}}</h5>
-                                <p class="card-text">{{project.description}}</p>
+                                <div class="">
+                                    <h5 class="card-title">{{project.title}}</h5>
+                                    <p class="card-text">{{project.description}}</p>
+                                    <div>
+                                        
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!--<div class="card-footer text-muted">
+                            <div class="row">
+                                <div class="col-1 col-sm-1 col-md-1 col-lg-1">
+                                    <p>{{project.creationDate}}</p>
+                                </div>
+                                <div class="ui-g-offset-10 col-2 col-sm-2 col-md-1 col-lg-1">
+                                    <p>Autor: {{project.ownerId}}</p>
+                                </div>
+                            </div>
+                        </div>-->
                     </div>
                 </div>
             </p-tabPanel>
-
         </p-tabView>
-
     </div>
     <div class="card-footer" *ngIf="_usersService.islogged();then logged;">
-        
+
     </div>
 </div>
 
@@ -95,8 +108,9 @@
     </div>
 </div>
 
-<ng-template  #logged>
-        <p-messages [(value)]="msgs"></p-messages>
-        <button pButton type="button" label="Participar" (click)="subscrib()"></button>
-        <button pButton type="button" label="Afegir projecte" data-toggle="modal" (click)="getMyProjects()" data-target="#listarProjects" class="ui-button-success"></button>
+<ng-template #logged>
+    <p-messages [(value)]="msgs"></p-messages>
+    <button pButton type="button" label="Participar" (click)="subscrib()"></button>
+    <button pButton type="button" label="Afegir projecte" data-toggle="modal" (click)="getMyProjects()" data-target="#listarProjects"
+        class="ui-button-success"></button>
 </ng-template>

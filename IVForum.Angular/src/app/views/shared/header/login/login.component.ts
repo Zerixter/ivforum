@@ -32,11 +32,10 @@ export class LoginModal implements OnInit {
     onSubmit() {
         this._userService.login(this.email, this.password)
             .subscribe(data => {
-                if (this._userService.islogged()) {
+
                     console.log(this._userService.islogged() + " en login");
-                    this.router.navigateByUrl('/');
+                    this.router.navigate(["/explorer"]);
                     this.onLoginSuccessfully();
-                }
             }
             );
         console.log(this._userService.islogged());
@@ -45,6 +44,6 @@ export class LoginModal implements OnInit {
     private onLoginSuccessfully(): void {
         /* --> HERE: you tell the global event manger to show the nav bar */
         this.globalEventsManager.showNavBar(true);
-        this.router.navigate(['']);
+        this.router.navigate(['/explorer']);
     }
 }

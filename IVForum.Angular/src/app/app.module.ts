@@ -3,7 +3,7 @@ import { FooterComponent } from './views/shared/footer/footer.component';
 import { appRouting } from './app-navigation.module';
 import { NgForOf } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ApplicationModule } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,6 +29,8 @@ import { ScrollPanelModule } from 'primeng/scrollPanel';
 import { SharedModule } from 'primeng/primeng';
 import {MessageService} from 'primeng/components/common/messageservice';
 import {MessagesModule} from 'primeng/messages';
+import { MyForumsComponent } from './views/myForums/myForums.component';
+import { ApplicationComponent } from './views/application/application.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import {MessagesModule} from 'primeng/messages';
     HomeComponent,
     FooterComponent,
     ExplorerComponent,
-    ForumComponent
+    ForumComponent,
+    MyForumsComponent,
+    ApplicationComponent
   ],
   imports: [
     BrowserModule,

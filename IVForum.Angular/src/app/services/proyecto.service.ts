@@ -6,7 +6,7 @@ export class ProyectoService {
     constructor(private http: HttpClient) {
     }
     getProjects(filter) {
-        return this.http.get("http://localhost:57570/api/project/get",filter)
+        return this.http.get("http://199.247.14.254:8080/api/project/get",filter)
         .subscribe(
             res => {
                 return res;
@@ -18,7 +18,7 @@ export class ProyectoService {
     }
 
     getProjectForum(idForum) {
-        return this.http.get("http://localhost:57570/api/forum/get/"+idForum+"/projects")
+        return this.http.get("http://199.247.14.254:8080/api/forum/get/"+idForum+"/projects")
         .map(
             res => {
                 return res;
@@ -30,9 +30,9 @@ export class ProyectoService {
     }
 
     getProjectUser(idUser) {
-        return this.http.get("http://localhost:57570/api/project/get/"+idUser)
+        return this.http.get("http://199.247.14.254:8080/api/project/get/"+idUser)
         .map(
-            res => {
+            res => {2
                 return res;
             },
             err => {
@@ -43,7 +43,7 @@ export class ProyectoService {
 
     setProject(title:string,name:string,description:string) {
         var body;
-        return this.http.post("http://localhost:57570/api/project/create",{
+        return this.http.post("http://199.247.14.254:8080/api/project/create",{
             title:title,
             name:name,
             description:description

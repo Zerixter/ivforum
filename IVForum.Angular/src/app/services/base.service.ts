@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Rx';
 
 
 export abstract class BaseService {  
-    
+    _apiURI : string;
     constructor() { }
 
     protected handleError(error: any) {
@@ -22,6 +22,8 @@ export abstract class BaseService {
           modelStateErrors += serverError[key] + '\n';
       }
     }
+
+    
 
     modelStateErrors = modelStateErrors = '' ? null : modelStateErrors;
     return Observable.throw(modelStateErrors || 'Server error');

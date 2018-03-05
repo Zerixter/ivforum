@@ -11,7 +11,7 @@ export class ForumService {
     constructor(private http: HttpClient) {
     }
     getForums(filter) {
-        return this.http.get("http://localhost:57570/api/forum/get",filter)
+        return this.http.get("http://199.247.14.254:8080/api/forum/get",filter)
         
         .map(
             res => res,
@@ -27,7 +27,7 @@ export class ForumService {
 
     setForum(title:string, name:string, description:string) {
         var body;
-        return this.http.post("http://localhost:57570/api/forum/create",{
+        return this.http.post("http://199.247.14.254:8080/api/forum/create",{
             title:title,
             name:name,
             description:description
@@ -45,9 +45,9 @@ export class ForumService {
     }
 
     myForums(idUser:string) {
-        return this.http.get("http://localhost:57570/api/forum/get/"+idUser)
+        return this.http.get("http://199.247.14.254:8080/api/forum/get/"+idUser)
             .map(
-                res => console.log(res),
+                res => res,
                 err => console.log(err)
             );
     }
@@ -61,7 +61,7 @@ export class ForumService {
     }
 
     asignProject(forumId,projectId) {
-        return this.http.post("http://localhost:57570/api/forum/subscribe",{
+        return this.http.post("http://199.247.14.254:8080/api/forum/subscribe",{
             forumId:forumId,
             projectId:projectId
         })

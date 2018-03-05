@@ -19,6 +19,7 @@ import { ConfigService } from './config.service';
 export class UserService extends BaseService {
 
     
+    
     public token = null;
 
     // Observable navItem source
@@ -34,7 +35,7 @@ export class UserService extends BaseService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         console.log("patata");
-        return this.http.post("http://localhost:57570/api/account/register", {
+        return this.http.post("http://199.247.14.254:8080/api/account/register", {
             name: nom,
             surname: cognom,
             email: mail,
@@ -53,7 +54,7 @@ export class UserService extends BaseService {
     }
 
     login(email: string, password: string) {
-        return this.http.post('http://localhost:57570/api/account/login', { email, password })
+        return this.http.post('http://199.247.14.254:8080/api/account/login', { email, password })
         .map(
                 res => {
                     console.log("login correcto!");
@@ -68,6 +69,17 @@ export class UserService extends BaseService {
             )
     }
 
+    getInfoUser(userId){
+        return this.http.get('http://199.247.14.254:8080/api/account/get' + userId)
+        .map(
+                res => {
+                    return res;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                });
+    }
 
     islogged(){
         if (localStorage.getItem('currentUser') != null){

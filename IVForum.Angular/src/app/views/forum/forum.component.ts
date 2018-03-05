@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { ProyectoService } from '../../services/proyecto.service';
 import { WalletService } from '../../services/wallet.service';
 
-import {Message} from 'primeng/components/common/api';
-import {SelectItem} from 'primeng/components/common/api';
+import { Message } from 'primeng/components/common/api';
+import { SelectItem } from 'primeng/components/common/api';
 
 
 @Component({
@@ -20,9 +20,9 @@ export class ForumComponent implements OnInit {
     private msgs: Message[] = [];
     private forum;
     private projects;
-    private title:string;
-    private name:string;
-    private description:string;
+    private title: string;
+    private name: string;
+    private description: string;
     private myProjects;
     constructor(
         private _usersService: UserService,
@@ -36,8 +36,7 @@ export class ForumComponent implements OnInit {
     ngOnInit() {
         this.getForum();
         this.getProjects();
-        this.getMyProjects();
-        console.log(this.forum);
+        this.getBills();
     }
 
     getProjects() {
@@ -45,8 +44,8 @@ export class ForumComponent implements OnInit {
     }
 
     createProject() {
-        this._projectService.setProject(this.title,this.name,this.description).subscribe(res => {
-            
+        this._projectService.setProject(this.title, this.name, this.description).subscribe(res => {
+
         });
     }
 
@@ -58,26 +57,41 @@ export class ForumComponent implements OnInit {
     }
 
     show() {
-        this.msgs.push({severity:'success', summary:'Ara participas en el foro :)'});
+        this.msgs.push({ severity: 'success', summary: 'Ara participas en el foro :)' });
     }
 
     participate(project) {
-        this._forumService.asignProject(this.forum.id,project.id)
+        this._forumService.asignProject(this.forum.id, project.id)
             .subscribe(
                 res => this.getProjects()
             );
     }
 
+    getBills(){
+        this._walletService.getBills(this.forum.id)
+            .subscribe(
+                res => console.log(res)
+            );
+    }
+
     getForum() {
         this.forum = this._forumService.getSelectedForum();
-        if(this.forum == null){
+        if (this.forum == null) {
             this._router.navigateByUrl("/explorer");
         }
     }
 
+    getUser(project) {
+        this._usersService.getInfoUser(project.ownerId)
+            .subscribe(res => {
+                console.log(res)
+            },
+                err => console.log(err)
+            );
+    }
     getMyProjects() {
         this._projectService.getProjectUser(JSON.parse(localStorage.getItem("currentUser")).token.id)
-            .subscribe(res =>{ 
+            .subscribe(res => {
                 this.myProjects = res;
                 console.log(this.myProjects);
             });
