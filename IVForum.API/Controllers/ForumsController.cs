@@ -183,9 +183,9 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("view")]
-        public IActionResult View([FromBody]ViewsViewModel model)
+        public IActionResult View([FromBody] string id_forum)
         {
-            Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.ForumId);
+            Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
             if (forum is null)
             {
                 return BadRequest(Message.GetMessage("El forum no existeix"));

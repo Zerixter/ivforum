@@ -199,9 +199,9 @@ namespace IVForum.API.Controllers
         }
 
         [HttpPost("view")]
-        public IActionResult View([FromBody]ViewsViewModel model)
+        public IActionResult View([FromBody]string id_project)
         {
-            Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == model.ProjectId);
+            Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == id_project);
             if (project is null)
             {
                 return BadRequest(Message.GetMessage("El projecte no existeix"));
