@@ -79,7 +79,6 @@ namespace IVForum.API.Controllers
             Project project = new Project
             {
                 Id = Guid.NewGuid(),
-                Name = model.Name,
                 Description = model.Description,
                 Title = model.Title,
                 Owner = user
@@ -163,13 +162,12 @@ namespace IVForum.API.Controllers
 
         private Project UpdateProject(Project ProjectToEdit, Project project)
         {
-            if (project.Name != null)
-            {
-                ProjectToEdit.Name = project.Name;
-            }
             if (project.Title != null)
             {
-                ProjectToEdit.Title = project.Title;
+                if (!(project.Title.Length > 100))
+                {
+                    ProjectToEdit.Title = project.Title;
+                }
             }
             if (project.Description != null)
             {

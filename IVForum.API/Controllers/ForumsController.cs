@@ -107,7 +107,6 @@ namespace IVForum.API.Controllers
             Forum forum = new Forum
             {
                 Id = Guid.NewGuid(),
-                Name = model.Name,
                 Title = model.Title,
                 Description = model.Description,
                 Owner = user
@@ -211,13 +210,12 @@ namespace IVForum.API.Controllers
 
         public Forum UpdateForum(Forum ForumToEdit, Forum forum)
         {
-            if (forum.Name != null)
-            {
-                ForumToEdit.Name = forum.Name;
-            }
             if (forum.Title != null)
             {
-                ForumToEdit.Title = forum.Title;
+                if (!(forum.Title.Length > 100))
+                {
+                    ForumToEdit.Title = forum.Title;
+                }
             }
             if (forum.Description != null)
             {
