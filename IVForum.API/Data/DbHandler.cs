@@ -2,8 +2,6 @@
 using IVForum.API.Properties;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace IVForum.API.Data
 {

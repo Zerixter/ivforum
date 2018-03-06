@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IVForum.API.Controllers
 {
-    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/subscription")]
     public class SubscriptionController : Controller
@@ -27,10 +26,10 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [HttpGet("subcribe/forum/{id_forum}")]
-        public IActionResult Subscribe(string id_forum)
+        [HttpPost("subcribe/forum")]
+        public IActionResult Subscribe([FromBody]ForumViewModel model)
         {
-            Forum ForumToSearch = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
+            Forum ForumToSearch = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.Id);
             if (ForumToSearch is null)
             {
                 return BadRequest(Message.GetMessage("No existeix cap forum amb aquesta id en la base de dades."));
@@ -94,6 +93,33 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
 
             return new JsonResult(Message.GetMessage("S'ha subscrit aquest projecte al forum correctament."));
+        }
+
+        [HttpPost("unsubscribe/forum")]
+        public IActionResult UnsubscribeForum([FromBody]ForumViewModel model)
+        {
+            Forum ForumToSearch = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.Id);
+            if (ForumToSearch is null)
+            {
+                return BadRequest(Message.GetMessage("No existeix cap forum amb aquesta id en la base de dades."));
+            }
+
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat ara mateix. Connecta't per poder subscriure a un forum"));
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id == ForumToSearch.Id).FirstOrDefault();
+            if (wallet is null)
+            {
+                return BadRequest(Message.GetMessage("Aquest usuari no es pot desubscriure perquè no esta subscrit al forum."));
+            }
+
+            db.Wallets.Remove(wallet);
+            db.SaveChanges();
+
+            return new JsonResult(Message.GetMessage("El usuari s'ha desubscrit exitosament a aquest forum."));
         }
 
         public void AddBillOptions(Forum forum, Wallet wallet)

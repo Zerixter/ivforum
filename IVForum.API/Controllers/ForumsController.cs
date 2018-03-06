@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
@@ -16,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [EnableCors("all")]
     [Authorize(Policy = "ApiUser")]
     [Route("api/forum")]
     public class ForumsController : Controller
@@ -32,7 +29,7 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [HttpGet("get")]
+        [HttpGet]
         public IEnumerable<Forum> Get()
         {
             try
@@ -45,19 +42,19 @@ namespace IVForum.API.Controllers
             }
         }
 
-        [HttpGet("get/{userid}")]
-        public IEnumerable<Forum> GetFromUser(string userid)
+        [HttpGet("{id_user}")]
+        public IEnumerable<Forum> GetFromUser(string id_user)
         {
-            return db.Forums.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToArray();
+            return db.Forums.Where(x => x.Owner.IdentityId == id_user).Include(x => x.Owner).ToArray();
         }
 
-        [HttpGet("get/personal/{userid}")]
-        public IEnumerable<Forum> GetPersonal(string userid)
+        [HttpGet("user/{id_user}")]
+        public IEnumerable<Forum> GetPersonal(string id_user)
         {
-            return db.Forums.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToArray();
+            return db.Forums.Where(x => x.Owner.Id.ToString() == id_user).Include(x => x.Owner).ToArray();
         }
 
-        [HttpGet("get/subscribed/{id_user}")]
+        [HttpGet("subscribed/{id_user}")]
         public IEnumerable<Forum> GetForumsSubscribedUser(string id_user)
         {
             User user = null;
@@ -68,7 +65,7 @@ namespace IVForum.API.Controllers
                 List<Forum> Forums = new List<Forum>();
                 foreach (var wallet in Wallets)
                 {
-                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).FirstOrDefault();
+                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).Include(x => x.Owner).FirstOrDefault();
                     if (forum != null)
                     {
                         Forums.Add(forum);
@@ -77,19 +74,6 @@ namespace IVForum.API.Controllers
                 return Forums;
             }
             catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        [HttpGet("get/{id_forum}/projects")]
-        public IEnumerable<Project> GetProjects(string id_forum)
-        {
-            try
-            {
-                Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
-                return db.Projects.Where(x => x.Forum == forum).ToArray();
-            } catch (Exception)
             {
                 return null;
             }
@@ -109,47 +93,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(ForumToSelect);
         }
 
-        [HttpPost("subscribe")]
-        public IActionResult Subscribe([FromBody]SubscriptionViewModel model)
-        {
-            List<object> Errors = new List<object>();
-
-            if (model.ForumId is null)
-            {
-                Errors.Add(Message.GetMessage("S'ha de introduir la id del Forum."));
-            }
-            if (model.ProjectId is null)
-            {
-                Errors.Add(Message.GetMessage("S'ha de introduir la id del Projecet"));
-            }
-
-            if (Errors.Count > 0)
-            {
-                return BadRequest(Errors);
-            }
-
-            Project ProjectToSearch = db.Projects.Where(x => x.Id.ToString() == model.ProjectId).FirstOrDefault();
-            if (ProjectToSearch is null)
-            {
-                Errors.Add(Message.GetMessage("No existeix aquest project"));
-                return BadRequest(Errors);
-            }
-
-            Forum ForumToSearch = db.Forums.Where(x => x.Id.ToString() == model.ForumId).FirstOrDefault();
-            if (ForumToSearch is null)
-            {
-                Errors.Add(Message.GetMessage("No existeix aquest forum."));
-                return BadRequest(Errors);
-            }
-
-            ProjectToSearch.Forum = ForumToSearch;
-            db.Update(ProjectToSearch);
-            db.SaveChanges();
-
-            return new JsonResult(Message.GetMessage("S'ha subscrit aquest projecte al forum correctament."));
-        }
-
-        [HttpPost("create")]
+        [HttpPost]
         public IActionResult Create([FromBody]ForumViewModel model)
         {
             List<object> Errors = new List<object>();
@@ -169,7 +113,7 @@ namespace IVForum.API.Controllers
                 Owner = user
             };
 
-            Errors = ValidateForum(forum);
+            Errors = Forum.ValidateForum(forum);
             if (Errors.Count >= 1)
             {
                 BadRequest(Errors);
@@ -182,23 +126,7 @@ namespace IVForum.API.Controllers
             return new OkObjectResult(Message.GetMessage("El Forum s'ha afegit Correctament"));
         }
 
-        [HttpPost("view")]
-        public IActionResult View([FromBody] string id_forum)
-        {
-            Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
-            if (forum is null)
-            {
-                return BadRequest(Message.GetMessage("El forum no existeix"));
-            }
-
-            forum.Views++;
-            db.Forums.Update(forum);
-            db.SaveChanges();
-            
-            return new OkObjectResult(null);
-        }
-
-        [HttpPost("update")]
+        [HttpPut]
         public IActionResult Update([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
@@ -209,7 +137,7 @@ namespace IVForum.API.Controllers
                 Message.GetMessage("El usuari que intenta editar aquest projecte és incorrecte o el forum que s'intenta editar no existeix.");
             }
 
-            Errors = ValidateForum(forum);
+            Errors = Forum.ValidateForum(forum);
             if (Errors.Count >= 1)
             {
                 return BadRequest(Errors);
@@ -229,7 +157,23 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El forum s'ha editat correctament."));
         }
 
-        [HttpPost("delete")]
+        [HttpGet("view")]
+        public IActionResult ViewForum([FromBody]string id_forum)
+        {
+            Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
+            if (forum is null)
+            {
+                return BadRequest(Message.GetMessage("El forum no existeix"));
+            }
+
+            forum.Views++;
+            db.Forums.Update(forum);
+            db.SaveChanges();
+
+            return new JsonResult(null);
+        }
+
+        [HttpDelete]
         public IActionResult Delete([FromBody]Forum forum)
         {
             List<object> Errors = new List<object>();
@@ -251,28 +195,6 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
 
             return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
-        }
-
-        public List<object> ValidateForum(Forum forum)
-        {
-            List<object> Errors = new List<object>();
-            if (forum.Title is null)
-            {
-                Errors.Add(Message.GetMessage("No s'ha introduit cap títol al forum, Introdueix un títol."));
-            }
-            if (forum.Name is null)
-            {
-                Errors.Add(Message.GetMessage("No s'ha introduit cap nom al forum, Introdueix un nom."));
-            }
-            if (forum.Description is null)
-            {
-                Errors.Add(Message.GetMessage("No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum."));
-            }
-            if (forum.Description.Length > 1000)
-            {
-                Errors.Add(Message.GetMessage("La llargada de la descripció no pot ser més llarga de 1000 carácters."));
-            }
-            return Errors;
         }
 
         public bool ValidateUser(Forum forum)
