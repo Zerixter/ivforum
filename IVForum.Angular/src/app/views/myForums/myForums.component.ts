@@ -1,41 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/users.service';
-import { ProyectoService } from '../../services/proyecto.service';
+import { UserService } from '../../services/user.service';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'myForums',
+    selector: 'myForumsComponent',
     templateUrl: 'myForums.component.html'
 })
 
 export class MyForumsComponent implements OnInit {
     private forums;
-
     constructor(
-        private _usersService: UserService,
-        private _projectService: ProyectoService,
-        private _forumService: ForumService,
-        private _router: Router,
+        private _userService:UserService,
+        private _forumService:ForumService,
+        private _router:Router
     ) { }
 
     ngOnInit() {
-        this.getForums();
-     }
+        this.getMyForums();
+    }
 
-    getForums() {
-        this._forumService.myForums(JSON.parse(localStorage.getItem("currentUser")).token.id)
-            .subscribe(
-                res => {
-                    console.log(res);
-                    this.forums = res;
-                    console.log(this.forums);
-                },
-                err => console.log(err)
-            );
+    getMyForums(){
+        this._forumService.getUserForums(JSON.parse(localStorage.getItem("currentUser")).token.id)
+        .subscribe(
+            res => this.forums = res,
+            err => console.log(err)
+        )
     }
-    selectForum(forum) {
-        this._forumService.setSelectForum(forum);
-        this._router.navigateByUrl("/forum");
-    }
+
 }

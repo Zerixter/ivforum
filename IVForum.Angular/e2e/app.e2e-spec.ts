@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('ivforum-angular App', () => {
+describe('new-ivforum App', () => {
   let page: AppPage;
 
   beforeEach(() => {
