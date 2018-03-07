@@ -2,8 +2,6 @@
 using IVForum.API.Properties;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace IVForum.API.Data
 {
@@ -22,6 +20,7 @@ namespace IVForum.API.Data
 		{
 			base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlServer(DbInfo.ConnectionString);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
 		protected override void OnModelCreating(ModelBuilder builder)

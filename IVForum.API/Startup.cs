@@ -41,8 +41,7 @@ namespace IVForum.API
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"Resources/Images")));
+                new PhysicalFileProvider("http://localhost/assets/images/"));
 
             services.AddCors(o => o.AddPolicy("all", patata =>
             {

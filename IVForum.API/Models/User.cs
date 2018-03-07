@@ -12,7 +12,7 @@ namespace IVForum.API.Models
         
         [MaxLength(1000)]
         public string Description { get; set; }
-        public string Avatar { get; set; } = @"Resources/Images/avatar.png";
+        public string Avatar { get; set; } = @"http://localhost/assets/images/avatar.png";
 		public string WebsiteUrl { get; set; }
 		public string FacebookUrl { get; set; }
 		public string TwitterUrl { get; set; }

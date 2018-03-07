@@ -44,41 +44,42 @@ namespace IVForum.API.Controllers
         }
 
         [Authorize(Policy = "ApiUser")]
-        [HttpGet("get")]
+        [HttpGet]
         public IActionResult Get()
         {
             User user = userGetter.GetUser();
-
-            UserViewModel model = new UserViewModel
-            {
-                Id = user.Id.ToString(),
-                Avatar = user.Avatar,
-                Name = user.Identity.Name,
-                Surname = user.Identity.Surname,
-                Description = user.Description,
-                Email = user.Identity.Email,
-                FacebookUrl = user.FacebookUrl,
-                RepositoryUrl = user.RepositoryUrl,
-                TwitterUrl = user.TwitterUrl,
-                WebsiteUrl = user.WebsiteUrl
-            };
-
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No hi ha cap usuari connectat per poder visualtizar les dades."));
             }
+
+            UserViewModel model = new UserViewModel
+            {
+                Avatar = user.Avatar,
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
             return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
-        [HttpGet("get/{userid}")]
-        public IActionResult Get(string userid)
+        [HttpGet("{id_user}")]
+        public IActionResult Get(string id_user)
         {
-            User user = userGetter.GetUser(userid);
+            User user = userGetter.GetUser(id_user);
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No existeix cap usuari amb aquesta id en la base de dades."));
+            }
 
             UserViewModel model = new UserViewModel
             {
-                Id = user.Id.ToString(),
                 Name = user.Identity.Name,
                 Surname = user.Identity.Surname,
                 Avatar = user.Avatar,
@@ -89,17 +90,12 @@ namespace IVForum.API.Controllers
                 TwitterUrl = user.TwitterUrl,
                 WebsiteUrl = user.WebsiteUrl
             };
-
-            if (user is null)
-            {
-                return BadRequest(Message.GetMessage("No existeix cap usuari amb aquesta id en la base de dades."));
-            }
             return new JsonResult(model);
         }
 
         [Authorize(Policy = "ApiUser")]
-        [HttpGet("get/forum/{id_forum}")]
-        public IActionResult GetForum(string id_forum)
+        [HttpGet("subscribed/{id_forum}")]
+        public IActionResult GetSubscribed(string id_forum)
         {
             User user = userGetter.GetUser();
             if (user is null)
@@ -115,8 +111,9 @@ namespace IVForum.API.Controllers
             return new JsonResult(wallet);
         }
 
-        [HttpGet("get/bills/{forum_id}")]
-        public IEnumerable<BillOption> GetBillsForum(string forum_id)
+        [Authorize(Policy = "ApiUser")]
+        [HttpGet("subscription/{id_forum}")]
+        public IEnumerable<BillOption> GetSubscription(string id_forum)
         {
             User user = userGetter.GetUser();
             if (user is null)
@@ -124,7 +121,7 @@ namespace IVForum.API.Controllers
                 return null;
             }
 
-            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == forum_id).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
             if (wallet is null)
             {
                 return null;
@@ -137,50 +134,7 @@ namespace IVForum.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
-            List<object> Errors = new List<object>();
-
-            try
-            {
-                string regexPassword = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}";
-                Regex regex = new Regex(regexPassword);
-                if (!regex.IsMatch(model.Password))
-                {
-                    Errors.Add(Message.GetMessage("La contrasenya introduida no és correcte: El format ha de ser el següent, ha de tenir mínim un numero, una lletra minúscula i una majuscula i ha de tenir una longitura de mínim 8 carácters"));
-                } else
-                {
-                    var UserCheck = db.Users.Where(x => x.UserName == model.Email).FirstOrDefault();
-                    if (UserCheck != null)
-                    {
-                        Errors.Add(Message.GetMessage("Un usuari amb amb aquest correu electrònic ja existeix."));
-                    }
-                }
-            } catch (Exception)
-            {
-                Errors.Add(Message.GetMessage("No s'ha introduit cap contrasenya."));
-            }
-
-            try
-            {
-                string regexMail = @"^[a-z0-9._%+-]+@[a-z0-9.-]+[^\.]\.[a-z]{2,3}$";
-                Regex regex = new Regex(regexMail);
-                if (!regex.IsMatch(model.Email))
-                {
-                    Errors.Add(Message.GetMessage("El correu electrònic introduit no és correcte."));
-                }
-            } catch (Exception)
-            {
-                Errors.Add(Message.GetMessage("No s'ha introduit cap correu electrònic."));
-            }
-
-            if (model.Name is null)
-            {
-                Errors.Add(Message.GetMessage("El camp del nom s'ha deixat buit, s'ha de posar un nom."));
-            }
-
-            if (model.Surname is null)
-            {
-                Errors.Add(Message.GetMessage("El camp del cognom s'ha deixat buit, s'ha de posar un cognom."));
-            }
+            List<object> Errors = RegisterViewModel.ValidateRegister(db, model);            
 
             if (Errors.Count >= 1)
             {
@@ -215,17 +169,10 @@ namespace IVForum.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
-            List<object> Errors = new List<object>();
-            if (credentials.Email is null || credentials.Password is null)
+            List<object> Errors = CredentialsViewModel.ValidateCredentials(credentials);
+
+            if (Errors.Count > 0)
             {
-                if (credentials.Email is null)
-                {
-                    Errors.Add(Message.GetMessage("No s'ha introduit cap compte d'usuari."));
-                }
-                if (credentials.Password is null)
-                {
-                    Errors.Add(Message.GetMessage("No s'ha introduit cap contrasenya."));
-                }
                 return BadRequest(Errors);
             }
 
@@ -236,7 +183,8 @@ namespace IVForum.API.Controllers
                 if (userName is null)
                 {
                     Errors.Add(Message.GetMessage("El compte d'usuari introduit és incorrecte"));
-                } else
+                }
+                else
                 {
                     Errors.Add(Message.GetMessage("La contrasenya introduida no és correcte"));
                 }
@@ -248,7 +196,7 @@ namespace IVForum.API.Controllers
         }
 
         [Authorize(Policy = "ApiUser")]
-        [HttpPost("update")]
+        [HttpPut]
         public IActionResult Update([FromBody]UserViewModel model)
         {
             User UserToEdit = userGetter.GetUser();
@@ -266,7 +214,7 @@ namespace IVForum.API.Controllers
         }
 
         [Authorize(Policy = "ApiUser")]
-        [HttpGet("delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete()
         {
             try
@@ -284,39 +232,11 @@ namespace IVForum.API.Controllers
                     return new JsonResult(Message.GetMessage("S'ha esborrat el usuari correctament."));
                 }
                 return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)."));
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)."));
             }
-        }
-
-        [HttpPost("subscribe")]
-        public IActionResult Subscribe([FromBody]Forum forum)
-        {
-            Forum ForumToSearch = db.Forums.Where(x => x.Id == forum.Id).SingleOrDefault();
-            if (ForumToSearch is null)
-            {
-                return BadRequest(Message.GetMessage("No existeix cap forum amb aquesta id en la base de dades."));
-            }
-
-            User user = userGetter.GetUser();
-            if (user is null)
-            {
-                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat ara mateix. Connecta't per poder subscriure a un forum"));
-            }
-
-            Wallet wallet = new Wallet
-            {
-                Id = Guid.NewGuid(),
-                Forum = ForumToSearch,
-                User = user
-            };
-
-            db.Wallets.Add(wallet);
-            db.SaveChanges();
-
-            AddBillOptions(ForumToSearch, wallet);
-            return new JsonResult(Message.GetMessage("El usuari s'ha subscrit exitosament a aquest forum."));
         }
 
         [Authorize(Policy = "ApiUser")]
@@ -342,7 +262,25 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("S'ha actualitzat el avatar correctament."));
         }
 
-        public void AddBillOptions(Forum forum, Wallet wallet)
+        // Mètodes
+
+        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
+        {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+                return await Task.FromResult<ClaimsIdentity>(null);
+
+            var userToVerify = await userManager.FindByNameAsync(userName);
+
+            if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
+
+            if (await userManager.CheckPasswordAsync(userToVerify, password))
+            {
+                return await Task.FromResult(jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+            }
+            return await Task.FromResult<ClaimsIdentity>(null);
+        }
+
+        private void AddBillOptions(Forum forum, Wallet wallet)
         {
             List<Transaction> Transactions = db.Transactions.Where(x => x.ForumId == forum.Id).ToList();
             foreach (Transaction transaction in Transactions)
@@ -358,7 +296,7 @@ namespace IVForum.API.Controllers
             db.SaveChanges();
         }
 
-        public User UpdateUser(User UserToEdit, UserViewModel model)
+        private User UpdateUser(User UserToEdit, UserViewModel model)
         {
             if (model.Description != null)
             {
@@ -384,22 +322,6 @@ namespace IVForum.API.Controllers
                 UserToEdit.WebsiteUrl = model.WebsiteUrl;
             }
             return UserToEdit;
-        }
-
-        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
-        {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
-                return await Task.FromResult<ClaimsIdentity>(null);
-
-            var userToVerify = await userManager.FindByNameAsync(userName);
-
-            if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
-
-            if (await userManager.CheckPasswordAsync(userToVerify, password))
-            {
-                return await Task.FromResult(jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
-            }
-            return await Task.FromResult<ClaimsIdentity>(null);
         }
     }
 }
