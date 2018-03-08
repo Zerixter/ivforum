@@ -92,6 +92,19 @@ namespace IVForum.API.Controllers
 
             return new JsonResult(ForumToSelect);
         }
+        
+        [HttpGet("projects/{id_forum}")]
+        public IEnumerable<Project> GetProjects(string id_forum)
+        {
+            try
+            {
+                Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
+                return db.Projects.Where(x => x.Forum == forum).ToArray();
+            } catch (Exception)
+            {
+                return null;
+            }
+        }
 
         [HttpPost]
         public IActionResult Create([FromBody]ForumViewModel model)
