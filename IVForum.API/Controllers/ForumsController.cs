@@ -99,7 +99,7 @@ namespace IVForum.API.Controllers
             try
             {
                 Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
-                return db.Projects.Where(x => x.Forum == forum).ToArray();
+                return db.Projects.Where(x => x.Forum == forum).Include(x => x.Owner).ToArray();
             } catch (Exception)
             {
                 return null;
