@@ -55,7 +55,7 @@ namespace IVForum.API.Controllers
 
             UserViewModel model = new UserViewModel
             {
-                Id = user.Id.ToString(),
+                Id = user.Id,
                 Avatar = user.Avatar,
                 Name = user.Identity.Name,
                 Surname = user.Identity.Surname,
@@ -81,7 +81,7 @@ namespace IVForum.API.Controllers
 
             UserViewModel model = new UserViewModel
             {
-                Id = user.Id.ToString(),
+                Id = user.Id,
                 Name = user.Identity.Name,
                 Surname = user.Identity.Surname,
                 Avatar = user.Avatar,
