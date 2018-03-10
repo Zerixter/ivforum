@@ -5,10 +5,13 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class TransactionService {
 
+    private _URL;
     constructor(
-        private _URL:BaseService,
+        private URL:BaseService,
         private http: HttpClient
-    ) { }
+    ) {
+        this._URL = this.URL.getURL();
+     }
 
     subscribeForum(idProject){
         return this.http.post(this._URL + "transaction/vote",idProject)

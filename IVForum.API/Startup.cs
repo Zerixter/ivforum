@@ -40,8 +40,8 @@ namespace IVForum.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider("http://localhost/assets/images/"));
+            /*services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider("http://localhost/assets/images/"));*/
 
             services.AddCors(o => o.AddPolicy("all", patata =>
             {

@@ -43,7 +43,7 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -68,7 +68,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(model);
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpGet("{id_user}")]
         public IActionResult Get(string id_user)
         {
@@ -93,7 +93,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(model);
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpGet("subscribed/{id_forum}")]
         public IActionResult GetSubscribed(string id_forum)
         {
@@ -111,7 +111,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(wallet);
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpGet("subscription/{id_forum}")]
         public IEnumerable<BillOption> GetSubscription(string id_forum)
         {
@@ -195,7 +195,7 @@ namespace IVForum.API.Controllers
             return new OkObjectResult(jwt);
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpPut]
         public IActionResult Update([FromBody]UserViewModel model)
         {
@@ -213,7 +213,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("S'ha modificat les dades del usuari correctament."));
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpDelete]
         public async Task<IActionResult> Delete()
         {
@@ -239,7 +239,7 @@ namespace IVForum.API.Controllers
             }
         }
 
-        [Authorize(Policy = "ApiUser")]
+        //[Authorize(Policy = "ApiUser")]
         [HttpPost("avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
         {

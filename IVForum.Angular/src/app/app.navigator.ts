@@ -1,5 +1,5 @@
 import { MyForumsComponent } from './views/myForums/myForums.component';
-import { MyProjectComponent } from './views/myProjects/myProjects.component';
+import { MyProjectsComponent } from './views/myProjects/myProjects.component';
 import { RegisterComponent } from './views/register/register.component';
 import { Component } from '@angular/core';
 import { LoginComponent } from './views/login/login.component';
@@ -9,11 +9,15 @@ import { AuthGuard } from './services/auth-guard.service';
 
 
 const routes: Routes = [
-    { path: '', component: ExplorerComponent},
+    { path: '', component: ExplorerComponent, /*canActivate: [AuthGuard]*/
+        children:[
+           // { path: 'myForums',component: MyForumsComponent,/*canActivate: [AuthGuard]*/},
+           // { path: 'myProjects',component: MyProjectsComponent,canActivate: [AuthGuard]},
+        ]
+    },
     { path: 'login',component: LoginComponent},
     { path: 'register',component: RegisterComponent},
-    { path: 'myForums',component: MyForumsComponent,canActivate: [AuthGuard]},
-    { path: 'myProjects',component: MyProjectComponent,canActivate: [AuthGuard]},
+    
     { path: '**',component: ExplorerComponent}
     //{ path: 'path/:routeParam', component: MyComponent },
     //{ path: 'staticPath', component: ... },

@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
+    //[Authorize(Policy = "ApiUser")]
     [Route("api/forum")]
     public class ForumsController : Controller
     {

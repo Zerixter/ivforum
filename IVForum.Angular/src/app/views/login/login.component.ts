@@ -5,12 +5,13 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'loginComponent',
-    templateUrl: 'login.component.html'
+    templateUrl: 'login.component.html',
+    styleUrls: ["login.component.css"]
 })
 
 export class LoginComponent implements OnInit {
     private loginForm: FormGroup;
-    private login:string;
+    private email:string;
     private password:string;
     constructor(
         private _userService:UserService,
@@ -36,7 +37,8 @@ export class LoginComponent implements OnInit {
     }
 
     logIn(){
-        this._userService.postLogin(this.login,this.password)
+        console.log(this.email);
+        this._userService.postLogin(this.email,this.password)
         .subscribe(
             res => this._router.navigate[("/explorer")],
             err => console.log(err)

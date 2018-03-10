@@ -5,13 +5,16 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class UserService {
 
+    private _URL;
     constructor(
-        private _URL:BaseService,
+        private URL:BaseService,
         private http: HttpClient
-    ) { }
+    ) {
+        this._URL = this.URL.getURL();
+     }
 
-    postRegister(user) {
-        return this.http.post(this._URL + "account/register", user)
+    postRegister(name:string, surname:string, email:string, password:string) {
+        return this.http.post(this._URL + "account/register", {name,surname,email,password})
             .map(
                 res => {
                     return true;
@@ -24,6 +27,7 @@ export class UserService {
     }
 
     postLogin(email: string, password: string) {
+        console.log(email+","+password);
         return this.http.post(this._URL + "account/login", { email, password })
         .map(
                 res => {

@@ -5,10 +5,13 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class ProjectService {
     private selectedProject;
+    private _URL;
     constructor(
-        private _URL:BaseService,
+        private URL:BaseService,
         private http: HttpClient
-    ) { }
+    ) {
+        this._URL = this.URL.getURL();
+     }
 
     getProjects(){
         return this.http.get(this._URL + "project")
