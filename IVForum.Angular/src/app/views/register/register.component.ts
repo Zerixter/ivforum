@@ -6,12 +6,16 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'registerComponent',
-    templateUrl: 'register.component.html'
+    templateUrl: 'register.component.html',
+    styleUrls: ["register.component.css"]
 })
 
 export class RegisterComponent implements OnInit {
-    private registerForm: FormGroup;    
-    private user:Register;
+    private registerForm: FormGroup;
+    private name:string;
+    private surname:string;
+    private password:string;
+    private email:string;
     constructor(
         private _userService:UserService,
         private _router:Router
@@ -29,7 +33,7 @@ export class RegisterComponent implements OnInit {
 
     checkLogin(){
         if(localStorage.getItem("currentUser") != null){
-            this._router.navigate[("/explorer")];
+            this._router.navigate(["/explorer"]);
         }
     }
 
@@ -38,9 +42,9 @@ export class RegisterComponent implements OnInit {
     }
 
     register(){
-        this._userService.postRegister(this.user)
+        this._userService.postRegister(this.name,this.surname,this.email,this.password)
         .subscribe(
-            res => {this._router.navigate[("/login")]},
+            res => {this._router.navigate(["/login"])},
             err => console.log(err)
         )
     }

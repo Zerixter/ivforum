@@ -3,10 +3,12 @@ import { UserService } from './../../services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { ForumService } from '../../services/forum.service';
 import { Forum } from '../../interfaces/forum.interface';
+import { NavComponent } from '../latNav/nav.component';
 
 @Component({
     selector: 'explorerComponent',
-    templateUrl: 'explorer.component.html'
+    templateUrl: 'explorer.component.html',
+    styleUrls: ["explorer.component.css"]
 })
 
 export class ExplorerComponent implements OnInit {
@@ -21,12 +23,13 @@ export class ExplorerComponent implements OnInit {
     ngOnInit() {
         //this.newForum = new Forum();
         this.getForums();
+        this.test();
      }
 
     getForums() {
         this._forumService.getForums()
         .subscribe(
-            ress => this.forums = ress,
+            res => this.forums = res,
             err => console.log(err) 
         )
     }
@@ -47,5 +50,12 @@ export class ExplorerComponent implements OnInit {
             },
             err => console.log(err)
         )
+    }
+    test(){
+        var forum = [{'title':"potato","shortDescription":"Potato","description":"Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you. But I can't give you this case, it don't belong to me. Besides, I've already been through too much shit this morning over this case to hand it over to your dumb ass."},
+        {'title':"potato","shortDescription":"Potato","description":"Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you. But I can't give you this case, it don't belong to me. Besides, I've already been through too much shit this morning over this case to hand it over to your dumb ass."},
+        {'title':"potato","shortDescription":"Potato","description":"Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you. But I can't give you this case, it don't belong to me. Besides, I've already been through too much shit this morning over this case to hand it over to your dumb ass."},
+        {'title':"potato","shortDescription":"Potato","description":"Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you. But I can't give you this case, it don't belong to me. Besides, I've already been through too much shit this morning over this case to hand it over to your dumb ass."}];
+        this.forums = forum;
     }
 }

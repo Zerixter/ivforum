@@ -1,0 +1,34 @@
+<div class="col-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="row col-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="registerCard" class="card offset-sm-3 offset-md-4 offset-lg-4 col-12 col-sm-6 col-md-4 col-lg-4">
+            <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+                <div class="card-content">
+                    <div class="input-field form-group">
+                        <input formControlName="email" id="email" type="email" class="validate" [(ngModel)]="email">
+                        <label for="email">Email:</label>
+                        <div style="color:red;" *ngIf="loginForm.controls.email.invalid && loginForm.controls.email.touched">
+                            La direcció d'e-mail introduïda no es valida!
+                        </div>
+                    </div>
+                    <div class="input-field form-group">
+                        <input formControlName="password" id="password" type="password" class="validate" [(ngModel)]="password">
+                        <label for="password">Contrasenya:</label>
+                        <div style="color:red;" *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched">
+                            La contrasenya introduïda no es valida!
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions col-12 col-sm-12 col-md-12 col-lg-12">
+                    <button class="btn waves-effect waves-light offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10" type="submit"
+                        name="action">
+                        Entrar
+                    </button>
+                    <button routerLink='/register' id="register-button" class="btn waves-effect waves-light offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10"
+                        type="button" name="action">
+                        Registrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

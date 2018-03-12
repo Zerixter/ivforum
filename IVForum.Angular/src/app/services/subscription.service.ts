@@ -4,11 +4,13 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class SubscriptionService {
-
+    private _URL;
     constructor(
-        private _URL:BaseService,
+        private URL:BaseService,
         private http: HttpClient
-    ) { }
+    ) {
+        this._URL = this.URL.getURL();
+     }
 
     subscribeForum(forum){
         return this.http.post(this._URL + "subscribe/forum",forum)

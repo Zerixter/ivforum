@@ -5,10 +5,13 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class ForumService {
     private selectedForum;
+    private _URL
     constructor(
-        private _URL:BaseService,
+        private URL:BaseService,
         private http: HttpClient
-    ) { }
+    ) {
+        this._URL = this.URL.getURL();
+    }
 
     getForums(){
         return this.http.get(this._URL + "forum")
@@ -17,8 +20,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
-                    return false;
+                    console.log(err);
                 });
     }
     getUserForums(idUser){
@@ -28,7 +30,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -40,7 +42,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -52,7 +54,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -64,7 +66,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -76,7 +78,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -88,7 +90,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -100,7 +102,7 @@ export class ForumService {
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
