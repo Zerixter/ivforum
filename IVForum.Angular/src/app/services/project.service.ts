@@ -3,26 +3,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class ForumService {
-    private selectedForum;
+export class ProjectService {
+    private selectedProject;
     constructor(
         private _URL:BaseService,
         private http: HttpClient
     ) { }
 
-    getForums(){
-        return this.http.get(this._URL + "forum")
-        .map(
-                res => {
-                    return res;
-                },
-                err => {
-                    console.log(err)
-                    return false;
-                });
-    }
-    getUserForums(idUser){
-        return this.http.get(this._URL + "forum/user/"+idUser)
+    getProjects(){
+        return this.http.get(this._URL + "project")
         .map(
                 res => {
                     return res;
@@ -33,8 +22,8 @@ export class ForumService {
                 });
     }
 
-    getSubscribedForums(idUser){
-        return this.http.get(this._URL + "forum/subscribed/"+idUser)
+    getUserProject(idUser){
+        return this.http.get(this._URL + "project/user/" + idUser)
         .map(
                 res => {
                     return res;
@@ -45,20 +34,8 @@ export class ForumService {
                 });
     }
 
-    getForum(idForum){
-        return this.http.get(this._URL + "forum/select/"+idForum)
-        .map(
-                res => {
-                    return res;
-                },
-                err => {
-                    console.log(err)
-                    return false;
-                });
-    }
-    
-    createForum(forum){
-        return this.http.post(this._URL + "forum", forum)
+    getProject(idProject){
+        return this.http.get(this._URL + "project/select/" + idProject)
         .map(
                 res => {
                     return res;
@@ -69,8 +46,42 @@ export class ForumService {
                 });
     }
 
-    putForum(forum){
-        return this.http.put(this._URL + "forum", forum)
+    createProject(project){
+        return this.http.post(this._URL + "project",project)
+        .map(
+                res => {
+                    return res;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                });
+    }
+    voteProject(idProject){
+        return this.http.post(this._URL + "project/vote",idProject)
+        .map(
+                res => {
+                    return res;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                });
+    }
+    //Cambiar
+    modifProject(project){
+        return this.http.put(this._URL + "project",project)
+        .map(
+                res => {
+                    return res;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                });
+    }
+    addView(idProject){
+        return this.http.put(this._URL + "project/view",idProject)
         .map(
                 res => {
                     return res;
@@ -81,8 +92,8 @@ export class ForumService {
                 });
     }
 
-    addView(forum){
-        return this.http.put(this._URL + "forum/view", forum)
+    deleteProject(object){
+        return this.http.delete(this._URL + "project",object)
         .map(
                 res => {
                     return res;
@@ -93,41 +104,29 @@ export class ForumService {
                 });
     }
 
-    deleteForum(forum) {
-        return this.http.delete(this._URL + "forum", forum)
-        .map(
-                res => {
-                    return res;
-                },
-                err => {
-                    console.log(err)
-                    return false;
-                });
-    }
-
-    selectForum(forum){
-        this.selectedForum = forum;
+    selectProject(project){
+        this.selectedProject = project;
         return true;
     }
 
-    getSelectedForum(){
-        return this.selectedForum;
+    getSelectedProject(){
+        return this.selectedProject;
     }
 }
 
 /*
-    - api/forum/
+- api/project/
     - GET
-        - default : Obtener todos los forum
-        - {id_usuario} : Obtener forums de un usuario
-        - user/{id_usuario} : Lo mismo pero para APP
-        - subscribed/{id_usuario} : Forums a los que està suscrito un usuario
-        - select/{id_forum} : Dades de un forum concret
+        - default : Obtener todos los proyectos
+        - {id_usuario} : Obtener todos los proyectos de un usuario
+        - user/{id_usuario} : Lo mismo per para APP
+        - select/{id_proyecto} : Obtener datos de un forum concreto
     - POST
-        - default : Crear forum
+        - default : Crear proyecto
+        - vote : Votar proyecto
     - PUT
-        - default : Actualizar forum
-        - view : Añadir visita al forum
+        - default : Actualizar proyecto
+        - view : Añadir visita al proyecto
     - DELETE
-        - default : Borrar forum
-*/  
+        - default : Borrar proyecto
+*/

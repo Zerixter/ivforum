@@ -3,7 +3,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/c
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/catch';
-import { UserService } from './users.service';
+import { UserService } from './user.service';
 import { Router } from '@angular/router';
 
 @Injectable()

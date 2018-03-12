@@ -14,9 +14,12 @@ using System.Text;
 using IVForum.API.Auth;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
+using System.IO;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -38,7 +41,7 @@ namespace IVForum.API
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             /*services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider());*/
+                new PhysicalFileProvider("http://localhost/assets/images/"));*/
 
             services.AddCors(o => o.AddPolicy("all", patata =>
             {
