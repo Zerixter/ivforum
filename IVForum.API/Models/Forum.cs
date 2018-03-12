@@ -20,6 +20,8 @@ namespace IVForum.API.Models
 		public string Icon { get; set; }
 		public string Background { get; set; } = @"http://localhost/assets/images/banner.jpg";
         public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime DateBeginsVote { get; set; } = DateTime.Parse("10/10/1999");
+        public DateTime DateEndsVote { get; set; } = DateTime.Parse("10/10/1999");
         public int Views { get; set; } = 0;
 
         public virtual User Owner { get; set; }
@@ -37,6 +39,14 @@ namespace IVForum.API.Models
             if (forum.Description is null)
             {
                 Errors.Add(Message.GetMessage("No s'ha introduit cap descripció, introdueix una breu descripció sobre el forum."));
+            }
+            if (forum.DateBeginsVote == DateTime.Parse("10/10/1999"))
+            {
+                Errors.Add(Message.GetMessage("No s'ha definit una data per començar les votacions. Defineix una data."));
+            }
+            if (forum.DateEndsVote == DateTime.Parse("10/10/1999"))
+            {
+                Errors.Add(Message.GetMessage("No s'ha definit una data per acabar les votacions. Defineix unda data."));
             }
             if (forum.Description.Length > 1000)
             {

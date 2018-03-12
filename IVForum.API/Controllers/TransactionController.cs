@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/transaction")]
     public class TransactionController : Controller
     {
@@ -61,22 +60,26 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari no te aquesta opció de vot."));
             }
 
-            Vote vote = new Vote
+            if (ForumToSearch.DateBeginsVote >= DateTime.Now && ForumToSearch.DateEndsVote <= DateTime.Now)
             {
-                ImgUri = BillToSearch.ImgUri,
-                Name = BillToSearch.Name,
-                Value = BillToSearch.Value,
-                Project = ProjectToSearch
-            };
+                Vote vote = new Vote
+                {
+                    ImgUri = BillToSearch.ImgUri,
+                    Name = BillToSearch.Name,
+                    Value = BillToSearch.Value,
+                    Project = ProjectToSearch
+                };
 
-            ProjectToSearch.TotalMoney += vote.Value;
+                ProjectToSearch.TotalMoney += vote.Value;
 
-            db.Remove(BillToSearch);
-            db.Votes.Add(vote);
-            db.Projects.Update(ProjectToSearch);
-            db.SaveChanges();
+                db.Remove(BillToSearch);
+                db.Votes.Add(vote);
+                db.Projects.Update(ProjectToSearch);
+                db.SaveChanges();
 
-            return new JsonResult(Message.GetMessage("El vot s'ha realitzat correctament."));
+                return new JsonResult(Message.GetMessage("El vot s'ha realitzat correctament."));
+            }
+            return BadRequest(Message.GetMessage("No s'ha pogut realitzar el vot perquè la data actual no està dintre del termini de vot del Forum."));
         }
     }
 }

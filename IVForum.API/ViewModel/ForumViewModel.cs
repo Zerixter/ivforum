@@ -10,5 +10,7 @@ namespace IVForum.API.ViewModel
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public DateTime DateBeginsVote { get; set; } = DateTime.Parse("00/00/0000");
+        public DateTime DateEndsVote { get; set; } = DateTime.Parse("00/00/0000");
     }
 }
