@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './views/register/register.component';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { NavComponent } from './views/latNav/nav.component';
+import { TabsComponent } from './views/tabs/tabs.component';
 import { ForumService } from './services/forum.service';
 import { UserService } from './services/user.service';
 import { ProjectService } from './services/project.service';
@@ -39,7 +40,8 @@ import { MzButtonModule } from 'ng2-materialize'
     MyForumsComponent,
     MyProjectsComponent,
     NavComponent,
-    ForumComponent
+    ForumComponent,
+    TabsComponent
   ],
   imports: [
     BrowserModule,

@@ -13,6 +13,8 @@ export class NavComponent implements OnInit {
         private _router:Router
     ) { }
 
+    sidebar_activated:boolean = false;
+
     ngOnInit() {
 
     }
