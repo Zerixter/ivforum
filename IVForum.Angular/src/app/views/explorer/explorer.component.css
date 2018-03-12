@@ -1,0 +1,14 @@
+.imagen{
+    height: 200px;
+    width: 100%;
+}
+
+.forum-card{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.forum-content{
+    padding-left: 15px;
+    padding-right: 15px;
+}

@@ -1,8 +1,11 @@
 ﻿using IVForum.API.Auth;
+using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +16,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
+    [EnableCors("all")]
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -27,6 +30,7 @@ namespace IVForum.API.Controllers
         private readonly DbHandler db;
         private readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
         private readonly ClaimsPrincipal claimsPrincipal;
+        private readonly UserGetter userGetter;
 
         public AccountController(UserManager<UserModel> _userManager, IJwtFactory _jwtFactory, IOptions<JwtIssuerOptions> _jwtOptions, DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
@@ -35,88 +39,105 @@ namespace IVForum.API.Controllers
             jwtOptions = _jwtOptions.Value;
             db = _db;
             claimsPrincipal = httpContextAccessor.HttpContext.User;
+            userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [HttpGet("get")]
+        [Authorize(Policy = "ApiUser")]
+        [HttpGet]
         public IActionResult Get()
         {
-            User user = null;
-
-            try
+            User user = userGetter.GetUser();
+            if (user is null)
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value).GetAwaiter().GetResult();
-            } catch (Exception)
-            {
-                var Message = new
-                {
-                    Message = "S'ha de loguejar por poder visualitzar les dades d'usuari."
-                };
-                return BadRequest(Message);
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat per poder visualtizar les dades."));
             }
 
-            return new JsonResult(user);
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id,
+                Avatar = user.Avatar,
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+            return new JsonResult(model);
         }
 
-        [HttpGet("get/{userid}")]
-        public IActionResult Get(string userid)
+        [HttpGet("{id_user}")]
+        public IActionResult Get(string id_user)
         {
-            User user = null;
-
-            try
+            User user = userGetter.GetUser(id_user);
+            if (user is null)
             {
-                user = db.DbUsers.SingleAsync(c => c.IdentityId == userid).GetAwaiter().GetResult();
-            }
-            catch (Exception)
-            {
-                var Message = new
-                {
-                    Message = "S'ha de loguejar por poder visualitzar les dades d'usuari."
-                };
-                return BadRequest(Message);
+                return BadRequest(Message.GetMessage("No existeix cap usuari amb aquesta id en la base de dades."));
             }
 
-            return new JsonResult(user);
+            UserViewModel model = new UserViewModel
+            {
+                Id = user.Id,
+                Name = user.Identity.Name,
+                Surname = user.Identity.Surname,
+                Avatar = user.Avatar,
+                Description = user.Description,
+                Email = user.Identity.Email,
+                FacebookUrl = user.FacebookUrl,
+                RepositoryUrl = user.RepositoryUrl,
+                TwitterUrl = user.TwitterUrl,
+                WebsiteUrl = user.WebsiteUrl
+            };
+            return new JsonResult(model);
+        }
+
+        [HttpGet("subscribed/{id_forum}")]
+        public IActionResult GetSubscribed(string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat."));
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return BadRequest();
+            }
+            return new JsonResult(wallet);
+        }
+
+        [HttpGet("subscription/{id_forum}")]
+        public IEnumerable<BillOption> GetSubscription(string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return null;
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return null;
+            }
+
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            return bills;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
-            List<object> Errors = new List<object>();
+            List<object> Errors = RegisterViewModel.ValidateRegister(db, model);            
 
-            try
+            if (Errors.Count >= 1)
             {
-                string regexPassword = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}";
-                Regex regex = new Regex(regexPassword);
-                if (!regex.IsMatch(model.Password))
-                {
-                    Errors.Add(new { Message = "La contrasenya introduida no és correcte: El format ha de ser el següent, ha de tenir mínim un numero, una lletra minúscula i una majuscula i ha de tenir una longitura de mínim 8 carácters" });
-                } else
-                {
-                    var UserCheck = db.Users.Where(x => x.UserName == model.Email).FirstOrDefault();
-                    if (UserCheck != null)
-                    {
-                        Errors.Add(new { Message = "Un usuari amb amb aquest correu electrònic ja existeix." });
-                    }
-                }
-            } catch (Exception)
-            {
-                Errors.Add(new { Message = "No s'ha introduit cap contrasenya." });
+                return BadRequest(Errors);
             }
-
-            try
-            {
-                string regexMail = @"^[a-z0-9._%+-]+@[a-z0-9.-]+[^\.]\.[a-z]{2,3}$";
-                Regex regex = new Regex(regexMail);
-                if (!regex.IsMatch(model.Email))
-                {
-                    Errors.Add(new { Messatge = "El correu electrònic introduit no és correcte." });
-                }
-            } catch (Exception)
-            {
-                Errors.Add(new { Message = "No s'ha introduit cap correu electrònic." });
-            }
-
             try
             {
                 if (model.Name is null)
@@ -166,17 +187,10 @@ namespace IVForum.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
-            List<object> Errors = new List<object>();
-            if (credentials.Email is null || credentials.Password is null)
+            List<object> Errors = CredentialsViewModel.ValidateCredentials(credentials);
+
+            if (Errors.Count > 0)
             {
-                if (credentials.Email is null)
-                {
-                    Errors.Add(new { Missatge = "No s'ha introduit cap compte d'usuari." });
-                }
-                if (credentials.Password is null)
-                {
-                    Errors.Add(new { Missatge = "No s'ha introduit cap contrasenya." });
-                }
                 return BadRequest(Errors);
             }
 
@@ -186,23 +200,39 @@ namespace IVForum.API.Controllers
                 var userName = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
                 if (userName is null)
                 {
-                    Errors.Add(new { Missatge = "El compte d'usuari introduit és incorrecte" });
-                } else
-                {
-                    Errors.Add(new { Missatge = "La contrasenya introduida no és correcte" });
+                    Errors.Add(Message.GetMessage("El compte d'usuari introduit és incorrecte"));
                 }
-                return BadRequest(Errors.ToArray());
+                else
+                {
+                    Errors.Add(Message.GetMessage("La contrasenya introduida no és correcte"));
+                }
+                return BadRequest(Errors);
             }
 
             var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 
-        [HttpGet("delete")]
+        [HttpPut]
+        public IActionResult Update([FromBody]UserViewModel model)
+        {
+            User UserToEdit = userGetter.GetUser();
+            if (UserToEdit is null)
+            {
+                return BadRequest(Message.GetMessage("Per poder modificar les dades d'un usuari s'ha de loguejar primer."));
+            }
+
+            UserToEdit = UpdateUser(UserToEdit, model);
+
+            db.DbUsers.Update(UserToEdit);
+            db.SaveChanges();
+
+            return new JsonResult(Message.GetMessage("S'ha modificat les dades del usuari correctament."));
+        }
+
+        [HttpDelete]
         public async Task<IActionResult> Delete()
         {
-            List<object> Errors = new List<object>();
-
             try
             {
                 var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
@@ -215,40 +245,98 @@ namespace IVForum.API.Controllers
                     db.Remove(ASPUser);
                     db.SaveChanges();
 
-                    var Message = new
-                    {
-                        Message = "S'ha esborrat el usuari correctament."
-                    };
-                    return new JsonResult(Message);
+                    return new JsonResult(Message.GetMessage("S'ha esborrat el usuari correctament."));
                 }
-
-                Errors.Add(new { Message = "S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)." });
-                return BadRequest(Errors);
-            } catch (Exception)
+                return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)."));
+            }
+            catch (Exception)
             {
-                Errors.Add(new { Message = "S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)." });
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)."));
             }
         }
+
+        [HttpPost("avatar")]
+        public IActionResult UpdateAvatar(IFormFile file)
+        {
+            var Path = Upload.UploadFile(file);
+            if (Path is null)
+            {
+                return BadRequest(Message.GetMessage("Ha sorgit un error al intentar pujar la imatge en el servidor."));
+            }
+
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat. Connecta't per poder canviar la imatge de perfil."));
+            }
+
+            user.Avatar = Path;
+            db.DbUsers.Update(user);
+            db.SaveChanges();
+
+            return new JsonResult(Message.GetMessage("S'ha actualitzat el avatar correctament."));
+        }
+
+        // Mètodes
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
                 return await Task.FromResult<ClaimsIdentity>(null);
 
-            // get the user to verifty
             var userToVerify = await userManager.FindByNameAsync(userName);
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
-            // check the credentials
             if (await userManager.CheckPasswordAsync(userToVerify, password))
             {
                 return await Task.FromResult(jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
             }
-
-            // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
+        }
+
+        private void AddBillOptions(Forum forum, Wallet wallet)
+        {
+            List<Transaction> Transactions = db.Transactions.Where(x => x.ForumId == forum.Id).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                BillOption option = new BillOption
+                {
+                    Name = transaction.Name,
+                    Value = transaction.Value,
+                    Wallet = wallet
+                };
+                db.BillOptions.Add(option);
+            }
+            db.SaveChanges();
+        }
+
+        private User UpdateUser(User UserToEdit, UserViewModel model)
+        {
+            if (model.Description != null)
+            {
+                if (!(model.Description.Length > 1000))
+                {
+                    UserToEdit.Description = model.Description;
+                }
+            }
+            if (model.FacebookUrl != null)
+            {
+                UserToEdit.FacebookUrl = model.FacebookUrl;
+            }
+            if (model.RepositoryUrl != null)
+            {
+                UserToEdit.RepositoryUrl = model.RepositoryUrl;
+            }
+            if (model.TwitterUrl != null)
+            {
+                UserToEdit.TwitterUrl = model.TwitterUrl;
+            }
+            if (model.WebsiteUrl != null)
+            {
+                UserToEdit.WebsiteUrl = model.WebsiteUrl;
+            }
+            return UserToEdit;
         }
     }
 }

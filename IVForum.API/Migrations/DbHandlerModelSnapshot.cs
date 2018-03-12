@@ -51,19 +51,20 @@ namespace IVForum.API.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
+                    b.Property<DateTime>("DateBeginsVote");
+
+                    b.Property<DateTime>("DateEndsVote");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(1000);
 
                     b.Property<string>("Icon");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<Guid>("OwnerId");
+                    b.Property<Guid?>("OwnerId");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(100);
 
                     b.Property<int>("Views");
@@ -86,24 +87,23 @@ namespace IVForum.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(1000);
 
                     b.Property<Guid?>("ForumId");
 
                     b.Property<string>("Icon");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<Guid>("OwnerId");
+                    b.Property<Guid?>("OwnerId");
 
                     b.Property<string>("RepositoryUrl");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(100);
 
                     b.Property<int>("TotalMoney");
+
+                    b.Property<int>("Views");
 
                     b.Property<string>("WebsiteUrl");
 
@@ -122,6 +122,9 @@ namespace IVForum.API.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Avatar");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000);
 
                     b.Property<string>("FacebookUrl");
 

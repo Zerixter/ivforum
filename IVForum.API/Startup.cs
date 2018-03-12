@@ -14,11 +14,11 @@ using System.Text;
 using IVForum.API.Auth;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
-using System.IO;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace IVForum.API
 {
@@ -36,9 +36,9 @@ namespace IVForum.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Assets/Images")));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            /*services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider("http://localhost/assets/images/"));*/
 
             services.AddCors(o => o.AddPolicy("all", patata =>
             {
@@ -132,6 +132,10 @@ namespace IVForum.API
             app.UseCors(
                 "all"
                 );
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

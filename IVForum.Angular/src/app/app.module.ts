@@ -1,50 +1,67 @@
-import { FooterComponent } from './views/shared/footer/footer.component';
-import { appRouting } from './app-navigation.module';
-
+import { BaseService } from './services/base.service';
+import { ForumComponent } from './views/forum/forum.component';
+import { MyProjectsComponent } from './views/myProjects/myProjects.component';
+import { MyForumsComponent } from './views/myForums/myForums.component';
+import { ProjectComponent } from './views/project/project.component';
+import { LoginComponent } from './views/login/login.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule, XHRBackend } from '@angular/http';
+
+
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from './services/users.service';
-import { BaseService } from './services/base.service';
-import { ConfigService } from './services/config.service';
-import { LoginModal } from './views/shared/header/login/login.component';
-import { NavComponent } from './views/shared/header/nav.component';
-import { RegisterModal } from './views/shared/header/register/register.component';
-import { HomeComponent } from './views/home/home-body.component';
-import { HttpClient, HttpHandler, HttpClientModule, HTTP_INTERCEPTORS  } from '@angular/common/http';
+import { appRouting } from './app.navigator';
+import { HttpClientModule } from '@angular/common/http';
+import { RegisterComponent } from './views/register/register.component';
+import { ExplorerComponent } from './views/explorer/explorer.component';
+import { NavComponent } from './views/latNav/nav.component';
+import { ForumService } from './services/forum.service';
+import { UserService } from './services/user.service';
+import { ProjectService } from './services/project.service';
+import { SubscriptionService } from './services/subscription.service';
+import { TransactionService } from './services/transaction.service';
 import { AuthInterceptor } from './services/http-interceptor.service';
-import { AuthGuard } from './services/auth.guard';
+import { AuthGuard } from './services/auth-guard.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MzCardModule,MzTabModule } from 'ng2-materialize'
+
+import { MzButtonModule } from 'ng2-materialize'
+
 
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    ExplorerComponent,
+    ProjectComponent,
+    MyForumsComponent,
+    MyProjectsComponent,
     NavComponent,
-    RegisterModal,
-    LoginModal,
-    HomeComponent,
-    FooterComponent
-    
+    ForumComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
     appRouting,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MzButtonModule,
+    MzCardModule,
+    MzTabModule
   ],
   providers: [
+    ForumService,
     UserService,
-    ConfigService,
-    HttpClient,
-    AuthGuard,
-    {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-    }
+    ProjectService,
+    SubscriptionService,
+    BaseService,
+    TransactionService,
+    AuthInterceptor,
+    AuthGuard
+
   ],
   bootstrap: [AppComponent]
 })

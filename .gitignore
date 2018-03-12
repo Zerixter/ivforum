@@ -260,3 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 /IVForum.API/Properties
+/IVForum.API/Dockerfile
+/IVForum.API/docker.dockerfile
+/IVForum.API/.dockerignore

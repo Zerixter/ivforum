@@ -8,5 +8,6 @@ namespace IVForum.API.ViewModel
     public class ViewsViewModel
     {
         public string ForumId { get; set; }
+        public string ProjectId { get; set; }
     }
 }
