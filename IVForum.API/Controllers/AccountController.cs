@@ -42,6 +42,7 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
+        [Authorize(Policy = "ApiUser")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -137,30 +138,50 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest(Errors);
             }
-
-            UserModel userModel = new UserModel
+            try
             {
-                Name = model.Name,
-                Surname = model.Surname,
-                Email = model.Email,
-                UserName = model.Email
-            };
+                if (model.Name is null)
+                {
+                    Errors.Add(new { Message = "El camp del nom s'ha deixat buit, s'ha de posar un nom." });
+                }
 
-            User user = new User
+                if (model.Surname is null)
+                {
+                    Errors.Add(new { Message = "El camp del cognom s'ha deixat buit, s'ha de posar un cognom." });
+                }
+
+                if (Errors.Count >= 1)
+                {
+                    return BadRequest(Errors);
+                }
+
+                UserModel userModel = new UserModel
+                {
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    Email = model.Email,
+                    UserName = model.Email
+                };
+
+                User user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Identity = userModel
+                };
+
+                var result = await userManager.CreateAsync(userModel, model.Password);
+
+                db.DbUsers.Add(user);
+                db.SaveChanges();
+
+                var identity = await GetClaimsIdentity(model.Email, model.Password);
+
+                var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
+                return new OkObjectResult(jwt);
+            } catch (Exception)
             {
-                Id = Guid.NewGuid(),
-                Identity = userModel
-            };
-
-            var result = await userManager.CreateAsync(userModel, model.Password);
-
-            db.DbUsers.Add(user);
-            db.SaveChanges();
-
-            var identity = await GetClaimsIdentity(model.Email, model.Password);
-
-            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
-            return new OkObjectResult(jwt);
+                return BadRequest();
+            }
         }
 
         [HttpPost("login")]
