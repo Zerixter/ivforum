@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit {
 
     checkLogin(){
         if(localStorage.getItem("currentUser") != null){
-            this._router.navigate[("/explorer")];
+            this._router.navigate(["/explorer"]);
         }
     }
 
@@ -44,7 +44,7 @@ export class RegisterComponent implements OnInit {
     register(){
         this._userService.postRegister(this.name,this.surname,this.email,this.password)
         .subscribe(
-            res => {this._router.navigate[("/login")]},
+            res => {this._router.navigate(["/login"])},
             err => console.log(err)
         )
     }

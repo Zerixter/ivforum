@@ -15,9 +15,9 @@ const routes: Routes = [
            // { path: 'myProjects',component: MyProjectsComponent,canActivate: [AuthGuard]},
         ]
     },
-    { path: 'login',component: LoginComponent},
-    { path: 'register',component: RegisterComponent},
-    
+    { path: 'login', component: LoginComponent},
+    { path: 'register', component: RegisterComponent},
+    { path: 'explorer', component: ExplorerComponent},
     { path: '**',component: ExplorerComponent}
     //{ path: 'path/:routeParam', component: MyComponent },
     //{ path: 'staticPath', component: ... },
