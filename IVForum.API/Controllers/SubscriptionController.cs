@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IVForum.API.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/subscription")]
     public class SubscriptionController : Controller
     {

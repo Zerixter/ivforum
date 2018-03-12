@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Cors;
 
 namespace IVForum.API.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/project")]
     public class ProjectsController : Controller
     {

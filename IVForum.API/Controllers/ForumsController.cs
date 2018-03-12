@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/forum")]
     public class ForumsController : Controller
     {
@@ -109,6 +108,8 @@ namespace IVForum.API.Controllers
                 Id = Guid.NewGuid(),
                 Title = model.Title,
                 Description = model.Description,
+                DateBeginsVote = model.DateBeginsVote,
+                DateEndsVote = model.DateEndsVote,
                 Owner = user
             };
 
@@ -231,6 +232,14 @@ namespace IVForum.API.Controllers
             if (forum.Icon != null)
             {
                 ForumToEdit.Background = forum.Background;
+            }
+            if (forum.DateBeginsVote != null)
+            {
+                ForumToEdit.DateBeginsVote = forum.DateBeginsVote;
+            }
+            if (forum.DateEndsVote != null)
+            {
+                ForumToEdit.DateEndsVote = forum.DateEndsVote;
             }
             return ForumToEdit;
         }
