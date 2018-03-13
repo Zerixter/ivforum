@@ -1,0 +1,7 @@
+div#tabs-explorer {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+div#tabs-explorer ul li a.active {
+    border-bottom: 2px solid #f6b2b5;
+}

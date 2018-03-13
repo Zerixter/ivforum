@@ -1,51 +1,33 @@
 <navComponent></navComponent>
-<div class="container-fluid">
-    <div class="row">
-        <div id="tabs-explorer" class="col-sm-12 col-md-12 col-lg-12">
-            <ul class="tabs col-sm-12 col-md-12 col-lg-12">
-                <li class="tab col-4 col-sm-4 col-md-4 col-lg-4">
-                    <a class="active" href="#public">Publics</a>
-                </li>
-                <li class="tab col-4 col-sm-4 col-md-4 col-lg-4">
-                    <a href="#myForums">Meus</a>
-                </li>
-                <li class="tab col-4 col-sm-4 col-md-4 col-lg-4">
-                    <a href="#test3">Subscrits</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div id="public" class="all-forums">
-    <div class="offset-md-2 offset-lg-2 col-12 col-sm-8 col-md-8 col-lg-8">
-        <div class="row col-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <div *ngFor="let forum of forums" class="row">
-                    <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
-                        <div class="card-image">
-                            <img class="imagen waves-effect waves-block waves-light" src="../assets/images/yellow.jpg">
+<tabsComponent></tabsComponent>
+<div class="container">
+    <div id="public" class="all-forums row">
+        <div class="col-md-12">
+            <div *ngFor="let forum of forums" class="row">
+                <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+                    <div class="card-image">
+                        <img class="imagen waves-effect waves-block waves-light" src="../assets/images/yellow.jpg">
+                    </div>
+                    <div class="forum-content">
+                        <span class="card-title activator grey-text text-darken-4">{{forum.title}}
+                            <i class="material-icons right">more_vert</i>
+                        </span>
+                        <div class="card-content">
+                            <p>{{forum.shortDescription}}</p>
                         </div>
-                        <div class="forum-content">
-                            <span class="card-title activator grey-text text-darken-4">{{forum.title}}
-                                <i class="material-icons right">more_vert</i>
-                            </span>
-                            <div class="card-content">
-                                <p>{{forum.shortDescription}}</p>
-                            </div>
 
-                        </div>
-                        <div class="card-reveal">
-                            <span class="card-title grey-text text-darken-4">{{forum.title}}
-                                <i class="material-icons right">close</i>
-                            </span>
-                            <p>{{forum.description}}</p>
-                            <div class="card-action">
-                                <a>Mes informació</a>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="card-reveal">
+                        <span class="card-title grey-text text-darken-4">{{forum.title}}
+                            <i class="material-icons right">close</i>
+                        </span>
+                        <p>{{forum.description}}</p>
                         <div class="card-action">
                             <a>Mes informació</a>
                         </div>
+                    </div>
+                    <div class="card-action">
+                        <a>Mes informació</a>
                     </div>
                 </div>
             </div>
