@@ -29,10 +29,34 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Project> Get()
+        public IEnumerable<ProjectListViewModel> Get()
         {
             try {
-                return db.Projects.Include(x => x.Owner).ToArray();
+                return db.Projects.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ProjectListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    CreationDate = x.CreationDate,
+                    TotalMoney = x.TotalMoney,
+                    RepositoryUrl = x.RepositoryUrl,
+                    WebsiteUrl = x.WebsiteUrl,
+                    Forum = x.Forum,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).ToArray();
             }
             catch (Exception)
             {
@@ -43,13 +67,13 @@ namespace IVForum.API.Controllers
         [HttpGet("{userid}")]
         public IEnumerable<Project> GetFromUser(string userid)
         {
-            return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList(); ;
+            return db.Projects.Where(x => x.Owner.IdentityId == userid).Include(x => x.Owner).ToList();
         }
 
         [HttpGet("user/{userid}")]
         public IEnumerable<Project> GetPersonal(string userid)
         {
-            return db.Projects.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToList(); ;
+            return db.Projects.Where(x => x.Owner.Id.ToString() == userid).Include(x => x.Owner).ToList();
         }
 
         [HttpGet("select/{project_id}")]
@@ -123,8 +147,8 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El projecte s'ha editat correctament."));
         }
 
-        [HttpPut("view")]
-        public IActionResult ViewProject([FromBody]string id_project)
+        [HttpPut("view/{id_project}")]
+        public IActionResult ViewProject([FromRoute]string id_project)
         {
             Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == id_project);
             if (project is null)
@@ -136,7 +160,7 @@ namespace IVForum.API.Controllers
             db.Projects.Update(project);
             db.SaveChanges();
 
-            return new OkObjectResult(null);
+            return new JsonResult(null);
         }
 
         [HttpDelete]

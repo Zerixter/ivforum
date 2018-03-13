@@ -35,7 +35,7 @@ namespace IVForum.API.Controllers
             {
                 return db.Forums.Include(x => x.Owner).ToArray();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -116,20 +116,29 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari que intenta crear el forum és incorrecte."));
             }
 
-            Forum forum = new Forum
+            Forum forum = null;
+
+            try
             {
-                Id = Guid.NewGuid(),
-                Title = model.Title,
-                Description = model.Description,
-                DateBeginsVote = model.DateBeginsVote,
-                DateEndsVote = model.DateEndsVote,
-                Owner = user
-            };
+                forum = new Forum
+                {
+                    Id = Guid.NewGuid(),
+                    Title = model.Title,
+                    Description = model.Description,
+                    DateBeginsVote = model.DateBeginsVote,
+                    DateEndsVote = model.DateEndsVote,
+                    Owner = user
+                };
+            } catch (Exception)
+            {
+                return BadRequest(Message.GetMessage("No se ha pogut crear el forum."));
+            }
+
 
             Errors = Forum.ValidateForum(forum);
             if (Errors.Count >= 1)
             {
-                BadRequest(Errors);
+                return BadRequest(Errors);
             }
 
             db.Forums.Add(forum);
@@ -170,8 +179,8 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El forum s'ha editat correctament."));
         }
 
-        [HttpGet("view")]
-        public IActionResult ViewForum([FromBody]string id_forum)
+        [HttpPut("view/{id_forum}")]
+        public IActionResult ViewForum([FromRoute]string id_forum)
         {
             Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
             if (forum is null)

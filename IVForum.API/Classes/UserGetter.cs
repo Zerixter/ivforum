@@ -27,7 +27,7 @@ namespace IVForum.API.Classes
             try
             {
                 var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.Where(c => c.IdentityId == userId.Value).Include(x => x.Identity).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.Identity.Id == userId.Value).Include(x => x.Identity).FirstOrDefault();
                 return user;
             }
             catch (Exception)
@@ -41,7 +41,7 @@ namespace IVForum.API.Classes
             User user = null;
             try
             {
-                user = db.DbUsers.Where(c => c.IdentityId == userid).Include(x => x.Identity).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.Id.ToString() == userid).Include(x => x.Identity).FirstOrDefault();
                 return user;
             }
             catch (Exception)

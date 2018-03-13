@@ -42,7 +42,6 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [Authorize(Policy = "ApiUser")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -176,7 +175,7 @@ namespace IVForum.API.Controllers
 
                 var identity = await GetClaimsIdentity(model.Email, model.Password);
 
-                var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
+                var jwt = await Tokens.GenerateJwt(user.Id.ToString(), identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
                 return new OkObjectResult(jwt);
             } catch (Exception)
             {
@@ -194,11 +193,13 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
+            UserModel userModel = null;
+            User user = null;
             var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
             if (identity is null)
             {
-                var userName = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
-                if (userName is null)
+                userModel = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
+                if (userModel is null)
                 {
                     Errors.Add(Message.GetMessage("El compte d'usuari introduit és incorrecte"));
                 }
@@ -208,8 +209,15 @@ namespace IVForum.API.Controllers
                 }
                 return BadRequest(Errors);
             }
+            userModel = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
+            user = db.DbUsers.Where(x => x.IdentityId == userModel.Id).FirstOrDefault();
+            string user_id = "";
+            if (user != null)
+            {
+                user_id = user.Id.ToString();
+            }
 
-            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
+            var jwt = await Tokens.GenerateJwt(user_id, identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 
