@@ -131,7 +131,7 @@ namespace IVForum.API.Controllers
                 };
             } catch (Exception)
             {
-                return BadRequest(Message.GetMessage("No se ha podido crear el forum porque a la API no le ha dado la gana."));
+                return BadRequest(Message.GetMessage("No se ha pogut crear el forum."));
             }
 
 
