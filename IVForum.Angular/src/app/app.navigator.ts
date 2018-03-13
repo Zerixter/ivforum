@@ -6,13 +6,15 @@ import { LoginComponent } from './views/login/login.component';
 import { Routes, RouterModule } from "@angular/router";
 import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AuthGuard } from './services/auth-guard.service';
+import { ForumsComponent } from './views/forums/forums.component';
 
 
 const routes: Routes = [
-    { path: '', component: ExplorerComponent, /*canActivate: [AuthGuard]*/
+    { path: '', redirectTo: '/main/forums', pathMatch: 'full'},
+    { path: 'main', component: ExplorerComponent, /*canActivate: [AuthGuard]*/
         children:[
-           // { path: 'myForums',component: MyForumsComponent,/*canActivate: [AuthGuard]*/},
-           // { path: 'myProjects',component: MyProjectsComponent,canActivate: [AuthGuard]},
+            { path: 'forums',component: ForumsComponent,/*canActivate: [AuthGuard]*/},
+            { path: 'myProjects',component: MyProjectsComponent,/*canActivate: [AuthGuard]*/},
         ]
     },
     { path: 'login', component: LoginComponent},

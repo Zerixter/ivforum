@@ -1,17 +1,27 @@
-
-<div class="forums">
-    <div class="offset-md-3 offset-lg-3 col-md-9 col-lg-9">
-        <div class="row col-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="forums col-12 col-sm-12 col-md-12 col-lg-12">
-                <div *ngFor="let project of projects" class="row">
-                    <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
-                        <span class="card-title">{{project.title}}</span>
+<projectTabs></projectTabs>
+<div class="container">
+    <div id="myProjects" class="all-projects row">
+        <div class="col-md-12">
+            <div *ngFor="let project of projects" class="row">
+                <div class="project-card card horizontal offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+                    <div class="card-image">
+                        <img src="../assets/images/yellow.jpg">
+                    </div>
+                    <div class="card-stacked">
                         <div class="card-content">
+                            <span class="card-title">{{project.title}}</span>
                             <p>{{project.description}}</p>
+                        </div>
+                        <div class="card-action">
+                            <a href="#">Mes Informacio</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+<div id="inscribedProjects">
+    <p>Potato</p>
 </div>

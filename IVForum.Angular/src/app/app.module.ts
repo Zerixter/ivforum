@@ -1,3 +1,5 @@
+import { ProjectTabsComponent } from './views/tabs/projectTabs.component';
+import { SubscribedForumsComponent } from './views/subscribedForums/subscribedForums.component';
 import { BaseService } from './services/base.service';
 import { ForumComponent } from './views/forum/forum.component';
 import { MyProjectsComponent } from './views/myProjects/myProjects.component';
@@ -25,9 +27,15 @@ import { AuthInterceptor } from './services/http-interceptor.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MzCardModule,MzTabModule } from 'ng2-materialize'
+import { MzCardModule,MzTabModule } from 'ng2-materialize';
 
-import { MzButtonModule } from 'ng2-materialize'
+import { MzButtonModule } from 'ng2-materialize';
+
+import { MzSpinnerModule } from 'ng2-materialize';
+import { LoadService } from './services/load.service';
+import { ForumsComponent } from './views/forums/forums.component';
+
+
 
 
 @NgModule({
@@ -41,7 +49,10 @@ import { MzButtonModule } from 'ng2-materialize'
     MyProjectsComponent,
     NavComponent,
     ForumComponent,
-    TabsComponent
+    TabsComponent,
+    SubscribedForumsComponent,
+    ProjectTabsComponent,
+    ForumsComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +63,8 @@ import { MzButtonModule } from 'ng2-materialize'
     BrowserAnimationsModule,
     MzButtonModule,
     MzCardModule,
-    MzTabModule
+    MzTabModule,
+    MzSpinnerModule
   ],
   providers: [
     ForumService,
@@ -62,7 +74,8 @@ import { MzButtonModule } from 'ng2-materialize'
     BaseService,
     TransactionService,
     AuthInterceptor,
-    AuthGuard
+    AuthGuard,
+    LoadService
 
   ],
   bootstrap: [AppComponent]

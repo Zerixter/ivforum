@@ -31,7 +31,7 @@ export class UserService {
         return this.http.post(this._URL + "account/login", { email, password })
         .map(
                 res => {
-                    localStorage.setItem('currentUser', JSON.stringify({ email: email, res  }));
+                    localStorage.setItem('currentUser', JSON.stringify({ email: email, token:res  }));
                     return true;
                 },
                 err => {
