@@ -209,9 +209,15 @@ namespace IVForum.API.Controllers
                 }
                 return BadRequest(Errors);
             }
+            userModel = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
             user = db.DbUsers.Where(x => x.IdentityId == userModel.Id).FirstOrDefault();
+            string user_id = "";
+            if (user != null)
+            {
+                user_id = user.Id.ToString();
+            }
 
-            var jwt = await Tokens.GenerateJwt(user.Id.ToString(), identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
+            var jwt = await Tokens.GenerateJwt(user_id, identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 
