@@ -179,8 +179,8 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El forum s'ha editat correctament."));
         }
 
-        [HttpGet("view")]
-        public IActionResult ViewForum([FromBody]string id_forum)
+        [HttpPut("view/{id_forum}")]
+        public IActionResult ViewForum([FromRoute]string id_forum)
         {
             Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
             if (forum is null)

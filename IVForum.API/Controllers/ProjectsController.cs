@@ -147,8 +147,8 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El projecte s'ha editat correctament."));
         }
 
-        [HttpPut("view")]
-        public IActionResult ViewProject([FromBody]string id_project)
+        [HttpPut("view/{id_project}")]
+        public IActionResult ViewProject([FromRoute]string id_project)
         {
             Project project = db.Projects.FirstOrDefault(x => x.Id.ToString() == id_project);
             if (project is null)
