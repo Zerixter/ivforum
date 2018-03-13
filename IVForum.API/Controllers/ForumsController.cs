@@ -35,7 +35,7 @@ namespace IVForum.API.Controllers
             {
                 return db.Forums.Include(x => x.Owner).ToArray();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
