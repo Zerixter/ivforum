@@ -116,20 +116,29 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari que intenta crear el forum és incorrecte."));
             }
 
-            Forum forum = new Forum
+            Forum forum = null;
+
+            try
             {
-                Id = Guid.NewGuid(),
-                Title = model.Title,
-                Description = model.Description,
-                DateBeginsVote = model.DateBeginsVote,
-                DateEndsVote = model.DateEndsVote,
-                Owner = user
-            };
+                forum = new Forum
+                {
+                    Id = Guid.NewGuid(),
+                    Title = model.Title,
+                    Description = model.Description,
+                    DateBeginsVote = model.DateBeginsVote,
+                    DateEndsVote = model.DateEndsVote,
+                    Owner = user
+                };
+            } catch (Exception)
+            {
+                return BadRequest(Message.GetMessage("No se ha podido crear el forum porque a la API no le ha dado la gana."));
+            }
+
 
             Errors = Forum.ValidateForum(forum);
             if (Errors.Count >= 1)
             {
-                BadRequest(Errors);
+                return BadRequest(Errors);
             }
 
             db.Forums.Add(forum);
