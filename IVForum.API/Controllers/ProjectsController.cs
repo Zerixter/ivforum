@@ -160,7 +160,7 @@ namespace IVForum.API.Controllers
             db.Projects.Update(project);
             db.SaveChanges();
 
-            return new OkObjectResult(null);
+            return new JsonResult(null);
         }
 
         [HttpDelete]
