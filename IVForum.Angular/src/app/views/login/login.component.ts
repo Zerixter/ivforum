@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
 
     checkLogin(){
         if(localStorage.getItem("currentUser") != null){
-            this._router.navigate(["/explorer"]);
+            this._router.navigate([""]);
         }
     }
 
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
         this._userService.postLogin(this.email,this.password)
         .subscribe(
             res => {
-                this._router.navigate(["explorer"]);
+                this._router.navigate([""]);
                 console.log(res)
             },
             err => console.log(err)

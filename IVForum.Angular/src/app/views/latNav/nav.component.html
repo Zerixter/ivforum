@@ -6,29 +6,29 @@
             </a>
             <ul id="nav-mobile" class="hide-on-med-and-down">
                 <li>
-                    <a>Forums</a>
+                    <a class="nav-link" routerLink="/main/forums">Forums</a>
                 </li>
                 <li>
-                    <a>Projectes</a>
+                    <a class="nav-link" routerLink="/main/myProjects">Projectes</a>
                 </li>
                 <li>
-                    <a>Usuaris</a>
+                    <a class="nav-link">Usuaris</a>
                 </li>
             </ul>
             <ul class="side-nav" id="mobile-menu">
                 <li>
-                    <a>Forums</a>
+                    <a class="nav-link" routerLink="">Forums</a>
                 </li>
                 <li>
-                    <a>Projects</a>
+                    <a class="nav-link" routerLink="myProjects">Projectes</a>
                 </li>
                 <li>
-                    <a>Users</a>
+                    <a class="nav-link">Usuaris</a>
                 </li>
             </ul>
             <ul class="right">
                 <li>
-                    <a>sortir</a>
+                    <a (click)="logout()">Sortir</a>
                 </li>
             </ul>
         </div>

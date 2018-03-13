@@ -1,11 +1,12 @@
 <div class="container">
     <div id="public" class="all-forums row">
         <div class="col-md-12">
-            <div *ngFor="let forum of myForums" class="row">
+            <div *ngFor="let forum of subscribedForums" class="row">
                 <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
                     <div class="card-image">
                         <img class="imagen waves-effect waves-block waves-light" src="../assets/images/yellow.jpg">
                     </div>
+                    <p>subscribed</p>
                     <div class="forum-content">
                         <span class="card-title activator grey-text text-darken-4">{{forum.title}}
                             <i class="material-icons right">more_vert</i>
@@ -31,4 +32,3 @@
             </div>
         </div>
     </div>
-</div>
