@@ -28,17 +28,18 @@ export class ForumComponent implements OnInit {
      }
 
     getForum() {
-        this._forumService.getForum(this._forumService.getSelectedForum())
+        console.log("patata");
+        this._forumService.getSelectedForum()
         .subscribe(
             res => this.forum = res,
             err => console.log(err)
-        )
+        );
     }
 
     modifForum(){
         this._forumService.putForum(this.forum)
         .subscribe(
-            res => {this._router.navigate[("/explorer")]},
+            res => {this._router.navigate(["/main/forum"])},
             err => console.log(err)
         )
     }
@@ -46,7 +47,7 @@ export class ForumComponent implements OnInit {
     deleteForum(){
         this._forumService.deleteForum(this.forum)
         .subscribe(
-            res => {this._router.navigate[("/myForums")]},
+            res => {this._router.navigate(["/main/myForums"])},
             err => console.log(err)
         )
     }

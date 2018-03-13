@@ -22,12 +22,18 @@ export class ForumsComponent implements OnInit {
     ngOnInit() {
         //this.newForum = new Forum();
         this.getForums();
-        this.test();
+        //this.test();
     }
 
+    selectForum(forum){
+        console.log(forum);
+        this._forumService.selectForum(forum);
+        this._router.navigate(["/main/forum"]);
+    }
 
     loaded(){
         this._loader.setLoad(false);
+        
     }
     
 

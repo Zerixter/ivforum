@@ -21,6 +21,11 @@ export class SubscribedForumsComponent implements OnInit {
         this.getForums();
      }
 
+    selectForum(forum){
+        this._forumService.selectForum(forum);
+        this._router.navigate(["/forum"]);
+    }
+
     getForums(){
         this._forumService.getSubscribedForums(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(
