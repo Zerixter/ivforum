@@ -7,6 +7,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AuthGuard } from './services/auth-guard.service';
 import { ForumsComponent } from './views/forums/forums.component';
+import { ForumComponent } from './views/forum/forum.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
         children:[
             { path: 'forums',component: ForumsComponent,/*canActivate: [AuthGuard]*/},
             { path: 'myProjects',component: MyProjectsComponent,/*canActivate: [AuthGuard]*/},
+            { path: 'forum',component: ForumComponent,/*canActivate: [AuthGuard]*/},
         ]
     },
     { path: 'login', component: LoginComponent},

@@ -5,7 +5,8 @@ import { ProjectService } from '../../services/project.service';
 
 @Component({
     selector: 'myProjectsComponent',
-    templateUrl: 'myProjects.component.html'
+    templateUrl: 'myProjects.component.html',
+    styleUrls:["myProjects.component.css"]
 })
 
 export class MyProjectsComponent implements OnInit {
@@ -18,7 +19,8 @@ export class MyProjectsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.getMyProjects();
+        //this.getMyProjects();
+        this.test();
     }
 
     getMyProjects(){

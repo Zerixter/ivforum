@@ -22,6 +22,11 @@ export class MyForumsComponent implements OnInit {
         //this.test();
     }
 
+    selectFOrum(forum){
+        this._forumService.selectForum(forum);
+        this._router.navigate(["/forum"]);
+    }
+
     getMyForums(){
         this._forumService.getUserForums(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(

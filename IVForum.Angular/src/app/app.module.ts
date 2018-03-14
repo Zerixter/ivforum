@@ -29,7 +29,6 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { MzCardModule,MzTabModule } from 'ng2-materialize';
 import {MatTabsModule} from '@angular/material/tabs';
 
-
 import { MzButtonModule } from 'ng2-materialize';
 
 import { MzSpinnerModule } from 'ng2-materialize';
