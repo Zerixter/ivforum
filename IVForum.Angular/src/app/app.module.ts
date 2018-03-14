@@ -36,6 +36,8 @@ import { LoadService } from './services/load.service';
 import { ForumsComponent } from './views/forums/forums.component';
 import { CreateForumComponent } from './views/createForum/createForum.component';
 
+import { MzDatepickerModule } from 'ng2-materialize';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,7 +65,8 @@ import { CreateForumComponent } from './views/createForum/createForum.component'
     MzButtonModule,
     MzCardModule,
     MzTabModule,
-    MzSpinnerModule
+    MzSpinnerModule,
+    MzDatepickerModule
   ],
   providers: [
     ForumService,

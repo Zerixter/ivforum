@@ -13,14 +13,14 @@
                     <textarea id="description" [(ngModel)]="description" type="text" class="validate materialize-textarea"></textarea>
                     <label for="description">Descripció:</label>
                 </div>
-                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
-                    <input id="dataBeginsVote" [(ngModel)]="dataBeginsVote" type="text" class="validate datepicker">
-                    <label for="dataBeginsVote">Inici de la votació:</label>
-                </div>
-                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
-                    <input id="dataEndsVote" [(ngModel)]="dataEndsVote" type="text" class="validate datepicker">
-                    <label for="dataEndsVote">Fi de la votació:</label>
-                </div>
+                <mz-datepicker-container class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input mz-datepicker [label]="'Inici de la votació:'" [options]="options" [(ngModel)]="dataBeginsVote" id="datepicker"
+                        type="text">
+                </mz-datepicker-container>
+                <mz-datepicker-container class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input mz-datepicker [label]="'Fi de la votació:'" [options]="options" [(ngModel)]="dataEndsVote" id="datepicker"
+                        type="text">
+                </mz-datepicker-container>
             </div>
         </div>
         <div class="card-action">

@@ -15,7 +15,6 @@ export class AuthInterceptor implements HttpInterceptor {
         var idToken
         try{
          idToken= localStorage.getItem("currentUser");
-         console.log(JSON.parse(idToken).token.auth_token);
         }catch(err){
             console.log(err);
         }
