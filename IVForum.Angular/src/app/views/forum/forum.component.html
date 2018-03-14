@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+    <div id="forum-info" class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
         <div class="card-image">
             <img id="image-forum" src="./assets/images/yellow.jpg">
         </div>
@@ -23,7 +23,7 @@
             <div class="row">
                 <button *ngIf="owner" mz-button type="button">Modificar</button>
                 <button *ngIf="subscribed" mz-button type="button" disabled><i class="material-icons left">done</i>Ja Subscrit</button>
-                <button *ngIf="!subscribed" mz-button type="button" >Subscribir</button>
+                <button *ngIf="!subscribed" mz-button type="button" (click)="subscribe()">Subscribir</button>
                 <button *ngIf="subscribed" mz-button type="button" >Afegir Projecte</button>
             </div>
         </div>

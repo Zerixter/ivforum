@@ -25,7 +25,7 @@ export class SubscriptionService {
     }
 
     subscribeProject(idForum,idProject){
-        return this.http.post(this._URL + "subscribe/forum", {idForum,idProject})
+        return this.http.post(this._URL + "subscribe/project", {idForum,idProject})
         .map(
                 res => {
                     return res;

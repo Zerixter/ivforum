@@ -7,7 +7,8 @@ import { ProjectService } from '../../services/project.service';
 
 @Component({
     selector: 'forumComponent',
-    templateUrl: 'forum.component.html'
+    templateUrl: 'forum.component.html',
+    styleUrls: ["forum.component.css"]
 })
 
 export class ForumComponent implements OnInit {
@@ -29,11 +30,7 @@ export class ForumComponent implements OnInit {
 
     getForum() {
         console.log("patata");
-        this._forumService.getSelectedForum()
-        .subscribe(
-            res => this.forum = res,
-            err => console.log(err)
-        );
+        this.forum = this._forumService.getSelectedForum()
     }
 
     modifForum(){
