@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 
 export class MyForumsComponent implements OnInit {
     private myForums;
+    private shortDescription;
     constructor(
         private _userService:UserService,
         private _forumService:ForumService,
@@ -20,8 +21,9 @@ export class MyForumsComponent implements OnInit {
     ngOnInit() {
         this.getMyForums();
         //this.test();
-    }
 
+    }
+    
     selectFOrum(forum){
         this._forumService.selectForum(forum);
         this._router.navigate(["/forum"]);
@@ -34,6 +36,7 @@ export class MyForumsComponent implements OnInit {
             err => console.log(err)
         )
     }
+
     createForum(){
         this._router.navigate(["main/createForum"]);
     }

@@ -7,24 +7,32 @@
             <div class="row">
                 <span class="card-title">{{forum.title}}</span>
             </div>
-            <div class="row">
-                <p>{{forum.description}}</p>
-            </div>
-        </div>
-        <div class="card-action">
-            <div class="row">
-                <button *ngIf="twitter != null" mz-button type="button" [attr.href]="twitter">Twitter</button>
-                <button *ngIf="facebook != null" mz-button type="button" [attr.href]="facebook">Facebook</button>
-                <button *ngIf="github != null" mz-button type="button" [attr.href]="github">Repositorio</button>
-                <button *ngIf="web != null" mz-button type="button" [attr.href]="web">WEB</button>
-            </div>
+            <mat-tab-group id="forumProjects">
+                <mat-tab label="Descripció">
+                    <div class="row">
+                        <p>{{forum.description}}</p>
+                    </div>
+                    <div class="card-action">
+                        <div class="row">
+                            <button *ngIf="twitter != null" mz-button type="button" [attr.href]="twitter">Twitter</button>
+                            <button *ngIf="facebook != null" mz-button type="button" [attr.href]="facebook">Facebook</button>
+                            <button *ngIf="github != null" mz-button type="button" [attr.href]="github">Repositorio</button>
+                            <button *ngIf="web != null" mz-button type="button" [attr.href]="web">WEB</button>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Projectes">
+                    
+                </mat-tab>
+            </mat-tab-group>
         </div>
         <div class="card-action">
             <div class="row">
                 <button *ngIf="owner" mz-button type="button">Modificar</button>
-                <button *ngIf="subscribed" mz-button type="button" disabled><i class="material-icons left">done</i>Ja Subscrit</button>
+                <button *ngIf="subscribed" mz-button type="button" disabled>
+                    <i class="material-icons left">done</i>Ja Subscrit</button>
                 <button *ngIf="!subscribed" mz-button type="button" (click)="subscribe()">Subscribir</button>
-                <button *ngIf="subscribed" mz-button type="button" >Afegir Projecte</button>
+                <button *ngIf="subscribed" mz-button type="button">Afegir Projecte</button>
             </div>
         </div>
     </div>
