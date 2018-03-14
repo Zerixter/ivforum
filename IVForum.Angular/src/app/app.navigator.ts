@@ -1,3 +1,4 @@
+import { CreateForumComponent } from './views/createForum/createForum.component';
 import { MyForumsComponent } from './views/myForums/myForums.component';
 import { MyProjectsComponent } from './views/myProjects/myProjects.component';
 import { RegisterComponent } from './views/register/register.component';
@@ -17,6 +18,7 @@ const routes: Routes = [
             { path: 'forums',component: ForumsComponent,/*canActivate: [AuthGuard]*/},
             { path: 'myProjects',component: MyProjectsComponent,/*canActivate: [AuthGuard]*/},
             { path: 'forum',component: ForumComponent,/*canActivate: [AuthGuard]*/},
+            { path: 'createForum',component: CreateForumComponent,/*canActivate: [AuthGuard]*/},
         ]
     },
     { path: 'login', component: LoginComponent},

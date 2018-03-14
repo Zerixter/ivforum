@@ -13,7 +13,7 @@ export class SubscriptionService {
      }
 
     subscribeForum(forum){
-        return this.http.post(this._URL + "subscribe/forum",forum)
+        return this.http.post(this._URL + "subscription/subscribe/forum",{id:forum.id})
         .map(
                 res => {
                     return res;
@@ -25,7 +25,7 @@ export class SubscriptionService {
     }
 
     subscribeProject(idForum,idProject){
-        return this.http.post(this._URL + "subscribe/project", {idForum,idProject})
+        return this.http.post(this._URL + "subscription/subscribe/project", {idForum,idProject})
         .map(
                 res => {
                     return res;
