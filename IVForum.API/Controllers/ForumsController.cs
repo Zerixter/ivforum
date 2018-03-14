@@ -29,11 +29,35 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Forum> Get()
+        public IEnumerable<ForumListViewModel> Get()
         {
             try
             {
-                return db.Forums.Include(x => x.Owner).ToArray();
+                return db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).ToArray();
             }
             catch (Exception)
             {
@@ -42,15 +66,40 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet("{id_user}")]
-        public IEnumerable<Forum> GetFromUser(string id_user)
+        public IEnumerable<ForumListViewModel> GetFromUser(string id_user)
         {
-            return db.Forums.Where(x => x.Owner.IdentityId == id_user).Include(x => x.Owner).ToArray();
-        }
-
-        [HttpGet("user/{id_user}")]
-        public IEnumerable<Forum> GetPersonal(string id_user)
-        {
-            return db.Forums.Where(x => x.Owner.Id.ToString() == id_user).Include(x => x.Owner).ToArray();
+            try
+            {
+                return db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Owner.Id.ToString() == id_user).ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpGet("subscribed/{id_user}")]
