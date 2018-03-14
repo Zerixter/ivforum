@@ -181,18 +181,18 @@ namespace IVForum.API.Controllers
             return new JsonResult(null);
         }
 
-        [HttpDelete]
-        public IActionResult Delete([FromBody]Project project)
+        [HttpDelete("id_project")]
+        public IActionResult Delete([FromRoute]string id_project)
         {
-            if (!ValidateUser(project))
-            {
-                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest projecte és incorrecte"));
-            }
-
-            Project ProjectToDelete = db.Projects.Where(x => x.Id == project.Id).Include(x => x.Owner).FirstOrDefault();
+            Project ProjectToDelete = db.Projects.Where(x => x.Id.ToString() == id_project).Include(x => x.Owner).FirstOrDefault();
             if (ProjectToDelete is null)
             {
                 return BadRequest(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
+            }
+
+            if (!ValidateUser(ProjectToDelete))
+            {
+                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest projecte és incorrecte"));
             }
 
             db.Projects.Remove(ProjectToDelete);

@@ -244,21 +244,21 @@ namespace IVForum.API.Controllers
             return new JsonResult(null);
         }
 
-        [HttpDelete]
-        public IActionResult Delete([FromBody]Forum forum)
+        [HttpDelete("id_forum")]
+        public IActionResult Delete([FromRoute]string id_forum)
         {
             List<object> Errors = new List<object>();
 
-            if (!ValidateUser(forum))
-            {
-                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
-                return BadRequest(Errors);
-            }
-
-            var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            var ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).FirstOrDefault();
             if (ForumToDelete is null)
             {
                 Errors.Add(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
+                return BadRequest(Errors);
+            }
+
+            if (!ValidateUser(ForumToDelete))
+            {
+                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
                 return BadRequest(Errors);
             }
 
