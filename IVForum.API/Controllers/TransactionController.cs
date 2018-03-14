@@ -60,7 +60,7 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari no te aquesta opció de vot."));
             }
 
-            if (ForumToSearch.DateBeginsVote >= DateTime.Now && ForumToSearch.DateEndsVote <= DateTime.Now)
+            if (ForumToSearch.DateBeginsVote.Date >= DateTime.Now.Date && DateTime.Now.Date <= ForumToSearch.DateEndsVote.Date)
             {
                 Vote vote = new Vote
                 {

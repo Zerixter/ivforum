@@ -142,12 +142,36 @@ namespace IVForum.API.Controllers
         }
         
         [HttpGet("projects/{id_forum}")]
-        public IEnumerable<Project> GetProjects(string id_forum)
+        public IEnumerable<ProjectListViewModel> GetProjects(string id_forum)
         {
             try
             {
                 Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
-                return db.Projects.Where(x => x.Forum == forum).Include(x => x.Owner).ToArray();
+                return db.Projects.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ProjectListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    CreationDate = x.CreationDate,
+                    TotalMoney = x.TotalMoney,
+                    RepositoryUrl = x.RepositoryUrl,
+                    WebsiteUrl = x.WebsiteUrl,
+                    Forum = x.Forum,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Forum == forum).ToArray();
             } catch (Exception)
             {
                 return null;
