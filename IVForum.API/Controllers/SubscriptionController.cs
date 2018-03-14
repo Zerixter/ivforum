@@ -25,7 +25,7 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [HttpPost("subcribe/forum")]
+        [HttpPost("subscribe/forum")]
         public IActionResult Subscribe([FromBody]ForumViewModel model)
         {
             Forum ForumToSearch = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.Id);
