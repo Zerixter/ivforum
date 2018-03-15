@@ -13,9 +13,12 @@ export class SubscriptionService {
      }
 
     subscribeForum(forum){
+        console.log(forum);
+        console.log(this._URL);
         return this.http.post(this._URL + "subscription/subscribe/forum",{id:forum.id})
         .map(
                 res => {
+                    console.log("subscrit");
                     return res;
                 },
                 err => {

@@ -12,7 +12,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { appRouting } from './app.navigator';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RegisterComponent } from './views/register/register.component';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { NavComponent } from './views/latNav/nav.component';
@@ -77,7 +77,12 @@ import { MzDatepickerModule } from 'ng2-materialize';
     TransactionService,
     AuthInterceptor,
     AuthGuard,
-    LoadService
+    LoadService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
 
   ],
   bootstrap: [AppComponent]
