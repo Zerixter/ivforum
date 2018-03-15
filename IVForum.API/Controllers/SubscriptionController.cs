@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
@@ -38,6 +39,13 @@ namespace IVForum.API.Controllers
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No hi ha cap usuari connectat ara mateix. Connecta't per poder subscriure a un forum"));
+            }
+
+            Wallet WalletToSearch = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id == ForumToSearch.Id).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+
+            if (WalletToSearch != null)
+            {
+                return BadRequest(Message.GetMessage("Aquest usuari ja esta subscrit a aquest forum."));
             }
 
             Wallet wallet = new Wallet
