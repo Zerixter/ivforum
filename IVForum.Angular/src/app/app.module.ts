@@ -37,6 +37,7 @@ import { ForumsComponent } from './views/forums/forums.component';
 import { CreateForumComponent } from './views/createForum/createForum.component';
 
 import { MzDatepickerModule } from 'ng2-materialize';
+import { FooterComponent } from './views/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { MzDatepickerModule } from 'ng2-materialize';
     ForumComponent,
     SubscribedForumsComponent,
     ForumsComponent,
-    CreateForumComponent
+    CreateForumComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
