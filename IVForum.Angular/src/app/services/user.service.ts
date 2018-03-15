@@ -110,8 +110,9 @@ export class UserService {
         }
     }
 
-    logout(): void {
-        localStorage.removeItem('currentUser');    
+    logout() {
+        localStorage.removeItem('currentUser');
+        return true;
     }
     
 }
