@@ -7,7 +7,9 @@
 .button-collapse:hover {
     cursor: pointer;
 }
-
+nav.nav-extended {
+    background-color: #274690;
+}
 li.indicator {
     display: none;
 }
@@ -18,15 +20,28 @@ mat-tab-group#forums div.mat-tab-label {
     flex: 1 1 33.33%;
 }
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    background-color: #f6b2b5;
+    background-color: #576ca8;
 }
-
 body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
-  }
-
-  main {
+}
+main {
     flex: 1 0 auto;
-  }
+}
+.page-footer {
+    background-color: #274690 !important;
+}
+.btn-floating.btn-large,
+.btn-floating.btn-large:hover {
+    background-color: #576ca8;
+} 
+div.card-action a {
+    color: #576ca8 !important;
+}
+div#newForum-card div#spanner,
+div#newForum-card div.card-action a {
+    background-color: #274690 !important;
+    color: white !important;
+}
