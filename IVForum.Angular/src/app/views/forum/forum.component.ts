@@ -12,9 +12,13 @@ import { ProjectService } from '../../services/project.service';
 })
 
 export class ForumComponent implements OnInit {
+    private subscribed:boolean;
+
+
     private forum;
     private projects;
     private userProjects;
+    
     constructor(
         private _userService:UserService,
         private _forumService:ForumService,
@@ -25,12 +29,21 @@ export class ForumComponent implements OnInit {
 
     ngOnInit() {
         this.getForum();
+        this.isSubscribed();
         this.getProjects();
      }
 
     getForum() {
         console.log("patata");
         this.forum = this._forumService.getSelectedForum()
+    }
+
+    isSubscribed(){
+        this._subscriptionService.isSubscribed(this.forum.id)
+        .subscribe(
+            res => this.subscribed = true,
+            err => this.subscribed = false
+        );
     }
 
     modifForum(){
@@ -50,7 +63,10 @@ export class ForumComponent implements OnInit {
     }
 
     getProjects(){
-        //Preguntar hamza
+        this._forumService.getForumProjects(this.forum.id)
+        .subscribe(
+            res => this.projects = res
+        )
     }
 
     subscribe(){

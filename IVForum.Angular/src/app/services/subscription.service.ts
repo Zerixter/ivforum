@@ -38,6 +38,23 @@ export class SubscriptionService {
                     return false;
                 });
     }
+
+    isSubscribed(idForum){
+        console.log("lel");
+        return this.http.get(this._URL + "account/subscribed/" + idForum)
+        .map(
+            res => {
+                console.log("resposta: ");
+                console.log(res);
+                return true;
+            },
+            err => {
+                console.log(err);
+                console.log("resposta: ");
+                return false;
+            }
+        )
+    }
 }
 
 /*

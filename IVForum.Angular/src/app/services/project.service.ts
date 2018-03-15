@@ -49,8 +49,8 @@ export class ProjectService {
                 });
     }
 
-    createProject(project){
-        return this.http.post(this._URL + "project",project)
+    createProject(title,description,websiteUrl,repositoryUrl){
+        return this.http.post(this._URL + "project",{title:title,description:description,websiteUrl:websiteUrl,repositoryUrl:repositoryUrl})
         .map(
                 res => {
                     return res;

@@ -46,9 +46,9 @@
         <div class="card-action">
             <div class="row">
                 <button *ngIf="owner" mz-button type="button">Modificar</button>
-                <button *ngIf="subscribed" mz-button type="button" disabled>
+                <button *ngIf="this._subscriptionService.isSubscribed(this.forum.id)" mz-button type="button" disabled>
                     <i class="material-icons left">done</i>Ja Subscrit</button>
-                <button *ngIf="!subscribed" mz-button type="button" (click)="subscribe()">Subscribir</button>
+                <button *ngIf="!this._subscriptionService.isSubscribed(this.forum.id)" mz-button type="button" (click)="subscribe()">Subscribir</button>
                 <button *ngIf="subscribed" mz-button type="button">Afegir Projecte</button>
             </div>
         </div>

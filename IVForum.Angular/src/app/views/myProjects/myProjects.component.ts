@@ -19,8 +19,8 @@ export class MyProjectsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        //this.getMyProjects();
-        this.test();
+        this.getMyProjects();
+        //this.test();
     }
 
     getMyProjects(){
@@ -33,8 +33,12 @@ export class MyProjectsComponent implements OnInit {
 
     selectProject(project){
         if (this._projectService.selectProject(project)){
-            this._router.navigate[("/project")];
+            this._router.navigate[("/main/project")];
         }
+    }
+
+    createProject(){
+        this._router.navigate(["/main/createProject"])
     }
 
     test(){

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class BaseService {
-    _apiURI = this._apiURI = "http://localhost:57571/api/";
+    _apiURI = this._apiURI = "http://199.247.14.254:8080/api/";
 
     constructor() {
     }

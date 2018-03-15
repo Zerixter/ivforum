@@ -11,7 +11,6 @@ export class AuthInterceptor implements HttpInterceptor {
     
     intercept(req: HttpRequest<any>,
         next: HttpHandler): Observable<HttpEvent<any>> {
-            console.log("interceptor");
         var idToken
         try{
          idToken= localStorage.getItem("currentUser");
@@ -24,7 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
                 headers: req.headers.set("Authorization",
                     "Bearer " + JSON.parse(idToken).token.auth_token)
             });
-            console.log(cloned);
             return next.handle(cloned);
         }
         else {
