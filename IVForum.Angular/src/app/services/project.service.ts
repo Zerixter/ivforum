@@ -26,7 +26,7 @@ export class ProjectService {
     }
 
     getUserProject(idUser){
-        return this.http.get(this._URL + "project/user/" + idUser)
+        return this.http.get(this._URL + "project/" + idUser)
         .map(
                 res => {
                     return res;

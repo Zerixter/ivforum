@@ -24,7 +24,7 @@ export class ForumService {
                 });
     }
     getUserForums(idUser){
-        return this.http.get(this._URL + "forum/user/"+idUser)
+        return this.http.get(this._URL + "forum/"+idUser)
         .map(
                 res => {
                     return res;
@@ -59,8 +59,8 @@ export class ForumService {
                 });
     }
     
-    createForum(forum){
-        return this.http.post(this._URL + "forum", forum)
+    createForum(title,description,dateBeginsVote,dateEndsVote){
+        return this.http.post(this._URL + "forum", {title,description,dateBeginsVote,dateEndsVote})
         .map(
                 res => {
                     return res;

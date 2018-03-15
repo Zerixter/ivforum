@@ -54,7 +54,7 @@ export class UserService {
     }
 
     isSubscribed(idForum){
-        return this.http.get(this._URL + "account/subscribed" + idForum)
+        return this.http.get(this._URL + "account/subscribed/" + idForum)
         .map(
                 res => {
                     return res;
@@ -110,8 +110,9 @@ export class UserService {
         }
     }
 
-    logout(): void {
-        localStorage.removeItem('currentUser');    
+    logout() {
+        localStorage.removeItem('currentUser');
+        return true;
     }
     
 }

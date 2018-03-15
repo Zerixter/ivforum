@@ -12,7 +12,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { appRouting } from './app.navigator';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RegisterComponent } from './views/register/register.component';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { NavComponent } from './views/latNav/nav.component';
@@ -34,6 +34,9 @@ import { MzButtonModule } from 'ng2-materialize';
 import { MzSpinnerModule } from 'ng2-materialize';
 import { LoadService } from './services/load.service';
 import { ForumsComponent } from './views/forums/forums.component';
+import { CreateForumComponent } from './views/createForum/createForum.component';
+
+import { MzDatepickerModule } from 'ng2-materialize';
 
 @NgModule({
   declarations: [
@@ -48,6 +51,7 @@ import { ForumsComponent } from './views/forums/forums.component';
     ForumComponent,
     SubscribedForumsComponent,
     ForumsComponent,
+    CreateForumComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,8 @@ import { ForumsComponent } from './views/forums/forums.component';
     MzButtonModule,
     MzCardModule,
     MzTabModule,
-    MzSpinnerModule
+    MzSpinnerModule,
+    MzDatepickerModule
   ],
   providers: [
     ForumService,
@@ -72,7 +77,12 @@ import { ForumsComponent } from './views/forums/forums.component';
     TransactionService,
     AuthInterceptor,
     AuthGuard,
-    LoadService
+    LoadService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
 
   ],
   bootstrap: [AppComponent]
