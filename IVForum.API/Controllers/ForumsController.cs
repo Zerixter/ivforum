@@ -304,15 +304,23 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
             }
 
+            List<Project> ProjectsInForum = db.Projects.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Project project in ProjectsInForum)
+            {
+                project.Forum = null;
+                db.Project.Update(project);
+            }
+
+            List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id == id_forum).Include(x => x.Forum).ToList();
+            foreach (Wallet wallet in WalletsForForum)
+            {
+                db.Wallets.Delete(wallet);
+            }
+
             db.Forums.Remove(ForumToDelete);
             db.SaveChanges();
-            try {
-                return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
-            }
-            catch (Exception)
-            {
-                return new OkObjectResult(null);
-            }
+
+            return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
         }
 
         public bool ValidateUser(Forum forum)
