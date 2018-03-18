@@ -43,6 +43,7 @@ namespace IVForum.API.Controllers
                     RepositoryUrl = x.RepositoryUrl,
                     WebsiteUrl = x.WebsiteUrl,
                     Forum = x.Forum,
+                    Views = x.Views,
                     Owner = new UserViewModel
                     {
                         Id = x.Owner.Id,
@@ -78,6 +79,7 @@ namespace IVForum.API.Controllers
                 RepositoryUrl = x.RepositoryUrl,
                 WebsiteUrl = x.WebsiteUrl,
                 Forum = x.Forum,
+                Views = x.Views,
                 Owner = new UserViewModel
                 {
                     Id = x.Owner.Id,
