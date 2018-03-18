@@ -39,6 +39,7 @@ import { CreateForumComponent } from './views/createForum/createForum.component'
 
 import { MzDatepickerModule } from 'ng2-materialize';
 import { FooterComponent } from './views/footer/footer.component';
+import { AplicationComponent } from './views/aplication/aplication.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { FooterComponent } from './views/footer/footer.component';
     ForumsComponent,
     CreateForumComponent,
     FooterComponent,
-    CreateProjectComponent
+    CreateProjectComponent,
+    AplicationComponent
   ],
   imports: [
     BrowserModule,
