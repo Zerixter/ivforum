@@ -308,7 +308,7 @@ namespace IVForum.API.Controllers
             foreach (Project project in ProjectsInForum)
             {
                 project.Forum = null;
-                db.Project.Update(project);
+                db.Projects.Update(project);
             }
 
             List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id == id_forum).Include(x => x.Forum).ToList();
