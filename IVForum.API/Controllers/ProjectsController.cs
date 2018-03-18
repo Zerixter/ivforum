@@ -43,6 +43,7 @@ namespace IVForum.API.Controllers
                     RepositoryUrl = x.RepositoryUrl,
                     WebsiteUrl = x.WebsiteUrl,
                     Forum = x.Forum,
+                    Views = x.Views,
                     Owner = new UserViewModel
                     {
                         Id = x.Owner.Id,
@@ -78,6 +79,7 @@ namespace IVForum.API.Controllers
                 RepositoryUrl = x.RepositoryUrl,
                 WebsiteUrl = x.WebsiteUrl,
                 Forum = x.Forum,
+                Views = x.Views,
                 Owner = new UserViewModel
                 {
                     Id = x.Owner.Id,
@@ -185,7 +187,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(null);
         }
 
-        [HttpDelete("id_project")]
+        [HttpDelete("{id_project}")]
         public IActionResult Delete([FromRoute]string id_project)
         {
             Project ProjectToDelete = db.Projects.Where(x => x.Id.ToString() == id_project).Include(x => x.Owner).FirstOrDefault();
