@@ -311,6 +311,12 @@ namespace IVForum.API.Controllers
                 db.Projects.Update(project);
             }
 
+            List<Transaction> Transactions = db.Transactions.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                db.Transactions.Remove(transaction);
+            }
+
             List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
             foreach (Wallet wallet in WalletsForForum)
             {
