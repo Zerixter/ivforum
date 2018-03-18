@@ -290,7 +290,7 @@ namespace IVForum.API.Controllers
             return new JsonResult(null);
         }
 
-        [HttpDelete("id_forum")]
+        [HttpDelete("{id_forum}")]
         public IActionResult Delete([FromRoute]string id_forum)
         {
             List<object> Errors = new List<object>();
