@@ -306,17 +306,24 @@ namespace IVForum.API.Controllers
 
             db.Forums.Remove(ForumToDelete);
             db.SaveChanges();
-
-            return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
+            try {
+                return new JsonResult(Message.GetMessage("S'ha eliminat el forum correctament."));
+            }
+            catch (Exception)
+            {
+                return new OkObjectResult(null);
+            }
         }
 
         public bool ValidateUser(Forum forum)
         {
-            User user = userGetter.GetUser();
+            User user = null;
             try
             {
+                user = userGetter.GetUser();
                 return (forum.Owner.Id == user.Id) ? true : false;
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
