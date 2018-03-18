@@ -107,7 +107,7 @@ namespace IVForum.API.Controllers
             try
             {
                 user = userGetter.GetUser(id_user);
-                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id == user.Id).Include(x => x.User).ToList();
+                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id.ToString() == id_user).Include(x => x.Forum).ToList();
                 List<ForumListViewModel> Forums = new List<ForumListViewModel>();
                 foreach (var wallet in Wallets)
                 {
