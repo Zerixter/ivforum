@@ -101,17 +101,17 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet("subscribed/{id_user}")]
-        public IEnumerable<Forum> GetForumsSubscribedUser(string id_user)
+        public IEnumerable<ForumListViewModel> GetForumsSubscribedUser(string id_user)
         {
             User user = null;
             try
             {
                 user = userGetter.GetUser(id_user);
                 List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id == user.Id).Include(x => x.User).ToList();
-                List<Forum> Forums = new List<Forum>();
+                List<ForumListViewModel> Forums = new List<ForumListViewModel>();
                 foreach (var wallet in Wallets)
                 {
-                    Forum forum = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                    ForumListViewModel forum = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
                     {
                         Id = x.Id.ToString(),
                         Title = x.Title,
@@ -135,7 +135,7 @@ namespace IVForum.API.Controllers
                             Surname = us.Surname,
                             Email = us.Email
                         }
-                    }).Where(x => x.Id == wallet.ForumId).FirstOrDefault();
+                    }).Where(x => x.Id == wallet.Forum.Id.ToString()).FirstOrDefault();
                     if (forum != null)
                     {
                         Forums.Add(forum);
