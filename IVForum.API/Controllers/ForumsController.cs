@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -293,19 +293,15 @@ namespace IVForum.API.Controllers
         [HttpDelete("{id_forum}")]
         public IActionResult Delete([FromRoute]string id_forum)
         {
-            List<object> Errors = new List<object>();
-
-            var ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).FirstOrDefault();
+            Forum ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
             if (ForumToDelete is null)
             {
-                Errors.Add(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
             }
 
             if (!ValidateUser(ForumToDelete))
             {
-                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
             }
 
             db.Forums.Remove(ForumToDelete);
