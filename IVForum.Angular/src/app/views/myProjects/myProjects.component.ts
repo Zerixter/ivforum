@@ -31,6 +31,10 @@ export class MyProjectsComponent implements OnInit {
         )
     }
 
+    createForum(){
+        this._router.navigate(["main/createForum"]);
+    }
+
     selectProject(project){
         if (this._projectService.selectProject(project)){
             this._router.navigate[("/main/project")];

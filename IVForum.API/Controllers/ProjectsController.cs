@@ -122,6 +122,10 @@ namespace IVForum.API.Controllers
                 Id = Guid.NewGuid(),
                 Description = model.Description,
                 Title = model.Title,
+                Background = model.Background,
+                Icon = model.Icon,
+                RepositoryUrl = model.RepositoryUrl,
+                WebsiteUrl = model.WebsiteUrl,
                 Owner = user
             };
 

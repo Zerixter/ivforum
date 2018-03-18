@@ -106,7 +106,7 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest();
             }
-            return new JsonResult(wallet);
+            return new OkResult();
         }
 
         [HttpGet("subscription/{id_forum}")]
