@@ -34,7 +34,7 @@
                                         <p>{{project.description}}</p>
                                     </div>
                                     <div class="card-action">
-                                        <a routerLink="project">Mes Informació</a>
+                                        <a (click)="projectMoreInfo(project)">Mes Informació</a>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                 <button *ngIf="owner" mz-button type="button">Modificar</button>
                 <button *ngIf="this._subscriptionService.isSubscribed(this.forum.id)" mz-button type="button" disabled>
                     <i class="material-icons left">done</i>Ja Subscrit</button>
-                <button *ngIf="!this._subscriptionService.isSubscribed(this.forum.id)" mz-button type="button" (click)="subscribe()">Subscribir</button>
+                <button *ngIf="this._subscriptionService.isSubscribed(this.forum.id)" mz-button type="button" (click)="subscribe()">Subscribir</button>
                 <button *ngIf="this._subscriptionService.isSubscribed(this.forum.id)" data-target="projectes" class="btn modal-trigger" mz-button
                     type="button">Afegir Projecte</button>
             </div>

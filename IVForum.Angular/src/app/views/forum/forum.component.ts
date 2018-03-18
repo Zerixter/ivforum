@@ -79,6 +79,11 @@ export class ForumComponent implements OnInit {
         )
     }
 
+    projectMoreInfo(project){
+        this._projectService.selectProject(project);
+        this._router.navigate(["/main/project"])
+    }
+
     getUserProjects(){
         this._projectService.getUserProject(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(

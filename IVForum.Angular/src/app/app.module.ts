@@ -59,7 +59,8 @@ import { AplicationComponent } from './views/aplication/aplication.component';
     CreateForumComponent,
     FooterComponent,
     CreateProjectComponent,
-    AplicationComponent
+    AplicationComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule,
