@@ -111,7 +111,31 @@ namespace IVForum.API.Controllers
                 List<Forum> Forums = new List<Forum>();
                 foreach (var wallet in Wallets)
                 {
-                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).Include(x => x.Owner).FirstOrDefault();
+                    Forum forum = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                    {
+                        Id = x.Id.ToString(),
+                        Title = x.Title,
+                        Description = x.Description,
+                        Background = x.Background,
+                        DateBeginsVote = x.DateBeginsVote,
+                        DateEndsVote = x.DateEndsVote,
+                        CreationDate = x.CreationDate,
+                        Icon = x.Icon,
+                        Views = x.Views,
+                        Owner = new UserViewModel
+                        {
+                            Id = x.Owner.Id,
+                            Avatar = x.Owner.Avatar,
+                            Description = x.Owner.Description,
+                            WebsiteUrl = x.Owner.WebsiteUrl,
+                            RepositoryUrl = x.Owner.RepositoryUrl,
+                            FacebookUrl = x.Owner.FacebookUrl,
+                            TwitterUrl = x.Owner.TwitterUrl,
+                            Name = us.Name,
+                            Surname = us.Surname,
+                            Email = us.Email
+                        }
+                    }).Where(x => x.Id == wallet.ForumId).FirstOrDefault();
                     if (forum != null)
                     {
                         Forums.Add(forum);
