@@ -320,7 +320,7 @@ namespace IVForum.API.Controllers
             List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
             foreach (Wallet wallet in WalletsForForum)
             {
-                List<BillOption> BillOptions = db.BillOptions.Where(x => x.Forum.Id == wallet.Forum.Id).Include(x => x.Forum).ToList();
+                List<BillOption> BillOptions = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
                 foreach (BillOption bill in BillOptions)
                 {
                     db.BillOptions.Remove(bill);
