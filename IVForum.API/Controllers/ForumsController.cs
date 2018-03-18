@@ -311,7 +311,7 @@ namespace IVForum.API.Controllers
                 db.Projects.Update(project);
             }
 
-            List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id == id_forum).Include(x => x.Forum).ToList();
+            List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
             foreach (Wallet wallet in WalletsForForum)
             {
                 db.Wallets.Delete(wallet);
