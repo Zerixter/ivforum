@@ -26,24 +26,25 @@ export class ForumsComponent implements OnInit {
         //this.newForum = new Forum();
         this.getForums();
         //this.test();
+        
     }
+
+
 
     selectForum(forum){
         console.log(forum);
         this._forumService.selectForum(forum);
         this._router.navigate(["/main/forum"]);
     }
-
-    loaded(){
-        this._loader.setLoad(false);
-        
-    }
     
 
     getForums() {
         this._forumService.getForums()
         .subscribe(
-            res => this.forums = res,
+            res => {
+                this.forums = res;
+                console.log(this.forums);
+            },
             err => console.log(err) 
         )
     }

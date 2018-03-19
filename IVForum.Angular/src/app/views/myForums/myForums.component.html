@@ -20,6 +20,11 @@
                         </span>
                         <p>{{forum.description}}</p>
                         <div class="card-action">
+                            <p class="info-forum">Autor: <a>{{forum.owner.name}} {{forum.owner.surname}}</a></p>
+                            <p class="info-forum">Creat: {{forum.creationDate | date:'dd-MM-yyyy'}}</p>
+                            <p class="info-forum">Tancament de votacions: {{forum.dateEndsVote | date:'dd-MM-yyyy'}}</p>
+                        </div>
+                        <div class="card-action">
                             <a (click)="selectForum(forum)">Mes informació</a>
                         </div>
                     </div>

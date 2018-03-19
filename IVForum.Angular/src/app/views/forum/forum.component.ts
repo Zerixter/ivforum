@@ -1,9 +1,10 @@
+import { UserService } from './../../services/user.service';
 import { ForumService } from './../../services/forum.service';
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ProjectService } from '../../services/project.service';
+import { MzToastService } from 'ng2-materialize';
 
 
 @Component({
@@ -25,7 +26,8 @@ export class ForumComponent implements OnInit {
         private _forumService:ForumService,
         private _projectService:ProjectService,
         private _router:Router,
-        private _subscriptionService:SubscriptionService
+        private _subscriptionService:SubscriptionService,
+        private toastService: MzToastService,
     ) {
      }
 
@@ -41,7 +43,7 @@ export class ForumComponent implements OnInit {
     }
 
     isSubscribed(){
-        this._subscriptionService.isSubscribed(this.forum.id)
+        this._userService.isSubscribed(this.forum.id)
         .subscribe(
             res => this.subscribed = true,
             err => this.subscribed = false
@@ -74,7 +76,7 @@ export class ForumComponent implements OnInit {
     subscribe(){
         this._subscriptionService.subscribeForum(this.forum)
         .subscribe(
-            res => console.log("T'has subscrit!"),
+            res => this.showToastSubscribe(),
             err => console.log(err)
         )
     }
@@ -92,11 +94,19 @@ export class ForumComponent implements OnInit {
         )
     }
 
+    showToastSubscribe() {
+        this.toastService.show("T'has inscrit!", 4000, 'green');
+    }
+
+    showToastAddProject() {
+        this.toastService.show("Has afegit un projecte!", 4000, 'green');
+    }
+
     addToForum(project){
         this._subscriptionService.subscribeProject(this.forum.id,project.id)
         .subscribe(
             res => {
-                console.log("Has afegit el teu projecte!");
+                this.showToastAddProject();
                 this.getProjects();
             }
         )
