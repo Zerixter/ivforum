@@ -244,8 +244,8 @@ namespace IVForum.API.Controllers
                     Id = Guid.NewGuid(),
                     Title = model.Title,
                     Description = model.Description,
-                    DateBeginsVote = model.DateBeginsVote,
-                    DateEndsVote = model.DateEndsVote,
+                    DateBeginsVote = model.DateBeginsVote.Date,
+                    DateEndsVote = model.DateEndsVote.Date,
                     Owner = user
                 };
             } catch (Exception)

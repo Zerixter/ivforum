@@ -20,8 +20,8 @@ namespace IVForum.API.Models
 		public string Icon { get; set; }
 		public string Background { get; set; } = @"http://localhost/assets/images/banner.jpg";
         public DateTime CreationDate { get; set; } = DateTime.Now;
-        public DateTime DateBeginsVote { get; set; } = DateTime.Parse("10/10/1999");
-        public DateTime DateEndsVote { get; set; } = DateTime.Parse("10/10/1999");
+        public DateTime DateBeginsVote { get; set; } = DateTime.Parse("10/10/1999").Date;
+        public DateTime DateEndsVote { get; set; } = DateTime.Parse("10/10/1999").Date;
         public int Views { get; set; } = 0;
 
         public virtual User Owner { get; set; }
