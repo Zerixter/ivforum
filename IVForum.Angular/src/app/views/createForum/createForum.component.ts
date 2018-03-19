@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
 import { LoadService } from '../../services/load.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
     selector: 'createForum',
@@ -23,7 +24,9 @@ export class CreateForumComponent implements OnInit {
         private _userService:UserService,
         private _forumService:ForumService,
         private _router:Router,
-        private _loader:LoadService
+        private _loader:LoadService,
+        public dialogRef: MatDialogRef<CreateForumComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
     }
 
@@ -43,9 +46,8 @@ export class CreateForumComponent implements OnInit {
         console.log(this.dataBeginsVote,this.dataEndsVote,this.title,this.description);
         this._forumService.createForum(this.title,this.description,this.dataBeginsVote,this.dataEndsVote)
         .subscribe(
-            res => this._router.navigate(["main/forums"]),
+            res => this.dialogRef.close(),
             err => console.log(err)
-        )
-        
+        );
     }
 }

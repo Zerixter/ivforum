@@ -3,6 +3,8 @@ import { UserService } from '../../services/user.service';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
 import { LoadService } from '../../services/load.service';
+import { CreateForumComponent } from '../createForum/createForum.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'forumsComponent',
@@ -16,7 +18,8 @@ export class ForumsComponent implements OnInit {
         private _userService:UserService,
         private _forumService:ForumService,
         private _router:Router,
-        private _loader:LoadService
+        private _loader:LoadService,
+        private _dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -55,7 +58,15 @@ export class ForumsComponent implements OnInit {
     }
     */
     createForum(){
-        this._router.navigate(["main/createForum"]);
+        //this._router.navigate(["main/createForum"]);
+        let dialogRef = this._dialog.open(CreateForumComponent, {
+            width: '450px',
+            data: {}
+          });
+      
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+        });
     }
     test(){
         var forum = [{'title':"potato","shortDescription":"Potato","description":"Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you. But I can't give you this case, it don't belong to me. Besides, I've already been through too much shit this morning over this case to hand it over to your dumb ass."},

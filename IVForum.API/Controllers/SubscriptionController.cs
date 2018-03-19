@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +24,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet("subscribed/{id_forum}")]
-        public IActionResult GetSubscribed(string id_forum)
+        public IActionResult GetSubscribed([FromRoute]string id_forum)
         {
             User user = userGetter.GetUser();
             if (user is null)
@@ -41,6 +38,25 @@ namespace IVForum.API.Controllers
                 return BadRequest();
             }
             return new OkResult();
+        }
+
+        [HttpGet("wallet/{id_forum}")]
+        public IEnumerable<BillOption> GetSubscription(string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return null;
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return null;
+            }
+
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            return bills;
         }
 
         [HttpPost("subscribe/forum")]

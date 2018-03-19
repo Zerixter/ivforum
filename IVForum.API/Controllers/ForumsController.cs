@@ -244,8 +244,8 @@ namespace IVForum.API.Controllers
                     Id = Guid.NewGuid(),
                     Title = model.Title,
                     Description = model.Description,
-                    DateBeginsVote = model.DateBeginsVote,
-                    DateEndsVote = model.DateEndsVote,
+                    DateBeginsVote = model.DateBeginsVote.Date,
+                    DateEndsVote = model.DateEndsVote.Date,
                     Owner = user
                 };
             } catch (Exception)
@@ -326,13 +326,6 @@ namespace IVForum.API.Controllers
             if (!ValidateUser(ForumToDelete))
             {
                 return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
-            }
-
-            List<Project> ProjectsInForum = db.Projects.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
-            foreach (Project project in ProjectsInForum)
-            {
-                project.Forum = null;
-                db.Projects.Update(project);
             }
 
             List<Transaction> Transactions = db.Transactions.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();

@@ -163,6 +163,7 @@ namespace IVForum.API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Avatar = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
                     FacebookUrl = table.Column<string>(nullable: true),
                     IdentityId = table.Column<string>(nullable: true),
                     RepositoryUrl = table.Column<string>(nullable: true),
@@ -187,11 +188,13 @@ namespace IVForum.API.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: false),
+                    DateBeginsVote = table.Column<DateTime>(nullable: false),
+                    DateEndsVote = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: false),
                     Icon = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(maxLength: 100, nullable: true)
+                    OwnerId = table.Column<Guid>(nullable: true),
+                    Title = table.Column<string>(maxLength: 100, nullable: false),
+                    Views = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -211,15 +214,14 @@ namespace IVForum.API.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Background = table.Column<string>(nullable: true),
                     CreationDate = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: false),
-                    FacebookUrl = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(maxLength: 1000, nullable: false),
                     ForumId = table.Column<Guid>(nullable: true),
                     Icon = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: false),
+                    OwnerId = table.Column<Guid>(nullable: true),
                     RepositoryUrl = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(maxLength: 100, nullable: true),
-                    TwitterUrl = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 100, nullable: false),
+                    TotalMoney = table.Column<int>(nullable: false),
+                    Views = table.Column<int>(nullable: false),
                     WebsiteUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -230,7 +232,7 @@ namespace IVForum.API.Migrations
                         column: x => x.ForumId,
                         principalTable: "Forums",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Projects_DbUsers_OwnerId",
                         column: x => x.OwnerId,
