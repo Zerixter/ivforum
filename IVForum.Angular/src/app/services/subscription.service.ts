@@ -40,12 +40,9 @@ export class SubscriptionService {
     }
 
     isSubscribed(idForum){
-        console.log("lel");
         return this.http.get(this._URL + "account/subscribed/" + idForum)
         .map(
             res => {
-                console.log("resposta: ");
-                console.log(res);
                 return true;
             },
             err => {

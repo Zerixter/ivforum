@@ -24,7 +24,7 @@ export class MyProjectsComponent implements OnInit {
     }
 
     getMyProjects(){
-        this._projectService.getProjects()
+        this._projectService.getUserProject(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(
             res => this.projects = res,
             err => console.log(err)

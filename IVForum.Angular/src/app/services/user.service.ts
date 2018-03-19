@@ -54,10 +54,12 @@ export class UserService {
     }
 
     isSubscribed(idForum){
-        return this.http.get(this._URL + "account/subscribed/" + idForum)
+        console.log("idforum: " + idForum);
+        return this.http.get(this._URL + "subscription/subscribed/" + idForum)
         .map(
                 res => {
-                    return res;
+                    console.log(res);
+                    return true;
                 },
                 err => {
                     console.log(err)
@@ -66,13 +68,15 @@ export class UserService {
     }
 
     subscriptions(idForum){
-        return this.http.get(this._URL + "account/subscription/" + idForum)
+        console.log("forum: " + idForum)
+        return this.http.get(this._URL + "subscription/wallet/" + idForum)
         .map(
                 res => {
+                    console.log(res);
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -114,7 +118,6 @@ export class UserService {
         localStorage.removeItem('currentUser');
         return true;
     }
-    
 }
 
 /*

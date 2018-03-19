@@ -4,6 +4,7 @@ import { ProjectService } from '../../services/project.service';
 import { Router } from '@angular/router';
 import { ForumService } from '../../services/forum.service';
 import { TransactionService } from '../../services/transaction.service';
+import { MzToastService } from 'ng2-materialize';
 
 @Component({
     selector: 'projectComponent',
@@ -19,7 +20,8 @@ export class ProjectComponent implements OnInit {
         private _projectService:ProjectService,
         private _forumService:ForumService,
         private _transactionService:TransactionService,
-        private _router:Router
+        private _router:Router,
+        private toastService: MzToastService,
     ) { }
 
     ngOnInit() {
@@ -40,13 +42,17 @@ export class ProjectComponent implements OnInit {
         )
     }
 
+    showToast() {
+        this.toastService.show('Vot acceptat!', 4000, 'green');
+    }
+
     voteProject(vote){
         console.log(this.project);
         this._transactionService.subscribeForum(this.project.id,vote.name)
         .subscribe(
             res => {
                 this.getSubscriptionsOptions();
-                console.log("votado");
+                this.showToast();
             },
             err => console.log(err)
         )

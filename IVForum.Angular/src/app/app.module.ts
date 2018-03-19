@@ -31,6 +31,8 @@ import { MzCardModule,MzTabModule } from 'ng2-materialize';
 import {MatTabsModule} from '@angular/material/tabs';
 
 import { MzButtonModule } from 'ng2-materialize';
+import { MzToastModule } from 'ng2-materialize';
+
 
 import { MzModalModule } from 'ng2-materialize';
 
@@ -76,7 +78,8 @@ import { AplicationComponent } from './views/aplication/aplication.component';
     MzTabModule,
     MzSpinnerModule,
     MzDatepickerModule,
-    MzModalModule
+    MzModalModule,
+    MzToastModule
   ],
   providers: [
     ForumService,

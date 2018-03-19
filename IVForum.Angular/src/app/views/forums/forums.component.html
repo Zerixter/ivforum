@@ -15,7 +15,7 @@
                                     <i class="material-icons right">more_vert</i>
                                 </span>
                                 <div class="card-content">
-                                    <p>{{forum.shortDescription}}</p>
+                                    <p>{{forum.description}}</p>
                                 </div>
                             </div>
                             <div class="card-reveal">
@@ -24,7 +24,12 @@
                                 </span>
                                 <p>{{forum.description}}</p>
                                 <div class="card-action">
-                                    <a (click)="selectForum(forum)">Mes informació</a>
+                                    <p class="info-forum">Autor: <a>{{forum.owner.name}} {{forum.owner.surname}}</a></p>
+                                    <p class="info-forum">Creat: {{forum.creationDate| date:'dd-MM-yyyy'}}</p>
+                                    <p class="info-forum">Tancament de votacions: {{forum.dateEndsVote| date:'dd-MM-yyyy'}}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a (click)="selectForum(forum)" class="btn">Mes informació</a>
                                 </div>
                             </div>
                             <div class="card-action">
