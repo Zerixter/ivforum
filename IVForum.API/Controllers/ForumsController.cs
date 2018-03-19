@@ -329,8 +329,14 @@ namespace IVForum.API.Controllers
             }
 
             List<Project> ProjectsInForum = db.Projects.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            List<Vote> Votes = null;
             foreach (Project project in ProjectsInForum)
             {
+                Votes = db.Votes.Where(x => x.Project.Id == project.Id).Include(x => x.Project).ToList();
+                foreach (Vote vote in Votes)
+                {
+                    db.Votes.Remove(vote);
+                }
                 project.Forum = null;
                 db.Projects.Update(project);
             }
