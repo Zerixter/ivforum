@@ -12,6 +12,14 @@
             </div>
         </div>
         <div class="card-action">
+            <p class="info-forum">
+                Recaudat: {{project.totalMoney}}
+            </p>
+            <p class="info-forum">
+                Visites: {{project.views}}
+            </p>
+        </div>
+        <div class="card-action">
             <div class="row">
                 <button *ngIf="twitter != null" mz-button type="button" [attr.href]="twitter">Twitter</button>
                 <button *ngIf="facebook != null" mz-button type="button" [attr.href]="facebook">Facebook</button>
