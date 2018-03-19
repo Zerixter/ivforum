@@ -41,7 +41,7 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet("wallet/{id_forum}")]
-        public IEnumerable<BillOption> GetSubscription(string id_forum)
+        public IEnumerable<BillListViewModel> GetSubscription(string id_forum)
         {
             User user = userGetter.GetUser();
             if (user is null)
@@ -55,8 +55,15 @@ namespace IVForum.API.Controllers
                 return null;
             }
 
-            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
-            return bills;
+            //List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+
+            List<BillListViewModel> billList = db.BillOptions.Join(db.Wallets, x => x.Wallet.Id, w => w.Id, (x, w) => new BillListViewModel
+            {
+                Name = x.Name,
+                Value = x.Value,
+                Wallet = x.Wallet
+            }).Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            return billList;
         }
 
         [HttpPost("subscribe/forum")]
