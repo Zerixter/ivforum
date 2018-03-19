@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $(".button-collapse").sideNav();
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -7,8 +7,13 @@ $(document).ready(function() {
         clear: 'Clear',
         close: 'Ok',
         closeOnSelect: false // Close upon selecting a date,
-      });
-});/*
+    });
+    $('.modal').modal();
+
+    //or by click on trigger
+    $('.modal-trigger').modal();
+});
+/*
 $(".tab-links").on('click', function(e) {
     console.log(e);
     $(e).addClass("active");

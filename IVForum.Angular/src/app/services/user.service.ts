@@ -66,7 +66,7 @@ export class UserService {
     }
 
     subscriptions(idForum){
-        return this.http.get(this._URL + "account/subscription" + idForum)
+        return this.http.get(this._URL + "account/subscription/" + idForum)
         .map(
                 res => {
                     return res;

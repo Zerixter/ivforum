@@ -21,6 +21,7 @@ const routes: Routes = [
             { path: 'forums',component: ForumsComponent,canActivate: [AuthGuard]},
             { path: 'myProjects',component: MyProjectsComponent,canActivate: [AuthGuard]},
             { path: 'forum',component: ForumComponent,canActivate: [AuthGuard]},
+            { path: 'project',component: ProjectComponent,canActivate: [AuthGuard]},
             { path: 'createForum',component: CreateForumComponent,canActivate: [AuthGuard]},
             { path: 'createProject', component: CreateProjectComponent,canActivate: [AuthGuard]},
             { path: 'app', component: AplicationComponent,canActivate: [AuthGuard]}

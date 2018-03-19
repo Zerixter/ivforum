@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -153,8 +153,31 @@ namespace IVForum.API.Controllers
         public IActionResult Select(string id_forum)
         {
             List<object> Errors = new List<object>();
-
-            var ForumToSelect = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
+            var ForumToSelect = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Id.ToString() == id_forum).FirstOrDefault();
             if (ForumToSelect is null)
             {
                 Errors.Add(Message.GetMessage("El forum que s'intenta seleccionar no existeix."));
@@ -180,6 +203,7 @@ namespace IVForum.API.Controllers
                     RepositoryUrl = x.RepositoryUrl,
                     WebsiteUrl = x.WebsiteUrl,
                     Forum = x.Forum,
+                    Views = x.Views,
                     Owner = new UserViewModel
                     {
                         Id = x.Owner.Id,
@@ -293,19 +317,39 @@ namespace IVForum.API.Controllers
         [HttpDelete("{id_forum}")]
         public IActionResult Delete([FromRoute]string id_forum)
         {
-            List<object> Errors = new List<object>();
-
-            var ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).FirstOrDefault();
+            Forum ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
             if (ForumToDelete is null)
             {
-                Errors.Add(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
             }
 
             if (!ValidateUser(ForumToDelete))
             {
-                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
+            }
+
+            List<Project> ProjectsInForum = db.Projects.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Project project in ProjectsInForum)
+            {
+                project.Forum = null;
+                db.Projects.Update(project);
+            }
+
+            List<Transaction> Transactions = db.Transactions.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                db.Transactions.Remove(transaction);
+            }
+
+            List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Wallet wallet in WalletsForForum)
+            {
+                List<BillOption> BillOptions = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+                foreach (BillOption bill in BillOptions)
+                {
+                    db.BillOptions.Remove(bill);
+                }
+                db.Wallets.Remove(wallet);
             }
 
             db.Forums.Remove(ForumToDelete);
@@ -316,11 +360,13 @@ namespace IVForum.API.Controllers
 
         public bool ValidateUser(Forum forum)
         {
-            User user = userGetter.GetUser();
+            User user = null;
             try
             {
+                user = userGetter.GetUser();
                 return (forum.Owner.Id == user.Id) ? true : false;
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }

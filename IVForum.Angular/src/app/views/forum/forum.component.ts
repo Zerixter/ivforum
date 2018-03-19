@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ProjectService } from '../../services/project.service';
 
+
 @Component({
     selector: 'forumComponent',
     templateUrl: 'forum.component.html',
@@ -25,7 +26,8 @@ export class ForumComponent implements OnInit {
         private _projectService:ProjectService,
         private _router:Router,
         private _subscriptionService:SubscriptionService
-    ) { }
+    ) {
+     }
 
     ngOnInit() {
         this.getForum();
@@ -77,6 +79,11 @@ export class ForumComponent implements OnInit {
         )
     }
 
+    projectMoreInfo(project){
+        this._projectService.selectProject(project);
+        this._router.navigate(["/main/project"])
+    }
+
     getUserProjects(){
         this._projectService.getUserProject(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(
@@ -85,7 +92,7 @@ export class ForumComponent implements OnInit {
         )
     }
 
-    addForum(project){
+    addToForum(project){
         this._subscriptionService.subscribeProject(this.forum.id,project.id)
         .subscribe(
             res => {
