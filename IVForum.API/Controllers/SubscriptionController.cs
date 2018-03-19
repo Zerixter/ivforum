@@ -55,14 +55,16 @@ namespace IVForum.API.Controllers
                 return null;
             }
 
-            //List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            List<BillListViewModel> billList = new List<BillListViewModel>();
 
-            List<BillListViewModel> billList = db.BillOptions.Join(db.Wallets, x => x.Wallet.Id, w => w.Id, (x, w) => new BillListViewModel
+            foreach (BillOption billOption in bills)
             {
-                Name = x.Name,
-                Value = x.Value,
-                Wallet = null
-            }).Where(x => x.Wallet.Id == wallet.Id).ToList();
+                billList.Add(new BillListViewModel {
+                    Name = billOption.Name,
+                    Value = billOption.Value
+                });
+            }
             return billList;
         }
 
