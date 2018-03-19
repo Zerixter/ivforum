@@ -26,6 +26,23 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
+        [HttpGet("subscribed/{id_forum}")]
+        public IActionResult GetSubscribed(string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat."));
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return BadRequest();
+            }
+            return new OkResult();
+        }
+
         [HttpPost("subscribe/forum")]
         public IActionResult Subscribe([FromBody]ForumViewModel model)
         {
