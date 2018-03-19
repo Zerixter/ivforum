@@ -12,8 +12,8 @@ using System;
 namespace IVForum.API.Migrations
 {
     [DbContext(typeof(DbHandler))]
-    [Migration("20180309154516_date")]
-    partial class date
+    [Migration("20180319155729_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -379,7 +379,7 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Projects")
                         .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")

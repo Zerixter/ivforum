@@ -328,19 +328,6 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
             }
 
-            List<Project> ProjectsInForum = db.Projects.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
-            List<Vote> Votes = null;
-            foreach (Project project in ProjectsInForum)
-            {
-                Votes = db.Votes.Where(x => x.Project.Id == project.Id).Include(x => x.Project).ToList();
-                foreach (Vote vote in Votes)
-                {
-                    db.Votes.Remove(vote);
-                }
-                project.Forum = null;
-                db.Projects.Update(project);
-            }
-
             List<Transaction> Transactions = db.Transactions.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
             foreach (Transaction transaction in Transactions)
             {

@@ -52,7 +52,7 @@ namespace IVForum.API.Data
             builder.Entity<Forum>()
                 .HasMany(x => x.Projects)
                 .WithOne(x => x.Forum)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
             #endregion
             #region Project
             builder.Entity<Project>()
