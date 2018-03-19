@@ -37,7 +37,7 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest();
             }
-            return new JsonResult("ok");
+            return new OkResult();
         }
 
         [HttpGet("wallet/{id_forum}")]
