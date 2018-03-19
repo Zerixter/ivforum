@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { SubscriptionService } from '../../services/subscription.service';
 import { ProjectService } from '../../services/project.service';
 import { MzToastService } from 'ng2-materialize';
+import { MatDialog } from '@angular/material';
+import { SelectProjectComponent } from '../selectedProject/selectProject.component';
 
 
 @Component({
@@ -28,6 +30,7 @@ export class ForumComponent implements OnInit {
         private _router:Router,
         private _subscriptionService:SubscriptionService,
         private toastService: MzToastService,
+        private _dialog: MatDialog
     ) {
      }
 
@@ -43,11 +46,27 @@ export class ForumComponent implements OnInit {
     }
 
     isSubscribed(){
+        console.log("subscrit: ");
         this._userService.isSubscribed(this.forum.id)
         .subscribe(
-            res => this.subscribed = true,
+            res => {
+                this.subscribed = true;
+                console.log(this.subscribed);
+            },
             err => this.subscribed = false
         );
+
+    }
+
+    addProject(){
+        let dialogRef = this._dialog.open(SelectProjectComponent, {
+            width: '450px',
+            data: {}
+          });
+      
+          dialogRef.afterClosed().subscribe(result => {
+            
+        });
     }
 
     modifForum(){
@@ -96,6 +115,7 @@ export class ForumComponent implements OnInit {
 
     showToastSubscribe() {
         this.toastService.show("T'has inscrit!", 4000, 'green');
+        this.getProjects();
     }
 
     showToastAddProject() {
@@ -107,7 +127,6 @@ export class ForumComponent implements OnInit {
         .subscribe(
             res => {
                 this.showToastAddProject();
-                this.getProjects();
             }
         )
     }

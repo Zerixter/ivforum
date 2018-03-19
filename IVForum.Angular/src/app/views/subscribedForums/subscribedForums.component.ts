@@ -3,7 +3,7 @@ import { UserService } from '../../services/user.service';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
 import { CreateForumComponent } from '../createForum/createForum.component';
-import { MatDialog } from '@angular/material';
+//import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'subscribedForums',
@@ -17,7 +17,7 @@ export class SubscribedForumsComponent implements OnInit {
         private _userService:UserService,
         private _forumService:ForumService,
         private _router:Router,
-        private _dialog: MatDialog
+        //private _dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -30,14 +30,15 @@ export class SubscribedForumsComponent implements OnInit {
     }
 
     createForum() {
-        let dialogRef = this._dialog.open(CreateForumComponent, {
+        this._router.navigate(["main/createForum"]);
+        /*let dialogRef = this._dialog.open(CreateForumComponent, {
             width: '450px',
             data: {}
           });
       
           dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
-        });
+        });*/
     }
 
     getForums(){

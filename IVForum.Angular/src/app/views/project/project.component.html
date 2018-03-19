@@ -13,6 +13,9 @@
         </div>
         <div class="card-action">
             <p class="info-forum">
+                Autor: <a>{{project.owner.name}} {{project.owner.surname}}</a>
+            </p>
+            <p class="info-forum">
                 Recaudat: {{project.totalMoney}}
             </p>
             <p class="info-forum">
@@ -29,8 +32,10 @@
         </div>
         <div class="card-action">
             <div class="row">
-                <button *ngFor="let vote of votes" class="col-12 col-sm-4 col-md-4 col-lg-4 waves-effect waves-light btn" (click)="voteProject(vote)">{{vote.name}}<i class="material-icons right">attach_money</i></button>
-                
+                <button *ngFor="let vote of votes" class="col-12 col-sm-4 col-md-4 col-lg-4 waves-effect waves-light btn" (click)="voteProject(vote)">{{vote.name}}
+                    <i class="material-icons right">attach_money</i>
+                </button>
+
             </div>
         </div>
     </div>

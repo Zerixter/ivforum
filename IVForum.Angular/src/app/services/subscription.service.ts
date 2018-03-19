@@ -28,7 +28,8 @@ export class SubscriptionService {
     }
 
     subscribeProject(idForum,idProject){
-        return this.http.post(this._URL + "subscription/subscribe/project", {idForum,idProject})
+        console.log("forum: " + idForum);
+        return this.http.post(this._URL + "subscription/subscribe/project", {forumId:idForum,projectId:idProject})
         .map(
                 res => {
                     return res;

@@ -42,12 +42,15 @@ import { CreateForumComponent } from './views/createForum/createForum.component'
 import { MatFormFieldModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
 
+import { MzToastModule } from 'ng2-materialize';
+
 import { MzDatepickerModule } from 'ng2-materialize';
 import { FooterComponent } from './views/footer/footer.component';
 import { AplicationComponent } from './views/aplication/aplication.component';
 import { DialogOverviewExampleComponent } from './views/dialog-overview-example/dialog-overview-example.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatFormField } from '@angular/material';
 import { DialogOverviewExampleDialogComponent } from './views/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
+import { SelectProjectComponent } from './views/selectedProject/selectProject.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +72,7 @@ import { DialogOverviewExampleDialogComponent } from './views/dialog-overview-ex
     ProjectComponent,
     DialogOverviewExampleComponent,
     DialogOverviewExampleDialogComponent,
+    SelectProjectComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +91,8 @@ import { DialogOverviewExampleDialogComponent } from './views/dialog-overview-ex
     MzTabModule,
     MzSpinnerModule,
     MzDatepickerModule,
-    MzModalModule
+    MzModalModule,
+    MzToastModule
   ],
   providers: [
     ForumService,
@@ -107,8 +112,7 @@ import { DialogOverviewExampleDialogComponent } from './views/dialog-overview-ex
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ],
   entryComponents: [
-    CreateForumComponent,
-    CreateProjectComponent
+    SelectProjectComponent
   ],
   bootstrap: [AppComponent]
 })
