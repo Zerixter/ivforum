@@ -60,8 +60,7 @@ namespace IVForum.API.Controllers
             List<BillListViewModel> billList = db.BillOptions.Join(db.Wallets, x => x.Wallet.Id, w => w.Id, (x, w) => new BillListViewModel
             {
                 Name = x.Name,
-                Value = x.Value,
-                Wallet = x.Wallet
+                Value = x.Value
             }).Where(x => x.Wallet.Id == wallet.Id).ToList();
             return billList;
         }
