@@ -49,7 +49,7 @@ namespace IVForum.API.Controllers
                 return null;
             }
 
-            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            Wallet wallet = db.Wallets.Where(x => x.UserId == user.Id && x.ForumId.ToString() == id_forum).FirstOrDefault();
             if (wallet is null)
             {
                 return null;
