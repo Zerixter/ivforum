@@ -25,10 +25,11 @@ import { TransactionService } from './services/transaction.service';
 import { AuthInterceptor } from './services/http-interceptor.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MzCardModule,MzTabModule } from 'ng2-materialize';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { MzButtonModule } from 'ng2-materialize';
 
@@ -38,10 +39,15 @@ import { MzSpinnerModule } from 'ng2-materialize';
 import { LoadService } from './services/load.service';
 import { ForumsComponent } from './views/forums/forums.component';
 import { CreateForumComponent } from './views/createForum/createForum.component';
+import { MatFormFieldModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 import { MzDatepickerModule } from 'ng2-materialize';
 import { FooterComponent } from './views/footer/footer.component';
 import { AplicationComponent } from './views/aplication/aplication.component';
+import { DialogOverviewExampleComponent } from './views/dialog-overview-example/dialog-overview-example.component';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatFormField } from '@angular/material';
+import { DialogOverviewExampleDialogComponent } from './views/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
 
 @NgModule({
   declarations: [
@@ -60,13 +66,18 @@ import { AplicationComponent } from './views/aplication/aplication.component';
     FooterComponent,
     CreateProjectComponent,
     AplicationComponent,
-    ProjectComponent
+    ProjectComponent,
+    DialogOverviewExampleComponent,
+    DialogOverviewExampleDialogComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     NoopAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatTabsModule,
+    MatDialogModule,
     FormsModule,
     appRouting,
     HttpClientModule,
@@ -92,8 +103,12 @@ import { AplicationComponent } from './views/aplication/aplication.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
-
+    },
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ],
+  entryComponents: [
+    CreateForumComponent,
+    CreateProjectComponent
   ],
   bootstrap: [AppComponent]
 })

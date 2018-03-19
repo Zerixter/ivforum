@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
+import { MatDialog } from '@angular/material';
+import { CreateProjectComponent } from '../createProject/createProject.component';
 
 @Component({
     selector: 'myProjectsComponent',
@@ -15,7 +17,8 @@ export class MyProjectsComponent implements OnInit {
     constructor(
         private _userService:UserService,
         private _projectService:ProjectService,
-        private _router:Router
+        private _router:Router,
+        private _dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -42,7 +45,15 @@ export class MyProjectsComponent implements OnInit {
     }
 
     createProject(){
-        this._router.navigate(["/main/createProject"])
+        //this._router.navigate(["/main/createProject"])
+        let dialogRef = this._dialog.open(CreateProjectComponent, {
+            width: '450px',
+            data: {}
+          });
+      
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+        });
     }
 
     test(){
