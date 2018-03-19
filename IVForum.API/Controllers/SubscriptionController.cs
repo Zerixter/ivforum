@@ -62,7 +62,7 @@ namespace IVForum.API.Controllers
                 Name = x.Name,
                 Value = x.Value,
                 Wallet = x.Wallet
-            }).Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            }).Where(x => x.Wallet.Id == wallet.Id).ToList();
             return billList;
         }
 
