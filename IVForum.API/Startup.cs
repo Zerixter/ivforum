@@ -1,6 +1,6 @@
 ﻿using IVForum.API.Data;
 using IVForum.API.Models;
-using IVForum.API.Properties;     
+using IVForum.API.Properties;
 using IVForum.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,15 +14,16 @@ using System.Text;
 using IVForum.API.Auth;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using System.IO;
 
 namespace IVForum.API
 {
-	public class Startup
+    public class Startup
     {
         private readonly SymmetricSecurityKey _signInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtInfo.SecretKey));
 
@@ -36,16 +37,26 @@ namespace IVForum.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var ConnectionString = "";
+            try
+            {
+                using (StringReader sr = new StringReader("ConnectionString.txt"))
+                {
+                    ConnectionString = sr.ReadToEnd();
+                }
+                services.AddDbContext<DbHandler>(x => x.UseSqlServer(ConnectionString));
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("No s'ha trobat el fitxer ConnectionString.txt en la carpeta arrel");
+            }
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            /*services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider("http://localhost/assets/images/"));*/
 
             services.AddCors(o => o.AddPolicy("all", patata =>
             {
                 patata.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
-
-            services.AddDbContext<DbHandler>();
 
             var builder = services.AddIdentityCore<UserModel>(o =>
             {
@@ -116,7 +127,7 @@ namespace IVForum.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseExceptionHandler(
                 builder =>
                 {
