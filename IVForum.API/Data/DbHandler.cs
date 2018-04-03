@@ -16,10 +16,11 @@ namespace IVForum.API.Data
         public DbSet<BillOption> BillOptions { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
+        public DbHandler(DbContextOptions<DbHandler> options) : base(options) { }
+
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(DbInfo.ConnectionString);
             optionsBuilder.EnableSensitiveDataLogging();
         }
 
