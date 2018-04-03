@@ -32,7 +32,7 @@ namespace IVForum.API.Classes
                 {
                     Debug.WriteLine(claimsPrincipal);
                 }
-                user = db.DbUsers.Where(c => c.Identity.Id == userId.Value).Include(x => x.Identity).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.Identity.Id == userId.Value).FirstOrDefault();
                 return user;
             }
             catch (Exception)
@@ -46,7 +46,7 @@ namespace IVForum.API.Classes
             User user = null;
             try
             {
-                user = db.DbUsers.Where(c => c.Id.ToString() == userid).Include(x => x.Identity).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.Id.ToString() == userid).FirstOrDefault();
                 return user;
             }
             catch (Exception)

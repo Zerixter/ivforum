@@ -1,0 +1,24 @@
+<div class="container">
+    <div id="myProjects" class="all-projects row">
+        <div class="col-md-12">
+            <div *ngFor="let project of projects">
+                <div class="project-card card horizontal row">
+                    <div class="card-stacked col-sm-12 col-md-12 col-lg-12 " (click)="subscribeProject(project)">
+                        <div class="card-content">
+                            <span class="card-title">{{project.title}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="! projects?.length">
+                <div class="project-card card horizontal row">
+                    <div class="card-stacked col-sm-12 col-md-9 col-lg-8">
+                        <div class="card-content">
+                            <span class="card-title">No tens cap projecte :(</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

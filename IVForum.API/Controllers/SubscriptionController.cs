@@ -49,20 +49,22 @@ namespace IVForum.API.Controllers
                 return null;
             }
 
-            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            Wallet wallet = db.Wallets.Where(x => x.UserId == user.Id && x.ForumId.ToString() == id_forum).FirstOrDefault();
             if (wallet is null)
             {
                 return null;
             }
 
-            //List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            List<BillListViewModel> billList = new List<BillListViewModel>();
 
-            List<BillListViewModel> billList = db.BillOptions.Join(db.Wallets, x => x.Wallet.Id, w => w.Id, (x, w) => new BillListViewModel
+            foreach (BillOption billOption in bills)
             {
-                Name = x.Name,
-                Value = x.Value,
-                Wallet = x.Wallet
-            }).Where(x => x.Wallet.Id == wallet.Id).ToList();
+                billList.Add(new BillListViewModel {
+                    Name = billOption.Name,
+                    Value = billOption.Value
+                });
+            }
             return billList;
         }
 

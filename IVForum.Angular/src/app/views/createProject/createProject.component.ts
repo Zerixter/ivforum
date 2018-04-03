@@ -3,7 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { ProjectComponent } from '../project/project.component';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+//import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'createProject',
@@ -20,8 +20,8 @@ export class CreateProjectComponent implements OnInit {
         private _userService:UserService,
         private _projectService:ProjectService,
         private _router:Router,
-        public dialogRef: MatDialogRef<CreateProjectComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        //public dialogRef: MatDialogRef<CreateProjectComponent>,
+        //@Inject(MAT_DIALOG_DATA) public data: any
     ) { }
 
     ngOnInit() {
@@ -31,7 +31,7 @@ export class CreateProjectComponent implements OnInit {
     createProject(){
         this._projectService.createProject(this.title,this.description,this.websiteUrl,this.repositoryUrl)
         .subscribe(
-            res => this._router.navigate(["/myProjects"]),
+            res => this._router.navigate(["/main/myProjects"]),
             err => console.log(err)
         );
     }

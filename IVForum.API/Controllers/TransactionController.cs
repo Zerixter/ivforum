@@ -1,4 +1,4 @@
-﻿    using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,8 +60,8 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari no te aquesta opció de vot."));
             }
 
-            if (ForumToSearch.DateBeginsVote.Date >= DateTime.Now.Date && DateTime.Now.Date <= ForumToSearch.DateEndsVote.Date)
-            {
+            /*if (ForumToSearch.DateBeginsVote.Date >= DateTime.Now.Date && DateTime.Now.Date <= ForumToSearch.DateEndsVote.Date)
+            {*/
                 Vote vote = new Vote
                 {
                     ImgUri = BillToSearch.ImgUri,
@@ -78,7 +78,7 @@ namespace IVForum.API.Controllers
                 db.SaveChanges();
 
                 return new JsonResult(Message.GetMessage("El vot s'ha realitzat correctament."));
-            }
+            //}
             return BadRequest(Message.GetMessage("No s'ha pogut realitzar el vot perquè la data actual no està dintre del termini de vot del Forum."));
         }
     }

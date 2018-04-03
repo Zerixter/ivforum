@@ -55,7 +55,7 @@
                     <i class="material-icons left">done</i>Ja Subscrit</button>
                 <button *ngIf="!subscribed" mz-button type="button" (click)="subscribe()">Subscribir</button>
                 <button *ngIf="subscribed" data-target="projectes" class="btn modal-trigger" mz-button
-                    type="button">Afegir Projecte</button>
+                    type="button" (click)="addProject()">Afegir Projecte</button>
             </div>
         </div>
     </div>

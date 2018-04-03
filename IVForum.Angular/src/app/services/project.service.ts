@@ -96,7 +96,7 @@ export class ProjectService {
     }
 
     deleteProject(object){
-        return this.http.delete(this._URL + "project",object)
+        return this.http.delete(this._URL + "project/"+object.id)
         .map(
                 res => {
                     return res;
