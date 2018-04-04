@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
+//import { MatDialog } from '@angular/material';
+import { CreateProjectComponent } from '../createProject/createProject.component';
+import { MzToastService } from 'ng2-materialize';
 
 @Component({
     selector: 'myProjectsComponent',
-    templateUrl: 'myProjects.component.html'
+    templateUrl: 'myProjects.component.html',
+    styleUrls:["myProjects.component.css"]
 })
 
 export class MyProjectsComponent implements OnInit {
@@ -14,25 +18,59 @@ export class MyProjectsComponent implements OnInit {
     constructor(
         private _userService:UserService,
         private _projectService:ProjectService,
-        private _router:Router
+        private _router:Router,
+        private toastService: MzToastService,
+        //private _dialog: MatDialog
     ) { }
 
     ngOnInit() {
         this.getMyProjects();
+        //this.test();
     }
 
     getMyProjects(){
-        this._projectService.getProjects()
+        this._projectService.getUserProject(JSON.parse(localStorage.getItem("currentUser")).token.id)
         .subscribe(
             res => this.projects = res,
             err => console.log(err)
         )
     }
 
+    createForum(){
+        this._router.navigate(["main/createForum"]);
+    }
+
     selectProject(project){
         if (this._projectService.selectProject(project)){
-            this._router.navigate[("/project")];
+            this._router.navigate[("/main/project")];
         }
+    }
+
+    deleteProject(project){
+        this._projectService.deleteProject(project)
+        .subscribe(
+            res => {
+                this.showToastDeleteProject();
+                this.getMyProjects();
+            },
+            err => console.log(err)
+        )
+    }
+
+    createProject(){
+        this._router.navigate(["/main/createProject"])
+        /*let dialogRef = this._dialog.open(CreateProjectComponent, {
+            width: '450px',
+            data: {}
+          });
+      
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+        });*/
+    }
+
+    showToastDeleteProject() {
+        this.toastService.show("Has eliminat un projecte!", 4000, 'green');
     }
 
     test(){

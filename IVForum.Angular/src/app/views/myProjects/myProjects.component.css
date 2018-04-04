@@ -1,0 +1,11 @@
+.project-logo img{
+    width: 100%;
+    height: 100%;
+}
+div.project-logo{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.card.horizontal .card-image {
+    max-width: 100% !important;
+}

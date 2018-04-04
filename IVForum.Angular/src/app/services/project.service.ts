@@ -26,7 +26,7 @@ export class ProjectService {
     }
 
     getUserProject(idUser){
-        return this.http.get(this._URL + "project/user/" + idUser)
+        return this.http.get(this._URL + "project/" + idUser)
         .map(
                 res => {
                     return res;
@@ -49,8 +49,8 @@ export class ProjectService {
                 });
     }
 
-    createProject(project){
-        return this.http.post(this._URL + "project",project)
+    createProject(title,description,websiteUrl,repositoryUrl){
+        return this.http.post(this._URL + "project",{title:title,description:description,websiteUrl:websiteUrl,repositoryUrl:repositoryUrl})
         .map(
                 res => {
                     return res;
@@ -96,7 +96,7 @@ export class ProjectService {
     }
 
     deleteProject(object){
-        return this.http.delete(this._URL + "project",object)
+        return this.http.delete(this._URL + "project/"+object.id)
         .map(
                 res => {
                     return res;

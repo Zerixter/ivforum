@@ -13,8 +13,9 @@ export class TransactionService {
         this._URL = this.URL.getURL();
      }
 
-    subscribeForum(idProject){
-        return this.http.post(this._URL + "transaction/vote",idProject)
+    subscribeForum(idProject,vote){
+        console.log(idProject,vote);
+        return this.http.post(this._URL + "transaction/vote",{projectId:idProject,value:vote})
         .map(
                 res => {
                     return res;

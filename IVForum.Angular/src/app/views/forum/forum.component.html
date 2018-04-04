@@ -1,0 +1,72 @@
+<div class="container">
+    <div id="forum-info" class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+        <div class="card-image">
+            <img id="image-forum" src="./assets/images/yellow.jpg">
+        </div>
+        <div class="card-content">
+            <div class="row">
+                <span class="card-title">{{forum.title}}</span>
+            </div>
+            <mat-tab-group id="forumProjects">
+                <mat-tab label="Descripció" class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="row col-12 col-sm-12 col-md-12 col-lg-12">
+                        <p>{{forum.description}}</p>
+                    </div>
+                    <div class="card-action">
+                        <p class="info-forum">Autor: <a>{{forum.owner.name}} {{forum.owner.surname}}</a></p>
+                        <p class="info-forum">Creat: {{forum.creationDate | date:'dd-MM-yyyy'}}</p>
+                        <p class="info-forum">Tancament de votacions: {{forum.dateEndsVote | date:'dd-MM-yyyy'}}</p>
+                    </div>
+                    <div class="card-action">
+                        <div class="row">
+                            <button *ngIf="twitter != null" mz-button type="button" [attr.href]="twitter">Twitter</button>
+                            <button *ngIf="facebook != null" mz-button type="button" [attr.href]="facebook">Facebook</button>
+                            <button *ngIf="github != null" mz-button type="button" [attr.href]="github">Repositorio</button>
+                            <button *ngIf="web != null" mz-button type="button" [attr.href]="web">WEB</button>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Projectes">
+                    <div class="row col-12 col-sm-12 col-md-12 col-lg-12">
+                        <div *ngFor="let project of projects">
+                            <div class="project-card card horizontal row">
+                                <div class="project-logo card-image col-sm-12 col-md-3 col-lg-4">
+                                    <img src="../assets/images/yellow.jpg">
+                                </div>
+                                <div class="card-stacked col-sm-12 col-md-9 col-lg-8">
+                                    <div class="card-content">
+                                        <span class="card-title">{{project.title}}</span>
+                                        <p>{{project.description}}</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a (click)="projectMoreInfo(project)">Mes Informació</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="card-action">
+            <div class="row">
+                <button *ngIf="owner" mz-button type="button">Modificar</button>
+                <button *ngIf="subscribed" mz-button type="button" disabled>
+                    <i class="material-icons left">done</i>Ja Subscrit</button>
+                <button *ngIf="!subscribed" mz-button type="button" (click)="subscribe()">Subscribir</button>
+                <button *ngIf="subscribed" data-target="projectes" class="btn modal-trigger" mz-button
+                    type="button" (click)="addProject()">Afegir Projecte</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="projectes" class="modal">
+    <div class="modal-content">
+        <h4>Modal Header</h4>
+        <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+    </div>
+</div>

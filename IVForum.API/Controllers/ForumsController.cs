@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -6,8 +6,6 @@ using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,42 +27,115 @@ namespace IVForum.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Forum> Get()
+        public IEnumerable<ForumListViewModel> Get()
         {
             try
             {
-                return db.Forums.Include(x => x.Owner).ToArray();
+                return db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).ToArray();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
 
         [HttpGet("{id_user}")]
-        public IEnumerable<Forum> GetFromUser(string id_user)
+        public IEnumerable<ForumListViewModel> GetFromUser(string id_user)
         {
-            return db.Forums.Where(x => x.Owner.IdentityId == id_user).Include(x => x.Owner).ToArray();
-        }
-
-        [HttpGet("user/{id_user}")]
-        public IEnumerable<Forum> GetPersonal(string id_user)
-        {
-            return db.Forums.Where(x => x.Owner.Id.ToString() == id_user).Include(x => x.Owner).ToArray();
+            try
+            {
+                return db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Owner.Id.ToString() == id_user).ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpGet("subscribed/{id_user}")]
-        public IEnumerable<Forum> GetForumsSubscribedUser(string id_user)
+        public IEnumerable<ForumListViewModel> GetForumsSubscribedUser(string id_user)
         {
             User user = null;
             try
             {
                 user = userGetter.GetUser(id_user);
-                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id == user.Id).Include(x => x.User).ToList();
-                List<Forum> Forums = new List<Forum>();
+                List<Wallet> Wallets = db.Wallets.Where(x => x.User.Id.ToString() == id_user).Include(x => x.Forum).ToList();
+                List<ForumListViewModel> Forums = new List<ForumListViewModel>();
                 foreach (var wallet in Wallets)
                 {
-                    Forum forum = db.Forums.Where(x => x.Id == wallet.ForumId).Include(x => x.Owner).FirstOrDefault();
+                    ForumListViewModel forum = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                    {
+                        Id = x.Id.ToString(),
+                        Title = x.Title,
+                        Description = x.Description,
+                        Background = x.Background,
+                        DateBeginsVote = x.DateBeginsVote,
+                        DateEndsVote = x.DateEndsVote,
+                        CreationDate = x.CreationDate,
+                        Icon = x.Icon,
+                        Views = x.Views,
+                        Owner = new UserViewModel
+                        {
+                            Id = x.Owner.Id,
+                            Avatar = x.Owner.Avatar,
+                            Description = x.Owner.Description,
+                            WebsiteUrl = x.Owner.WebsiteUrl,
+                            RepositoryUrl = x.Owner.RepositoryUrl,
+                            FacebookUrl = x.Owner.FacebookUrl,
+                            TwitterUrl = x.Owner.TwitterUrl,
+                            Name = us.Name,
+                            Surname = us.Surname,
+                            Email = us.Email
+                        }
+                    }).Where(x => x.Id == wallet.Forum.Id.ToString()).FirstOrDefault();
                     if (forum != null)
                     {
                         Forums.Add(forum);
@@ -82,8 +153,31 @@ namespace IVForum.API.Controllers
         public IActionResult Select(string id_forum)
         {
             List<object> Errors = new List<object>();
-
-            var ForumToSelect = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
+            var ForumToSelect = db.Forums.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ForumListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    DateBeginsVote = x.DateBeginsVote,
+                    DateEndsVote = x.DateEndsVote,
+                    CreationDate = x.CreationDate,
+                    Icon = x.Icon,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Id.ToString() == id_forum).FirstOrDefault();
             if (ForumToSelect is null)
             {
                 Errors.Add(Message.GetMessage("El forum que s'intenta seleccionar no existeix."));
@@ -93,12 +187,37 @@ namespace IVForum.API.Controllers
         }
         
         [HttpGet("projects/{id_forum}")]
-        public IEnumerable<Project> GetProjects(string id_forum)
+        public IEnumerable<ProjectListViewModel> GetProjects(string id_forum)
         {
             try
             {
                 Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
-                return db.Projects.Where(x => x.Forum == forum).Include(x => x.Owner).ToArray();
+                return db.Projects.Join(db.Users, x => x.Owner.IdentityId, us => us.Id, (x, us) => new ProjectListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Title = x.Title,
+                    Description = x.Description,
+                    Background = x.Background,
+                    CreationDate = x.CreationDate,
+                    TotalMoney = x.TotalMoney,
+                    RepositoryUrl = x.RepositoryUrl,
+                    WebsiteUrl = x.WebsiteUrl,
+                    Forum = x.Forum,
+                    Views = x.Views,
+                    Owner = new UserViewModel
+                    {
+                        Id = x.Owner.Id,
+                        Avatar = x.Owner.Avatar,
+                        Description = x.Owner.Description,
+                        WebsiteUrl = x.Owner.WebsiteUrl,
+                        RepositoryUrl = x.Owner.RepositoryUrl,
+                        FacebookUrl = x.Owner.FacebookUrl,
+                        TwitterUrl = x.Owner.TwitterUrl,
+                        Name = us.Name,
+                        Surname = us.Surname,
+                        Email = us.Email
+                    }
+                }).Where(x => x.Forum == forum).ToArray();
             } catch (Exception)
             {
                 return null;
@@ -116,20 +235,29 @@ namespace IVForum.API.Controllers
                 return BadRequest(Message.GetMessage("El usuari que intenta crear el forum és incorrecte."));
             }
 
-            Forum forum = new Forum
+            Forum forum = null;
+
+            try
             {
-                Id = Guid.NewGuid(),
-                Title = model.Title,
-                Description = model.Description,
-                DateBeginsVote = model.DateBeginsVote,
-                DateEndsVote = model.DateEndsVote,
-                Owner = user
-            };
+                forum = new Forum
+                {
+                    Id = Guid.NewGuid(),
+                    Title = model.Title,
+                    Description = model.Description,
+                    DateBeginsVote = model.DateBeginsVote.Date,
+                    DateEndsVote = model.DateEndsVote.Date,
+                    Owner = user
+                };
+            } catch (Exception)
+            {
+                return BadRequest(Message.GetMessage("No se ha pogut crear el forum."));
+            }
+
 
             Errors = Forum.ValidateForum(forum);
             if (Errors.Count >= 1)
             {
-                BadRequest(Errors);
+                return BadRequest(Errors);
             }
 
             db.Forums.Add(forum);
@@ -170,8 +298,8 @@ namespace IVForum.API.Controllers
             return new JsonResult(Message.GetMessage("El forum s'ha editat correctament."));
         }
 
-        [HttpGet("view")]
-        public IActionResult ViewForum([FromBody]string id_forum)
+        [HttpPut("view/{id_forum}")]
+        public IActionResult ViewForum([FromRoute]string id_forum)
         {
             Forum forum = db.Forums.FirstOrDefault(x => x.Id.ToString() == id_forum);
             if (forum is null)
@@ -186,22 +314,35 @@ namespace IVForum.API.Controllers
             return new JsonResult(null);
         }
 
-        [HttpDelete]
-        public IActionResult Delete([FromBody]Forum forum)
+        [HttpDelete("{id_forum}")]
+        public IActionResult Delete([FromRoute]string id_forum)
         {
-            List<object> Errors = new List<object>();
-
-            if (!ValidateUser(forum))
-            {
-                Errors.Add(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
-                return BadRequest(Errors);
-            }
-
-            var ForumToDelete = db.Forums.Where(x => x.Id == forum.Id).FirstOrDefault();
+            Forum ForumToDelete = db.Forums.Where(x => x.Id.ToString() == id_forum).Include(x => x.Owner).FirstOrDefault();
             if (ForumToDelete is null)
             {
-                Errors.Add(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
-                return BadRequest(Errors);
+                return BadRequest(Message.GetMessage("El forum que s'intenta eliminar no existeix."));
+            }
+
+            if (!ValidateUser(ForumToDelete))
+            {
+                return BadRequest(Message.GetMessage("El usuari que intenta esborrar aquest forum és incorrecte"));
+            }
+
+            List<Transaction> Transactions = db.Transactions.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Transaction transaction in Transactions)
+            {
+                db.Transactions.Remove(transaction);
+            }
+
+            List<Wallet> WalletsForForum = db.Wallets.Where(x => x.Forum.Id.ToString() == id_forum).Include(x => x.Forum).ToList();
+            foreach (Wallet wallet in WalletsForForum)
+            {
+                List<BillOption> BillOptions = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+                foreach (BillOption bill in BillOptions)
+                {
+                    db.BillOptions.Remove(bill);
+                }
+                db.Wallets.Remove(wallet);
             }
 
             db.Forums.Remove(ForumToDelete);
@@ -212,11 +353,13 @@ namespace IVForum.API.Controllers
 
         public bool ValidateUser(Forum forum)
         {
-            User user = userGetter.GetUser();
+            User user = null;
             try
             {
+                user = userGetter.GetUser();
                 return (forum.Owner.Id == user.Id) ? true : false;
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }

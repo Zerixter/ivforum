@@ -1,0 +1,47 @@
+<div class="container">
+    <div id="forum-info" class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+        <div class="card-image">
+            <img id="image-forum" src="./assets/images/yellow.jpg">
+        </div>
+        <div class="card-content">
+            <div class="row">
+                <span class="card-title">{{project.title}}</span>
+            </div>
+            <div class="row">
+                <p>{{project.description}}</p>
+            </div>
+        </div>
+        <div class="card-action">
+            <p class="info-forum">
+                Autor:
+                <a>{{project.owner.name}} {{project.owner.surname}}</a>
+            </p>
+            <p class="info-forum">
+                Recaudat: {{project.totalMoney}}
+            </p>
+            <p class="info-forum">
+                Visites: {{project.views}}
+            </p>
+        </div>
+        <div class="card-action">
+            <div class="row">
+                <button *ngIf="twitter != null" mz-button type="button" [attr.href]="twitter">Twitter</button>
+                <button *ngIf="facebook != null" mz-button type="button" [attr.href]="facebook">Facebook</button>
+                <button *ngIf="github != null" mz-button type="button" [attr.href]="github">Repositorio</button>
+                <button *ngIf="web != null" mz-button type="button" [attr.href]="web">WEB</button>
+            </div>
+        </div>
+        <div class="card-action">
+            <div class="row">
+                <button *ngFor="let vote of votes" class="col-12 col-sm-4 col-md-4 col-lg-4 waves-effect waves-light btn" (click)="voteProject(vote)">{{vote.name}}
+                    <i class="material-icons right">attach_money</i>
+                </button>
+                <div *ngIf="! votes?.length">
+
+                    <span class="card-title">No pots votar mes :(</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

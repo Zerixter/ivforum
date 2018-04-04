@@ -4,8 +4,6 @@ using IVForum.API.Data;
 using IVForum.API.Helpers;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +18,6 @@ using System.Threading.Tasks;
 
 namespace IVForum.API.Controllers
 {
-    [EnableCors("all")]
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -29,20 +26,17 @@ namespace IVForum.API.Controllers
         private readonly JwtIssuerOptions jwtOptions;
         private readonly DbHandler db;
         private readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
-        private readonly ClaimsPrincipal claimsPrincipal;
         private readonly UserGetter userGetter;
 
         public AccountController(UserManager<UserModel> _userManager, IJwtFactory _jwtFactory, IOptions<JwtIssuerOptions> _jwtOptions, DbHandler _db, IHttpContextAccessor httpContextAccessor)
         {
+            db = _db;
+            userGetter = new UserGetter(db, httpContextAccessor);
             userManager = _userManager;
             jwtFactory = _jwtFactory;
             jwtOptions = _jwtOptions.Value;
-            db = _db;
-            claimsPrincipal = httpContextAccessor.HttpContext.User;
-            userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [Authorize(Policy = "ApiUser")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -107,26 +101,7 @@ namespace IVForum.API.Controllers
             {
                 return BadRequest();
             }
-            return new JsonResult(wallet);
-        }
-
-        [HttpGet("subscription/{id_forum}")]
-        public IEnumerable<BillOption> GetSubscription(string id_forum)
-        {
-            User user = userGetter.GetUser();
-            if (user is null)
-            {
-                return null;
-            }
-
-            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
-            if (wallet is null)
-            {
-                return null;
-            }
-
-            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
-            return bills;
+            return new OkResult();
         }
 
         [HttpPost("register")]
@@ -176,7 +151,7 @@ namespace IVForum.API.Controllers
 
                 var identity = await GetClaimsIdentity(model.Email, model.Password);
 
-                var jwt = await Tokens.GenerateJwt(identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
+                var jwt = await Tokens.GenerateJwt(user.Id.ToString(), identity, jwtFactory, model.Email, jwtOptions, jsonSerializerSettings);
                 return new OkObjectResult(jwt);
             } catch (Exception)
             {
@@ -194,11 +169,13 @@ namespace IVForum.API.Controllers
                 return BadRequest(Errors);
             }
 
+            UserModel userModel = null;
+            User user = null;
             var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
             if (identity is null)
             {
-                var userName = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
-                if (userName is null)
+                userModel = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
+                if (userModel is null)
                 {
                     Errors.Add(Message.GetMessage("El compte d'usuari introduit és incorrecte"));
                 }
@@ -208,8 +185,15 @@ namespace IVForum.API.Controllers
                 }
                 return BadRequest(Errors);
             }
+            userModel = db.Users.Where(x => x.UserName == credentials.Email).FirstOrDefault();
+            user = db.DbUsers.Where(x => x.IdentityId == userModel.Id).FirstOrDefault();
+            string user_id = "";
+            if (user != null)
+            {
+                user_id = user.Id.ToString();
+            }
 
-            var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
+            var jwt = await Tokens.GenerateJwt(user_id, identity, jwtFactory, credentials.Email, jwtOptions, jsonSerializerSettings);
             return new OkObjectResult(jwt);
         }
 
@@ -231,23 +215,22 @@ namespace IVForum.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete()
+        public IActionResult Delete()
         {
+            User user = null;
             try
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                var ASPUser = await db.Users.SingleAsync(c => c.Id == userId.Value);
-                var DBUser = await db.DbUsers.SingleAsync(c => c.IdentityId == userId.Value);
-
-                if (ASPUser != null && DBUser != null)
+                user = userGetter.GetUser();
+                var aspUser = db.Users.FirstOrDefault(x => x.Id == user.IdentityId);
+                
+                if (aspUser != null && user != null)
                 {
-                    db.Remove(DBUser);
-                    db.Remove(ASPUser);
+                    db.Remove(user);
+                    db.Remove(aspUser);
                     db.SaveChanges();
-
                     return new JsonResult(Message.GetMessage("S'ha esborrat el usuari correctament."));
                 }
-                return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari (No hi ha cap usuari loguejat)."));
+                return BadRequest(Message.GetMessage("S'ha produit un error al intentar esborrar el usuari."));
             }
             catch (Exception)
             {

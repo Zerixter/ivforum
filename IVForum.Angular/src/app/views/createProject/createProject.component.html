@@ -1,0 +1,31 @@
+<div class="container">
+    <div id="newProject-card" class="card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+        <div id="spanner">
+            <span class="card-title col-12 col-sm-12 col-md-12 col-lg-12 white-text">Projecte</span>
+        </div>
+        <div class="card-content">
+            <div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input id="title" [(ngModel)]="title" type="text" class="validate">
+                    <label for="title">Titol*:</label>
+                </div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <textarea id="description" [(ngModel)]="description" type="text" class="validate materialize-textarea"></textarea>
+                    <label for="description">Descripció*:</label>
+                </div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <textarea id="websiteUrl" [(ngModel)]="websiteUrl" type="text" class="validate materialize-textarea"></textarea>
+                    <label for="websiteUrl">Pagina Web:</label>
+                </div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <textarea id="repositoryUrl" [(ngModel)]="repositoryUrl" type="text" class="validate materialize-textarea"></textarea>
+                    <label for="repositoryUrl">Repositori:</label>
+                </div>
+                <p>*camps obligatoris</p>
+            </div>
+        </div>
+        <div class="card-action">
+            <a (click)="createProject()" class="col-12 col-sm-12 col-md-12 col-lg-12 waves-effect waves-light btn">Terminar</a>
+        </div>
+    </div>
+</div>

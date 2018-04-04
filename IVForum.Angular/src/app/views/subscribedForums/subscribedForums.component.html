@@ -1,0 +1,53 @@
+<div class="container">
+    <div id="public" class="all-forums row">
+        <div class="col-md-12">
+            <div *ngFor="let forum of subscribedForums" class="row">
+                <div class="forum-card card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+                    <div class="card-image">
+                        <img class="imagen waves-effect waves-block waves-light" src="../assets/images/yellow.jpg">
+                    </div>
+                    <div class="forum-content">
+                        <span class="card-title activator grey-text text-darken-4">{{forum.title}}
+                            <i class="material-icons right">more_vert</i>
+                        </span>
+                        <div class="card-content">
+                            <p>{{forum.description}}</p>
+                        </div>
+                    </div>
+                    <div class="card-reveal">
+                        <span class="card-title grey-text text-darken-4">{{forum.title}}
+                            <i class="material-icons right">close</i>
+                        </span>
+                        <p>{{forum.description}}</p>
+                        <div class="card-action">
+                            <p class="info-forum">Autor:
+                                <a>{{forum.owner.name}} {{forum.owner.surname}}</a>
+                            </p>
+                            <p class="info-forum">Creat: {{forum.creationDate | date:'dd-MM-yyyy'}}</p>
+                            <p class="info-forum">Tancament de votacions: {{forum.dateEndsVote | date:'dd-MM-yyyy'}}</p>
+                        </div>
+                        <div class="card-action">
+                            <a (click)="selectForum(forum)">Mes informació</a>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <a (click)="selectForum(forum)">Mes informació</a>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="! subscribedForums?.length">
+                <div class="project-card card horizontal row">
+                    <div class="card-stacked col-sm-12 col-md-9 col-lg-8">
+                        <div class="card-content">
+                            <span class="card-title">No estas subscrit en cap foro :(</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-action-btn horizontal">
+            <a class="btn-floating btn-large " (click)="createForum()">
+                <i class="large material-icons">add</i>
+            </a>
+        </div>
+    </div>

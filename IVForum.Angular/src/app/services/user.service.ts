@@ -31,7 +31,7 @@ export class UserService {
         return this.http.post(this._URL + "account/login", { email, password })
         .map(
                 res => {
-                    localStorage.setItem('currentUser', JSON.stringify({ email: email, res  }));
+                    localStorage.setItem('currentUser', JSON.stringify({ email: email, token:res  }));
                     return true;
                 },
                 err => {
@@ -54,10 +54,12 @@ export class UserService {
     }
 
     isSubscribed(idForum){
-        return this.http.get(this._URL + "account/subscribed" + idForum)
+        console.log("idforum: " + idForum);
+        return this.http.get(this._URL + "subscription/subscribed/" + idForum)
         .map(
                 res => {
-                    return res;
+                    console.log(res);
+                    return true;
                 },
                 err => {
                     console.log(err)
@@ -66,13 +68,15 @@ export class UserService {
     }
 
     subscriptions(idForum){
-        return this.http.get(this._URL + "account/subscription" + idForum)
+        console.log("forum: " + idForum)
+        return this.http.get(this._URL + "subscription/wallet/" + idForum)
         .map(
                 res => {
+                    console.log(res);
                     return res;
                 },
                 err => {
-                    console.log(err)
+                    console.log(err);
                     return false;
                 });
     }
@@ -110,10 +114,10 @@ export class UserService {
         }
     }
 
-    logout(): void {
-        localStorage.removeItem('currentUser');    
+    logout() {
+        localStorage.removeItem('currentUser');
+        return true;
     }
-    
 }
 
 /*

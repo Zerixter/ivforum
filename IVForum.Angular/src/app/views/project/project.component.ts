@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ProjectService } from '../../services/project.service';
 import { Router } from '@angular/router';
+import { ForumService } from '../../services/forum.service';
+import { TransactionService } from '../../services/transaction.service';
+import { MzToastService } from 'ng2-materialize';
 
 @Component({
     selector: 'projectComponent',
@@ -10,31 +13,56 @@ import { Router } from '@angular/router';
 
 export class ProjectComponent implements OnInit {
     private project;
+    private forum;
+    private votes;
     constructor(
         private _userService:UserService,
         private _projectService:ProjectService,
-        private _router:Router
+        private _forumService:ForumService,
+        private _transactionService:TransactionService,
+        private _router:Router,
+        private toastService: MzToastService,
     ) { }
 
     ngOnInit() {
         this.getProject();
+        this.getSubscriptionsOptions();
+        console.log(this.project);
     }
 
     getProject(){
-        this.project = this._projectService.getSelectedProject()
+        this.project = this._projectService.getSelectedProject();
+        this.forum = this._forumService.getSelectedForum();
     }
 
-    modifProject(){
-        this._projectService.modifProject(this.project)
+    addView(){
+        this._projectService.addView(this.project.id)
         .subscribe(
-            res => console.log("modificat"),
+            res => {return true},
             err => console.log(err)
         )
     }
-    deleteProject(){
-        this._projectService.deleteProject(this.project)
+
+    showToast() {
+        this.toastService.show('Vot acceptat!', 4000, 'green');
+    }
+
+    voteProject(vote){
+        console.log(this.project);
+        this._transactionService.subscribeForum(this.project.id,vote.name)
         .subscribe(
-            res => {this._router.navigate[("/myProjects")]},
+            res => {
+                this.getSubscriptionsOptions();
+                this.showToast();
+            },
+            err => console.log(err)
+        )
+    }
+
+    getSubscriptionsOptions(){
+        this._userService.subscriptions(this.forum.id)
+        .subscribe(
+            res => {this.votes = res; console.log(res)},
             err => console.log(err)
         )
     }

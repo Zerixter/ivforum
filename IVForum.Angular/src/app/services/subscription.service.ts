@@ -13,7 +13,23 @@ export class SubscriptionService {
      }
 
     subscribeForum(forum){
-        return this.http.post(this._URL + "subscribe/forum",forum)
+        console.log(forum);
+        console.log(this._URL);
+        return this.http.post(this._URL + "subscription/subscribe/forum",{id:forum.id})
+        .map(
+                res => {
+                    console.log("subscrit");
+                    return res;
+                },
+                err => {
+                    console.log(err)
+                    return false;
+                });
+    }
+
+    subscribeProject(idForum,idProject){
+        console.log("forum: " + idForum);
+        return this.http.post(this._URL + "subscription/subscribe/project", {forumId:idForum,projectId:idProject})
         .map(
                 res => {
                     return res;
@@ -24,16 +40,18 @@ export class SubscriptionService {
                 });
     }
 
-    subscribeProject(idForum,idProject){
-        return this.http.post(this._URL + "subscribe/forum", {idForum,idProject})
+    isSubscribed(idForum){
+        return this.http.get(this._URL + "account/subscribed/" + idForum)
         .map(
-                res => {
-                    return res;
-                },
-                err => {
-                    console.log(err)
-                    return false;
-                });
+            res => {
+                return true;
+            },
+            err => {
+                console.log(err);
+                console.log("resposta: ");
+                return false;
+            }
+        )
     }
 }
 

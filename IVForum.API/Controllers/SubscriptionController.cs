@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using IVForum.API.Classes;
 using IVForum.API.Data;
 using IVForum.API.Models;
 using IVForum.API.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IVForum.API.Controllers
 {
@@ -25,7 +23,52 @@ namespace IVForum.API.Controllers
             userGetter = new UserGetter(db, httpContextAccessor);
         }
 
-        [HttpPost("subcribe/forum")]
+        [HttpGet("subscribed/{id_forum}")]
+        public IActionResult GetSubscribed([FromRoute]string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return BadRequest(Message.GetMessage("No hi ha cap usuari connectat."));
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id.ToString() == id_forum).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return BadRequest();
+            }
+            return new OkResult();
+        }
+
+        [HttpGet("wallet/{id_forum}")]
+        public IEnumerable<BillListViewModel> GetSubscription(string id_forum)
+        {
+            User user = userGetter.GetUser();
+            if (user is null)
+            {
+                return null;
+            }
+
+            Wallet wallet = db.Wallets.Where(x => x.UserId == user.Id && x.ForumId.ToString() == id_forum).FirstOrDefault();
+            if (wallet is null)
+            {
+                return null;
+            }
+
+            List<BillOption> bills = db.BillOptions.Where(x => x.Wallet.Id == wallet.Id).Include(x => x.Wallet).ToList();
+            List<BillListViewModel> billList = new List<BillListViewModel>();
+
+            foreach (BillOption billOption in bills)
+            {
+                billList.Add(new BillListViewModel {
+                    Name = billOption.Name,
+                    Value = billOption.Value
+                });
+            }
+            return billList;
+        }
+
+        [HttpPost("subscribe/forum")]
         public IActionResult Subscribe([FromBody]ForumViewModel model)
         {
             Forum ForumToSearch = db.Forums.FirstOrDefault(x => x.Id.ToString() == model.Id);
@@ -38,6 +81,13 @@ namespace IVForum.API.Controllers
             if (user is null)
             {
                 return BadRequest(Message.GetMessage("No hi ha cap usuari connectat ara mateix. Connecta't per poder subscriure a un forum"));
+            }
+
+            Wallet WalletToSearch = db.Wallets.Where(x => x.User.Id == user.Id && x.Forum.Id == ForumToSearch.Id).Include(x => x.User).Include(x => x.Forum).FirstOrDefault();
+
+            if (WalletToSearch != null)
+            {
+                return BadRequest(Message.GetMessage("Aquest usuari ja esta subscrit a aquest forum."));
             }
 
             Wallet wallet = new Wallet

@@ -369,8 +369,7 @@ namespace IVForum.API.Migrations
                 {
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Forums")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Project", b =>
@@ -378,12 +377,11 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Projects")
                         .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("IVForum.API.Models.User", "Owner")
                         .WithMany("Projects")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("IVForum.API.Models.User", b =>
@@ -456,7 +454,7 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Wallet", "Wallet")
                         .WithMany("Bills")
                         .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Transaction", b =>
@@ -464,7 +462,7 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Forum", "Forum")
                         .WithMany("Transactions")
                         .HasForeignKey("ForumId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("IVForum.API.Models.Vote", b =>
@@ -472,7 +470,7 @@ namespace IVForum.API.Migrations
                     b.HasOne("IVForum.API.Models.Project", "Project")
                         .WithMany("Votes")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 #pragma warning restore 612, 618
         }

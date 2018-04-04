@@ -1,0 +1,30 @@
+<div class="container">
+    <div id="newForum-card" class="card offset-sm-1 offset-md-1 offset-lg-1 col-12 col-sm-10 col-md-10 col-lg-10">
+        <div id="spanner">
+            <span class="card-title col-12 col-sm-12 col-md-12 col-lg-12 white-text">Forum</span>
+        </div>
+        <div class="card-content">
+            <div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input id="title" [(ngModel)]="title" type="text" class="validate">
+                    <label for="title">Titol:</label>
+                </div>
+                <div class="input-field col-12 col-sm-12 col-md-12 col-lg-12">
+                    <textarea id="description" [(ngModel)]="description" type="text" class="validate materialize-textarea"></textarea>
+                    <label for="description">Descripció:</label>
+                </div>
+                <mz-datepicker-container class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input mz-datepicker [label]="'Inici de la votació:'" [options]="options" [(ngModel)]="dataBeginsVote" id="datepicker"
+                        type="text">
+                </mz-datepicker-container>
+                <mz-datepicker-container class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <input mz-datepicker [label]="'Fi de la votació:'" [options]="options" [(ngModel)]="dataEndsVote" id="datepicker"
+                        type="text">
+                </mz-datepicker-container>
+            </div>
+        </div>
+        <div class="card-action">
+            <a (click)="createForo()" class="col-12 col-sm-12 col-md-12 col-lg-12 waves-effect red lighten-2 waves-light btn">Terminar</a>
+        </div>
+    </div>
+</div>

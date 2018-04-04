@@ -12,3 +12,8 @@
     padding-left: 15px;
     padding-right: 15px;
 }
+
+div#tabs-explorer {
+    padding-right: 0px;
+    padding-left: 0px;
+}

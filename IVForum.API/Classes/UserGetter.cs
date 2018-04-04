@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -26,8 +27,12 @@ namespace IVForum.API.Classes
             User user = null;
             try
             {
-                var userId = claimsPrincipal.Claims.Single(c => c.Type == "id");
-                user = db.DbUsers.Where(c => c.IdentityId == userId.Value).Include(x => x.Identity).FirstOrDefault();
+                var userId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == "id");
+                if (userId is null)
+                {
+                    Debug.WriteLine(claimsPrincipal);
+                }
+                user = db.DbUsers.Where(c => c.Identity.Id == userId.Value).FirstOrDefault();
                 return user;
             }
             catch (Exception)
@@ -41,7 +46,7 @@ namespace IVForum.API.Classes
             User user = null;
             try
             {
-                user = db.DbUsers.Where(c => c.IdentityId == userid).Include(x => x.Identity).FirstOrDefault();
+                user = db.DbUsers.Where(c => c.Id.ToString() == userid).FirstOrDefault();
                 return user;
             }
             catch (Exception)
