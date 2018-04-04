@@ -3,7 +3,7 @@
 ### Web API
 
 Requisits:
-- Runtime Enviroment: Net Core 2.x
+- Runtime Enviroment: (Net Core 2.x)[https://www.microsoft.com/net/download/dotnet-core/runtime-2.0.5]
 - SO: Windows, Linux o MacOs
 
 Pasos a Seguir:
