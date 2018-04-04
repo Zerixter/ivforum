@@ -1,1 +1,1 @@
-﻿Server=Servidor;Database=basededades;MultipleActiveResultSets=True;User Id=Usuari;Password=Contrasenya;
+﻿Server=(localdb)\mssqllocaldb;Database=pruebatest;MultipleActiveResultSets=True;Trusted_Connection=True;Integrated Security=false;

@@ -2,14 +2,19 @@
 using IVForum.API.Properties;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace IVForum.API.Data
 {
-	public class DbHandler : IdentityDbContext<UserModel>
+    public class DbHandler : IdentityDbContext<UserModel>
     {
-		public DbSet<User> DbUsers { get; set; }
-		public DbSet<Forum> Forums { get; set; }
-		public DbSet<Project> Projects { get; set; }
+        public DbSet<User> DbUsers { get; set; }
+        public DbSet<Forum> Forums { get; set; }
+        public DbSet<Project> Projects { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
@@ -17,11 +22,28 @@ namespace IVForum.API.Data
         public DbSet<Vote> Votes { get; set; }
 
         public DbHandler(DbContextOptions<DbHandler> options) : base(options) { }
-
+        private class ConnectionStringMember
+        {
+            public string ConnectionString { get; set; }
+        }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			base.OnConfiguring(optionsBuilder);
+            string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=webapi;MultipleActiveResultSets=True;Trusted_Connection=True;";
+            try
+            {
+                using (StreamReader r = new StreamReader("ConnectionString.txt"))
+                {
+                    string text = r.ReadToEnd();
+                    ConnectionString = text;
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("No s'ha trobat el fitxer ConnectionString.txt en la carpeta arrel");
+            }
+            base.OnConfiguring(optionsBuilder);
             optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.UseSqlServer(ConnectionString);
         }
 
 		protected override void OnModelCreating(ModelBuilder builder)
@@ -31,12 +53,7 @@ namespace IVForum.API.Data
             #region User
             builder.Entity<User>()
                     .HasMany(x => x.Forums)
-                    .WithOne(x => x.Owner)
-                    .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<User>()
-                .HasMany(x => x.Projects)
-                .WithOne(x => x.Owner)
-                .OnDelete(DeleteBehavior.Cascade);
+                    .WithOne(x => x.Owner);
             builder.Entity<User>()
                 .HasMany(x => x.Wallets);
             #endregion
@@ -83,21 +100,32 @@ namespace IVForum.API.Data
             builder.Entity<BillOption>()
                 .HasOne(x => x.Wallet)
                 .WithMany(x => x.Bills)
-                .HasForeignKey(x => x.WalletId);
+                .HasForeignKey(x => x.WalletId)
+                .OnDelete(DeleteBehavior.SetNull);
             #endregion
             #region Transaction
             builder.Entity<Transaction>()
                 .HasOne(x => x.Forum)
                 .WithMany(x => x.Transactions)
-                .HasForeignKey(x => x.ForumId);
+                .HasForeignKey(x => x.ForumId)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
             #region Vote
             builder.Entity<Vote>()
                 .HasOne(x => x.Project)
                 .WithMany(x => x.Votes)
                 .HasForeignKey(x => x.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull); ;
             #endregion
+        }
+    }
+    public class ApplicationContextDbFactory : IDesignTimeDbContextFactory<DbHandler>
+    {
+        public DbHandler CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<DbHandler>();
+
+            return new DbHandler(optionsBuilder.Options);
         }
     }
 }

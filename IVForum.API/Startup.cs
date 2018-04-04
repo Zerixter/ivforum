@@ -37,19 +37,7 @@ namespace IVForum.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var ConnectionString = "";
-            try
-            {
-                using (StringReader sr = new StringReader("ConnectionString.txt"))
-                {
-                    ConnectionString = sr.ReadToEnd();
-                }
-                services.AddDbContext<DbHandler>(x => x.UseSqlServer(ConnectionString));
-            }
-            catch (ArgumentNullException)
-            {
-                Console.WriteLine("No s'ha trobat el fitxer ConnectionString.txt en la carpeta arrel");
-            }
+            services.AddDbContext<DbHandler>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

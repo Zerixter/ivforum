@@ -2,6 +2,8 @@
 using IVForum.API.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IVForum.API
 {
@@ -12,9 +14,20 @@ namespace IVForum.API
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var host = WebHost.CreateDefaultBuilder(args)
+                            .UseStartup<Startup>()
+                            .Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetService<DbHandler>();
+                db.Database.Migrate();
+            }
+
+            return host;
+        }
+            
     }
 }

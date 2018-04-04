@@ -1,1 +1,0 @@
-﻿Server=Servidor;Database=basededades;MultipleActiveResultSets=True;User Id=Usuari;Password=Contrasenya;
