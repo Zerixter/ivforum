@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./IVForumAPI
+      dockerfile: Dockerfile
+    ports:
+      - '8080:80'
+  client:
+     build: 
+        context: ./IVForumAngular
+        dockerfile: Dockerfile
+     ports:
+       - '80:80'
